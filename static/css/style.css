@@ -2174,6 +2174,101 @@ select.form-input.touch-friendly {
     }
 }
 
+/* Modal de selección de pago inmediato */
+.payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-modal.show {
+    opacity: 1;
+}
+
+.payment-modal-content {
+    background: var(--color-white);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-xl);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.payment-modal.show .payment-modal-content {
+    transform: scale(1);
+}
+
+.payment-modal .payment-title {
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.payment-modal .payment-methods {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    flex-direction: column;
+}
+
+.payment-modal .payment-method-btn {
+    padding: var(--spacing-lg);
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    min-height: 80px;
+}
+
+.payment-modal .payment-method-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.payment-modal .payment-method-btn i {
+    font-size: 28px;
+}
+
+.payment-modal .payment-method-btn span {
+    font-size: 22px;
+}
+
+/* Responsive para modal de pago */
+@media (max-width: 768px) {
+    .payment-modal-content {
+        padding: var(--spacing-lg);
+        max-width: 350px;
+    }
+    
+    .payment-modal .payment-method-btn {
+        min-height: 70px;
+        font-size: 18px;
+    }
+    
+    .payment-modal .payment-method-btn span {
+        font-size: 20px;
+    }
+}
+
 /* Animaciones suaves */
 .fade-in {
     animation: fadeIn 0.3s ease-in;

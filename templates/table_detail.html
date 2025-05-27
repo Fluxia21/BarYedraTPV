@@ -129,7 +129,7 @@
                     <button class="btn btn-secondary btn-sm full-width" onclick="splitBill({{ mesa.id }})" style="margin-bottom: 10px;">
                         <i class="fas fa-cut"></i> Dividir Cuenta
                     </button>
-                    <button class="btn btn-warning btn-lg full-width" onclick="closeOrder({{ mesa.id }})">
+                    <button class="btn btn-warning btn-lg full-width" onclick="showPaymentOptions({{ mesa.id }})">
                         <i class="fas fa-check"></i> Cerrar Pedido
                     </button>
                 </div>
@@ -144,6 +144,28 @@
             </div>
         {% endif %}
         
+        <!-- Modal de selección de pago (inicialmente oculto) -->
+        <div id="payment-modal-{{ mesa.id }}" class="payment-modal" style="display: none;">
+            <div class="payment-modal-content">
+                <h3 class="payment-title">
+                    <i class="fas fa-credit-card"></i> Selecciona Método de Pago
+                </h3>
+                <div class="payment-methods">
+                    <button class="btn btn-success btn-lg payment-method-btn" onclick="payOrder({{ mesa.id }}, 'efectivo')">
+                        <i class="fas fa-money-bills"></i> 
+                        <span>Efectivo</span>
+                    </button>
+                    <button class="btn btn-primary btn-lg payment-method-btn" onclick="payOrder({{ mesa.id }}, 'tarjeta')">
+                        <i class="fas fa-credit-card"></i> 
+                        <span>Tarjeta</span>
+                    </button>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="hidePaymentOptions({{ mesa.id }})">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+
         {% if mesa.estado == 'pagada' %}
             <div class="payment-actions">
                 <h3 class="payment-title">
@@ -303,6 +325,25 @@ function removeFromOrder(mesaId, productoId) {
         
         document.body.appendChild(form);
         form.submit();
+    }
+}
+
+function showPaymentOptions(mesaId) {
+    // Mostrar modal de selección de pago inmediatamente
+    const modal = document.getElementById(`payment-modal-${mesaId}`);
+    if (modal) {
+        modal.style.display = 'block';
+        // Añadir clase para animación suave
+        modal.classList.add('show');
+    }
+}
+
+function hidePaymentOptions(mesaId) {
+    // Ocultar modal de selección de pago
+    const modal = document.getElementById(`payment-modal-${mesaId}`);
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
     }
 }
 </script>
