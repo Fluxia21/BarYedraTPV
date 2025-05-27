@@ -15,14 +15,18 @@ class Mesa(db.Model):
         return f'<Mesa {self.zona} {self.numero}>'
 
 class Producto(db.Model):
-    """Product model"""
+    """Product model with categories and photos"""
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     precio = db.Column(db.Numeric(10, 2), nullable=False)
+    categoria = db.Column(db.String(50), nullable=False, default='General')
+    foto_url = db.Column(db.String(255), nullable=True)
+    descripcion = db.Column(db.Text, nullable=True)
     activo = db.Column(db.Boolean, default=True)
+    orden = db.Column(db.Integer, default=0)  # Para ordenar productos en la interfaz
     
     def __repr__(self):
-        return f'<Producto {self.nombre}>'
+        return f'<Producto {self.nombre} - {self.categoria}>'
 
 class Pedido(db.Model):
     """Order model"""

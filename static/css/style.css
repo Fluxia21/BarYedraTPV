@@ -383,24 +383,25 @@ body {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Grid de mesas del PDF */
+/* Grid de mesas optimizado para 15" táctil */
 .tables-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
 }
 
-/* Tarjetas de mesa exactas del PDF - Ultra refinadas */
+/* Tarjetas de mesa optimizadas para pantalla táctil 15" */
 .table-card {
     background-color: var(--color-white);
     border-radius: var(--border-radius-large);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl);
     text-align: center;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    min-height: 110px;
+    min-height: 140px;
+    min-width: 140px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -431,23 +432,25 @@ body {
 }
 
 .table-number {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 800;
-    margin-bottom: var(--spacing-xs);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: var(--spacing-sm);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1;
 }
 
 .table-status {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
     opacity: 0.9;
+    line-height: 1.2;
 }
 
 .table-zone {
-    font-size: 10px;
+    font-size: 14px;
     color: var(--color-text-light);
     font-weight: 600;
     opacity: 0.7;

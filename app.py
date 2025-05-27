@@ -216,20 +216,37 @@ def close_cash_register():
 @app.route('/products')
 def products():
     """Product management view"""
-    productos = Producto.query.all()
-    return render_template('products.html', productos=productos)
+    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.orden, Producto.nombre).all()
+    
+    # Agrupar productos por categoría
+    productos_por_categoria = {}
+    for producto in productos:
+        if producto.categoria not in productos_por_categoria:
+            productos_por_categoria[producto.categoria] = []
+        productos_por_categoria[producto.categoria].append(producto)
+    
+    return render_template('products.html', productos_por_categoria=productos_por_categoria)
 
 @app.route('/add_product', methods=['POST'])
 def add_product():
-    """Add new product"""
+    """Add new product with photo, category and description"""
     nombre = request.form.get('nombre')
     precio = float(request.form.get('precio'))
+    categoria = request.form.get('categoria', 'General')
+    foto_url = request.form.get('foto_url', '')
+    descripcion = request.form.get('descripcion', '')
     
-    producto = Producto(nombre=nombre, precio=precio)
+    producto = Producto(
+        nombre=nombre, 
+        precio=precio,
+        categoria=categoria,
+        foto_url=foto_url,
+        descripcion=descripcion
+    )
     db.session.add(producto)
     db.session.commit()
     
-    flash(f'Producto {nombre} añadido correctamente', 'success')
+    flash(f'Producto {nombre} añadido correctamente en {categoria}', 'success')
     return redirect(url_for('products'))
 
 @app.route('/delete_product/<int:producto_id>')
