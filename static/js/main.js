@@ -247,9 +247,9 @@ function showOfflineIndicator() {
 
 // Funcionalidades del panel de pedido mejorado
 function toggleOrderPanel() {
-    const panel = document.querySelector('.order-panel');
+    const panel = document.querySelector('.order-panel-fixed');
     if (panel) {
-        panel.classList.toggle('minimized');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     }
 }
 
