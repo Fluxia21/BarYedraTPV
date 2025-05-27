@@ -227,50 +227,56 @@ function deleteProduct(id, nombre) {
 <style>
 /* Estilos para botones de editar/eliminar */
 .product-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 8px;
+    display: flex !important;
+    gap: 8px !important;
+    margin-top: 15px !important;
+    padding: 10px !important;
+    background: #f8f9fa !important;
+    border-radius: 8px !important;
+    width: 100% !important;
 }
 
 .btn-edit-orange, .btn-delete-red {
-    flex: 1;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    flex: 1 !important;
+    padding: 12px 8px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    min-height: 40px !important;
 }
 
 .btn-edit-orange {
-    background: #ff8c00;
-    color: white;
+    background: #ff8c00 !important;
+    color: white !important;
+    border: 2px solid #ff8c00 !important;
 }
 
 .btn-edit-orange:hover {
-    background: #ff7700;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 140, 0, 0.3);
+    background: #ff7700 !important;
+    border: 2px solid #ff7700 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(255, 140, 0, 0.3) !important;
 }
 
 .btn-delete-red {
-    background: #dc3545;
-    color: white;
+    background: #dc3545 !important;
+    color: white !important;
+    border: 2px solid #dc3545 !important;
 }
 
 .btn-delete-red:hover {
-    background: #c82333;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    background: #c82333 !important;
+    border: 2px solid #c82333 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3) !important;
 }
 
 .product-card {
