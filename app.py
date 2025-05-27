@@ -716,7 +716,7 @@ with app.app_context():
         zonas = {
             'Terraza': 8,  # 8 tables in terrace
             'Sala': 5,     # 5 tables in main room
-            'Barra': 8     # 8 bar spots
+            'Barra': 5     # 5 bar spots
         }
         
         for zona, num_mesas in zonas.items():
