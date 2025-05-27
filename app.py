@@ -323,7 +323,18 @@ def products():
 def add_product():
     """Add new product with photo, category and description"""
     nombre = request.form.get('nombre')
-    precio = float(request.form.get('precio'))
+    precio_str = request.form.get('precio', '').strip().lower()
+    if precio_str in ['nan', 'infinity', '-infinity', 'inf', '-inf']:
+        flash('Precio no válido', 'error')
+        return redirect(url_for('products'))
+    try:
+        precio = float(request.form.get('precio'))
+        if precio < 0:
+            flash('El precio debe ser positivo', 'error')
+            return redirect(url_for('products'))
+    except (ValueError, TypeError):
+        flash('Precio no válido', 'error')
+        return redirect(url_for('products'))
     categoria = request.form.get('categoria', 'General')
     foto_url = request.form.get('foto_url', '')
     descripcion = request.form.get('descripcion', '')
