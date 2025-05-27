@@ -353,6 +353,49 @@ def add_product():
     flash(f'Producto {nombre} añadido correctamente en {categoria}', 'success')
     return redirect(url_for('products'))
 
+@app.route('/edit_product/<int:producto_id>')
+def edit_product(producto_id):
+    """Show edit product form"""
+    producto = Producto.query.get_or_404(producto_id)
+    
+    # Obtener todas las categorías únicas para el select
+    categorias = db.session.query(Producto.categoria).distinct().all()
+    categorias = [cat[0] for cat in categorias if cat[0]]
+    
+    return render_template('edit_product.html', producto=producto, categorias=categorias)
+
+@app.route('/update_product/<int:producto_id>', methods=['POST'])
+def update_product(producto_id):
+    """Update product information"""
+    producto = Producto.query.get_or_404(producto_id)
+    
+    # Validar datos del formulario
+    nombre = request.form.get('nombre', '').strip()
+    if not nombre:
+        flash('El nombre del producto es obligatorio', 'error')
+        return redirect(url_for('edit_product', producto_id=producto_id))
+    
+    try:
+        precio = float(request.form.get('precio'))
+        if precio < 0:
+            flash('El precio debe ser positivo', 'error')
+            return redirect(url_for('edit_product', producto_id=producto_id))
+    except (ValueError, TypeError):
+        flash('Precio no válido', 'error')
+        return redirect(url_for('edit_product', producto_id=producto_id))
+    
+    # Actualizar los campos del producto
+    producto.nombre = nombre
+    producto.precio = precio
+    producto.categoria = request.form.get('categoria', 'General')
+    producto.foto_url = request.form.get('foto_url', '')
+    producto.descripcion = request.form.get('descripcion', '')
+    
+    db.session.commit()
+    
+    flash(f'Producto {nombre} actualizado correctamente', 'success')
+    return redirect(url_for('products'))
+
 @app.route('/delete_product/<int:producto_id>')
 def delete_product(producto_id):
     """Delete product"""

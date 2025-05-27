@@ -41,6 +41,11 @@
                 </div>
                 
                 <div class="product-actions">
+                    <button class="btn btn-primary btn-sm touch-friendly" 
+                            onclick="editProduct({{ producto.id }})"
+                            title="Editar producto">
+                        <i class="icon-edit"></i>
+                    </button>
                     <button class="btn btn-danger btn-sm touch-friendly" 
                             onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
                         <i class="icon-trash"></i>
@@ -135,6 +140,10 @@ function showAddProductModal() {
 
 function hideAddProductModal() {
     document.getElementById('addProductModal').style.display = 'none';
+}
+
+function editProduct(id) {
+    window.location.href = `/edit_product/${id}`;
 }
 
 function deleteProduct(id, nombre) {
