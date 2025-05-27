@@ -860,5 +860,19 @@ def split_bill():
         'amount_per_person': round(amount_per_person, 2)
     })
 
+@app.route('/carta')
+def carta():
+    """Display the complete menu with all products by category"""
+    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
+    
+    # Organizar productos por categoría
+    productos_por_categoria = {}
+    for producto in productos:
+        if producto.categoria not in productos_por_categoria:
+            productos_por_categoria[producto.categoria] = []
+        productos_por_categoria[producto.categoria].append(producto)
+    
+    return render_template('carta.html', productos_por_categoria=productos_por_categoria)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

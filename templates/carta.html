@@ -1,0 +1,306 @@
+{% extends "layout.html" %}
+
+{% block title %}Carta - Bar Yedra{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1 class="page-title">
+        <i class="fas fa-book-open"></i> Carta de Bar Yedra
+    </h1>
+    <div class="table-actions">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg touch-friendly">
+            <i class="fas fa-arrow-left"></i> Volver al TPV
+        </a>
+    </div>
+</div>
+
+<div class="carta-container">
+    <div class="carta-header">
+        <div class="bar-info">
+            <h2>Bar Yedra</h2>
+            <p>Tradición y calidad desde hace más de 30 años</p>
+        </div>
+        <div class="carta-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ productos_por_categoria|length }}</span>
+                <span class="stat-label">Categorías</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">
+                    {% set total_productos = 0 %}
+                    {% for categoria, productos in productos_por_categoria.items() %}
+                        {% set total_productos = total_productos + productos|length %}
+                    {% endfor %}
+                    {{ total_productos }}
+                </span>
+                <span class="stat-label">Productos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="carta-menu">
+        {% for categoria, productos in productos_por_categoria.items() %}
+        <div class="categoria-section">
+            <div class="categoria-header">
+                <h3 class="categoria-title">
+                    <i class="fas fa-utensils"></i>
+                    {{ categoria }}
+                </h3>
+                <div class="categoria-count">{{ productos|length }} productos</div>
+            </div>
+            
+            <div class="productos-grid-carta">
+                {% for producto in productos %}
+                <div class="producto-carta-item">
+                    <div class="producto-info">
+                        <h4 class="producto-nombre">{{ producto.nombre }}</h4>
+                        {% if producto.descripcion %}
+                        <p class="producto-descripcion">{{ producto.descripcion }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="producto-precio">
+                        <span class="precio-valor">€{{ "%.2f"|format(producto.precio) }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="carta-footer">
+        <div class="footer-info">
+            <p><strong>Bar Yedra</strong> - Todos los precios incluyen IVA</p>
+            <p class="footer-note">Carta actualizada automáticamente desde nuestro sistema TPV</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.carta-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--color-white);
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.carta-header {
+    background: linear-gradient(135deg, var(--color-sidebar) 0%, #2e7d32 100%);
+    color: white;
+    padding: var(--spacing-xxl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bar-info h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bar-info p {
+    font-size: 16px;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.carta-stats {
+    display: flex;
+    gap: var(--spacing-xl);
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(10px);
+}
+
+.stat-number {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+.carta-menu {
+    padding: var(--spacing-xxl);
+}
+
+.categoria-section {
+    margin-bottom: var(--spacing-xxl);
+}
+
+.categoria-section:last-child {
+    margin-bottom: 0;
+}
+
+.categoria-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 3px solid var(--color-sidebar);
+}
+
+.categoria-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.categoria-title i {
+    color: var(--color-sidebar);
+}
+
+.categoria-count {
+    background: var(--color-sidebar);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.productos-grid-carta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.producto-carta-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--spacing-md);
+    background: var(--color-white);
+    border: 2px solid var(--color-gray-light);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.producto-carta-item:hover {
+    border-color: var(--color-sidebar);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+    transform: translateY(-2px);
+}
+
+.producto-info {
+    flex: 1;
+    margin-right: var(--spacing-md);
+}
+
+.producto-nombre {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+}
+
+.producto-descripcion {
+    font-size: 14px;
+    color: var(--color-text-light);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.producto-precio {
+    flex-shrink: 0;
+}
+
+.precio-valor {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-sidebar);
+    background: rgba(76, 175, 80, 0.1);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(76, 175, 80, 0.2);
+}
+
+.carta-footer {
+    background: var(--color-gray-light);
+    padding: var(--spacing-lg) var(--spacing-xxl);
+    border-top: 1px solid var(--color-gray-medium);
+}
+
+.footer-info {
+    text-align: center;
+    color: var(--color-text-light);
+}
+
+.footer-info p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+}
+
+.footer-note {
+    font-size: 12px;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .carta-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        text-align: center;
+    }
+    
+    .carta-stats {
+        gap: var(--spacing-md);
+    }
+    
+    .productos-grid-carta {
+        grid-template-columns: 1fr;
+    }
+    
+    .categoria-header {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        text-align: center;
+    }
+}
+
+/* Efecto de impresión */
+@media print {
+    .content-header {
+        display: none;
+    }
+    
+    .carta-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .carta-header {
+        background: #f5f5f5 !important;
+        color: black !important;
+    }
+    
+    .producto-carta-item {
+        break-inside: avoid;
+    }
+}
+</style>
+{% endblock %}
