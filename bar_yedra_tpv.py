@@ -23,6 +23,12 @@ app.secret_key = 'bar-yedra-2024-secret'
 # Configuración de base de datos
 DB_PATH = 'bar_yedra_tpv.db'
 
+def calcular_precio_con_suplemento(precio_base, zona):
+    """Calcular precio aplicando suplemento de terraza si corresponde"""
+    if zona and zona.lower() == 'terraza':
+        return precio_base + 0.20
+    return precio_base
+
 def crear_base_datos():
     """Crear y configurar base de datos SQLite"""
     conn = sqlite3.connect(DB_PATH)
