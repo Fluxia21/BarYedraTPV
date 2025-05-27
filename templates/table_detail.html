@@ -587,16 +587,33 @@ function selectMainPaymentMethod(method) {
     document.getElementById(method + '-main-btn').classList.add('selected');
     
     if (method === 'efectivo') {
+        console.log('Efectivo seleccionado, cambiando a calculadora');
         // Ir inmediatamente a la pantalla de cálculo de cambio
-        document.getElementById('paymentMethodScreen').style.display = 'none';
-        document.getElementById('cashCalculationScreen').style.display = 'block';
-        // Enfocar el campo de dinero recibido después de un momento
-        setTimeout(() => {
-            document.getElementById('moneyReceived').focus();
-        }, 100);
+        const paymentScreen = document.getElementById('paymentMethodScreen');
+        const cashScreen = document.getElementById('cashCalculationScreen');
+        
+        if (paymentScreen && cashScreen) {
+            paymentScreen.style.display = 'none';
+            cashScreen.style.display = 'block';
+            console.log('Pantallas cambiadas');
+            
+            // Enfocar el campo de dinero recibido después de un momento
+            setTimeout(() => {
+                const moneyInput = document.getElementById('moneyReceived');
+                if (moneyInput) {
+                    moneyInput.focus();
+                    console.log('Campo enfocado');
+                }
+            }, 200);
+        } else {
+            console.error('Elementos de pantalla no encontrados');
+        }
     } else if (method === 'tarjeta') {
         // Para tarjeta, confirmar directamente
-        document.getElementById('confirmPaymentBtn').disabled = false;
+        const confirmBtn = document.getElementById('confirmPaymentBtn');
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+        }
     }
 }
 
