@@ -63,13 +63,13 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar exacto del PDF */
+/* Sidebar exacto del PDF - Perfeccionado */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: var(--color-sidebar);
+    background: linear-gradient(180deg, var(--color-sidebar) 0%, #245a47 100%);
     color: var(--color-text-sidebar);
     padding: 0;
-    box-shadow: var(--shadow-sidebar);
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
     position: fixed;
     height: 100vh;
     left: 0;
@@ -78,58 +78,67 @@ body {
 }
 
 .sidebar-header {
-    padding: var(--spacing-lg);
-    background-color: rgba(0, 0, 0, 0.1);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    background-color: rgba(0, 0, 0, 0.15);
     text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-brand {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     color: var(--color-text-sidebar);
     text-decoration: none;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-nav {
     list-style: none;
     margin: 0;
-    padding: var(--spacing-md) 0;
+    padding: var(--spacing-lg) 0;
 }
 
 .sidebar-nav li {
-    margin: 0;
+    margin: 4px 0;
 }
 
 .sidebar-nav .nav-link {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-lg);
-    color: rgba(255, 255, 255, 0.9);
+    gap: var(--spacing-md);
+    padding: 18px var(--spacing-lg);
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     border: none;
     background: none;
+    border-radius: 0 25px 25px 0;
+    margin-right: 12px;
+    position: relative;
 }
 
 .sidebar-nav .nav-link:hover {
-    background-color: var(--color-sidebar-hover);
+    background-color: rgba(255, 255, 255, 0.1);
     color: var(--color-text-sidebar);
+    transform: translateX(4px);
 }
 
 .sidebar-nav .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.15);
     color: var(--color-text-sidebar);
-    border-right: 3px solid var(--color-white);
+    border-right: 4px solid var(--color-white);
+    transform: translateX(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-nav .nav-link i {
-    width: 20px;
+    width: 24px;
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
+    opacity: 0.9;
 }
 
 /* Contenido principal */
@@ -140,45 +149,57 @@ body {
     min-height: 100vh;
 }
 
-/* Header del contenido principal */
+/* Header del contenido principal - Perfeccionado */
 .content-header {
-    background-color: var(--color-white);
-    padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--color-gray-medium);
+    background: linear-gradient(135deg, var(--color-white) 0%, #fafafa 100%);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    border-bottom: 2px solid var(--color-gray-medium);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .page-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--color-text);
     margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Botón ocultar cifras exacto del PDF */
+/* Botón ocultar cifras mejorado */
 .privacy-toggle {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    background-color: var(--color-gray-light);
-    border: 1px solid var(--color-gray-medium);
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 13px;
+    gap: var(--spacing-sm);
+    background: linear-gradient(135deg, var(--color-gray-light) 0%, #f0f0f0 100%);
+    border: 2px solid var(--color-gray-medium);
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--color-text-light);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 48px;
 }
 
 .privacy-toggle:hover {
-    background-color: var(--color-gray-medium);
+    background: linear-gradient(135deg, var(--color-gray-medium) 0%, #e0e0e0 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .privacy-toggle.active {
-    background-color: var(--color-sidebar);
+    background: linear-gradient(135deg, var(--color-sidebar) 0%, #1e4a3d 100%);
     color: var(--color-white);
+    border-color: var(--color-sidebar);
+}
+
+.privacy-toggle i {
+    font-size: 16px;
 }
 
 /* Contenedor de contenido */
@@ -309,34 +330,57 @@ body {
 .col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
 .col-12 { flex: 0 0 100%; max-width: 100%; }
 
-/* Tarjetas exactas del PDF */
+/* Tarjetas exactas del PDF - Perfeccionadas */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
 }
 
 .stat-card {
-    background-color: var(--color-white);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    box-shadow: var(--shadow-card);
-    border: 1px solid var(--color-gray-medium);
+    background: linear-gradient(135deg, var(--color-white) 0%, #fafafa 100%);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-xl);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid var(--color-gray-medium);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-sidebar);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-libre), var(--color-ocupada), var(--color-pagada));
+    opacity: 0.8;
 }
 
 .stat-card-title {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--color-text-light);
-    margin-bottom: var(--spacing-sm);
-    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .stat-card-value {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 32px;
+    font-weight: 800;
     color: var(--color-text);
     margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Grid de mesas del PDF */
@@ -347,83 +391,121 @@ body {
     padding: var(--spacing-lg);
 }
 
-/* Tarjetas de mesa exactas del PDF */
+/* Tarjetas de mesa exactas del PDF - Ultra refinadas */
 .table-card {
     background-color: var(--color-white);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-large);
     padding: var(--spacing-lg);
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-card);
-    min-height: 100px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-height: 110px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border: 1px solid var(--color-gray-medium);
+    border: 2px solid transparent;
     position: relative;
+    overflow: hidden;
+}
+
+.table-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .table-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.table-card:active {
+    transform: translateY(-1px) scale(0.98);
 }
 
 .table-number {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 800;
     margin-bottom: var(--spacing-xs);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .table-status {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     margin-bottom: var(--spacing-xs);
+    opacity: 0.9;
 }
 
 .table-zone {
     font-size: 10px;
     color: var(--color-text-light);
-    font-weight: 500;
+    font-weight: 600;
+    opacity: 0.7;
 }
 
-/* Estados de mesa exactos del PDF */
+/* Estados de mesa exactos del PDF - Con gradientes elegantes */
 .table-libre {
-    background-color: var(--color-libre);
+    background: linear-gradient(135deg, var(--color-libre) 0%, #66bb6a 100%);
     color: var(--color-white);
-    border-color: var(--color-libre);
+    border: 2px solid var(--color-libre);
+    box-shadow: 0 4px 12px rgba(129, 199, 132, 0.3);
+}
+
+.table-libre:hover {
+    box-shadow: 0 8px 20px rgba(129, 199, 132, 0.4);
 }
 
 .table-libre .table-number,
 .table-libre .table-status,
 .table-libre .table-zone {
     color: var(--color-white);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .table-ocupada {
-    background-color: var(--color-ocupada);
-    color: var(--color-white);
-    border-color: var(--color-ocupada);
+    background: linear-gradient(135deg, var(--color-ocupada) 0%, #ffcc02 100%);
+    color: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--color-ocupada);
+    box-shadow: 0 4px 12px rgba(255, 183, 77, 0.3);
+}
+
+.table-ocupada:hover {
+    box-shadow: 0 8px 20px rgba(255, 183, 77, 0.4);
 }
 
 .table-ocupada .table-number,
 .table-ocupada .table-status,
 .table-ocupada .table-zone {
-    color: var(--color-white);
+    color: rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .table-pagada {
-    background-color: var(--color-pagada);
+    background: linear-gradient(135deg, var(--color-pagada) 0%, #42a5f5 100%);
     color: var(--color-white);
-    border-color: var(--color-pagada);
+    border: 2px solid var(--color-pagada);
+    box-shadow: 0 4px 12px rgba(100, 181, 246, 0.3);
+}
+
+.table-pagada:hover {
+    box-shadow: 0 8px 20px rgba(100, 181, 246, 0.4);
 }
 
 .table-pagada .table-number,
 .table-pagada .table-status,
 .table-pagada .table-zone {
     color: var(--color-white);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Títulos de zona */
