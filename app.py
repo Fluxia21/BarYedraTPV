@@ -60,14 +60,24 @@ def index():
 def table_detail(mesa_id):
     """Table detail view for managing orders"""
     mesa = Mesa.query.get_or_404(mesa_id)
-    productos = Producto.query.all()
+    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.orden, Producto.nombre).all()
+    
+    # Agrupar productos por categoría
+    productos_por_categoria = {}
+    productos_dict = {}
+    for producto in productos:
+        if producto.categoria not in productos_por_categoria:
+            productos_por_categoria[producto.categoria] = []
+        productos_por_categoria[producto.categoria].append(producto)
+        productos_dict[producto.id] = producto
     
     # Get current order for this table if exists
     pedido_actual = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
     
     return render_template('table_detail.html', 
                          mesa=mesa, 
-                         productos=productos,
+                         productos_por_categoria=productos_por_categoria,
+                         productos_dict=productos_dict,
                          pedido_actual=pedido_actual)
 
 @app.route('/add_to_order', methods=['POST'])
