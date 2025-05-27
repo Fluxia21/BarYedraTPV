@@ -57,15 +57,26 @@ def from_json_filter(value):
 
 @app.route('/')
 def index():
-    """Main dashboard showing all tables by zone"""
-    mesas_terraza = Mesa.query.filter_by(zona='Terraza').all()
-    mesas_sala = Mesa.query.filter_by(zona='Sala').all()
-    mesas_barra = Mesa.query.filter_by(zona='Barra').all()
-    
-    return render_template('index.html', 
-                         mesas_terraza=mesas_terraza,
-                         mesas_sala=mesas_sala,
-                         mesas_barra=mesas_barra)
+    """Página principal - redirigir a terraza"""
+    return redirect(url_for('terraza'))
+
+@app.route('/terraza')
+def terraza():
+    """Página de mesas de terraza"""
+    mesas = Mesa.query.filter_by(zona='Terraza').order_by(Mesa.numero).all()
+    return render_template('terraza.html', mesas=mesas)
+
+@app.route('/sala')
+def sala():
+    """Página de mesas de sala"""
+    mesas = Mesa.query.filter_by(zona='Sala').order_by(Mesa.numero).all()
+    return render_template('sala.html', mesas=mesas)
+
+@app.route('/barra')
+def barra():
+    """Página de mesas de barra"""
+    mesas = Mesa.query.filter_by(zona='Barra').order_by(Mesa.numero).all()
+    return render_template('barra.html', mesas=mesas)
 
 @app.route('/mesa/<int:mesa_id>')
 def table_detail(mesa_id):

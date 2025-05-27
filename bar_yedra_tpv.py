@@ -116,27 +116,68 @@ def crear_base_datos():
 
 @app.route('/')
 def index():
-    """Página principal - mesas"""
+    """Página principal - redirigir a terraza"""
+    return redirect(url_for('terraza'))
+
+@app.route('/terraza')
+def terraza():
+    """Página de mesas de terraza"""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM mesas ORDER BY zona, numero')
+    cursor.execute('SELECT * FROM mesas WHERE zona = "Terraza" ORDER BY numero')
     mesas_raw = cursor.fetchall()
     conn.close()
     
-    # Agrupar mesas por zona
-    mesas_por_zona = {}
+    mesas = []
     for mesa in mesas_raw:
-        zona = mesa[2]
-        if zona not in mesas_por_zona:
-            mesas_por_zona[zona] = []
-        mesas_por_zona[zona].append({
+        mesas.append({
             'id': mesa[0],
             'numero': mesa[1],
             'zona': mesa[2],
             'estado': mesa[3]
         })
     
-    return render_template('index_tpv.html', mesas_por_zona=mesas_por_zona)
+    return render_template('terraza.html', mesas=mesas)
+
+@app.route('/sala')
+def sala():
+    """Página de mesas de sala"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM mesas WHERE zona = "Sala" ORDER BY numero')
+    mesas_raw = cursor.fetchall()
+    conn.close()
+    
+    mesas = []
+    for mesa in mesas_raw:
+        mesas.append({
+            'id': mesa[0],
+            'numero': mesa[1],
+            'zona': mesa[2],
+            'estado': mesa[3]
+        })
+    
+    return render_template('sala.html', mesas=mesas)
+
+@app.route('/barra')
+def barra():
+    """Página de mesas de barra"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM mesas WHERE zona = "Barra" ORDER BY numero')
+    mesas_raw = cursor.fetchall()
+    conn.close()
+    
+    mesas = []
+    for mesa in mesas_raw:
+        mesas.append({
+            'id': mesa[0],
+            'numero': mesa[1],
+            'zona': mesa[2],
+            'estado': mesa[3]
+        })
+    
+    return render_template('barra.html', mesas=mesas)
 
 @app.route('/products')
 def products():
