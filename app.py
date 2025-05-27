@@ -194,14 +194,19 @@ def close_order(mesa_id):
         pedido.estado = 'cerrado'
         mesa.estado = 'pagada'
         db.session.commit()
-        flash('Pedido cerrado. Mesa lista para pagar.', 'success')
+        flash('Pedido cerrado. Selecciona método de pago.', 'success')
+        # Redirect to table detail to show payment options
+        return redirect(url_for('table_detail', mesa_id=mesa_id))
     
     return redirect(url_for('index'))
 
-@app.route('/pay_order/<int:mesa_id>')
+@app.route('/pay_order/<int:mesa_id>', methods=['GET', 'POST'])
 def pay_order(mesa_id):
     """Process payment for table with method selection"""
-    payment_method = request.args.get('payment_method', 'efectivo')
+    if request.method == 'POST':
+        payment_method = request.form.get('forma_pago', 'efectivo')
+    else:
+        payment_method = request.args.get('payment_method', 'efectivo')
     mesa = Mesa.query.get_or_404(mesa_id)
     
     # Look for closed or open order to pay
