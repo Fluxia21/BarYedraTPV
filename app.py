@@ -82,9 +82,9 @@ def table_detail(mesa_id):
 
 @app.route('/add_to_order', methods=['POST'])
 def add_to_order():
-    """Add product to table order"""
-    mesa_id = request.form.get('mesa_id')
-    producto_id = request.form.get('producto_id')
+    """Add product to table order - accumulates by rounds"""
+    mesa_id = int(request.form.get('mesa_id'))
+    producto_id = int(request.form.get('producto_id'))
     cantidad = int(request.form.get('cantidad', 1))
     
     mesa = Mesa.query.get_or_404(mesa_id)
@@ -93,42 +93,43 @@ def add_to_order():
     # Get or create current order
     pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
     if not pedido:
-        pedido = Pedido(mesa_id=mesa_id, total=0.0, estado='abierto')
+        pedido = Pedido(
+            mesa_id=mesa_id, 
+            productos='{}',
+            total=0.0, 
+            estado='abierto'
+        )
         db.session.add(pedido)
         mesa.estado = 'ocupada'
+        db.session.flush()  # Get the ID
     
-    # Add product to order (simplified - storing as JSON-like string)
-    if pedido.productos:
-        import json
-        productos_list = json.loads(pedido.productos)
-    else:
-        productos_list = []
-    
-    # Check if product already in order
-    found = False
-    for item in productos_list:
-        if item['producto_id'] == int(producto_id):
-            item['cantidad'] += cantidad
-            item['subtotal'] = item['cantidad'] * item['precio']
-            found = True
-            break
-    
-    if not found:
-        productos_list.append({
-            'producto_id': int(producto_id),
-            'nombre': producto.nombre,
-            'precio': float(producto.precio),
-            'cantidad': cantidad,
-            'subtotal': cantidad * float(producto.precio)
-        })
-    
+    # Update products (storing as JSON with product_id as key and quantity as value)
     import json
-    pedido.productos = json.dumps(productos_list)
-    pedido.total = sum(item['subtotal'] for item in productos_list)
+    if pedido.productos:
+        productos_dict = json.loads(pedido.productos)
+    else:
+        productos_dict = {}
+    
+    # Add or update product quantity (accumulate by rounds)
+    producto_id_str = str(producto_id)
+    if producto_id_str in productos_dict:
+        productos_dict[producto_id_str] += cantidad
+    else:
+        productos_dict[producto_id_str] = cantidad
+    
+    # Save updated products and calculate total
+    pedido.productos = json.dumps(productos_dict)
+    
+    # Calculate total
+    total = 0
+    for pid, qty in productos_dict.items():
+        prod = Producto.query.get(int(pid))
+        if prod:
+            total += float(prod.precio) * qty
+    
+    pedido.total = total
     
     db.session.commit()
-    flash(f'Añadido {cantidad}x {producto.nombre} al pedido', 'success')
-    
     return '', 200  # Return success for AJAX call
 
 @app.route('/update_quantity', methods=['POST'])
