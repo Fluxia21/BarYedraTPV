@@ -671,6 +671,7 @@ select.form-input.touch-friendly {
     gap: var(--spacing-xl);
     min-height: calc(100vh - 160px);
     position: relative;
+    margin-right: 420px; /* Espacio para la ventana flotante del pedido */
 }
 
 .table-status-badge {
