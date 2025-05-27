@@ -27,12 +27,12 @@
             <i class="fas fa-box"></i> Productos Disponibles
         </h2>
         
-        <!-- Categorías en cuadrícula -->
+        <!-- Categorías en cuadrícula como las mesas -->
         <div class="categories-grid">
             {% for categoria, productos in productos_por_categoria.items() %}
             <div class="category-card" data-categoria="{{ categoria }}" onclick="toggleCategory('{{ categoria }}')">
                 <div class="category-icon">
-                    <i class="fas fa-box"></i>
+                    <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Licores Premium' %}cocktail{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
                 </div>
                 <div class="category-name">{{ categoria }}</div>
                 <div class="category-product-count">{{ productos|length }} productos</div>
@@ -48,7 +48,7 @@
         <div class="products-expanded-container" id="products-{{ categoria }}" style="display: none;">
             <div class="expanded-header">
                 <h3>
-                    <i class="fas fa-box"></i>
+                    <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Licores Premium' %}cocktail{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
                     {{ categoria }}
                 </h3>
                 <button class="btn-close-category" onclick="toggleCategory('{{ categoria }}')">
@@ -59,11 +59,15 @@
                 {% for producto in productos %}
                 <div class="product-item touch-friendly" onclick="addToOrder({{ mesa.id }}, {{ producto.id }})">
                     <div class="product-icon">
-                        <i class="fas fa-utensils"></i>
+                        {% if producto.foto_url %}
+                            <img src="{{ producto.foto_url }}" alt="{{ producto.nombre }}" class="product-mini-photo">
+                        {% else %}
+                            <i class="fas fa-utensils"></i>
+                        {% endif %}
                     </div>
                     <div class="product-details">
                         <div class="product-name">{{ producto.nombre }}</div>
-                        <div class="product-price">Ver precio en caja</div>
+                        <div class="product-price">€{{ producto.precio }}</div>
                     </div>
                     <div class="add-indicator">
                         <i class="fas fa-plus"></i>
@@ -75,7 +79,7 @@
         {% endfor %}
     </div>
     
-    <!-- Panel de pedido flotante mejorado -->
+    <!-- Panel de pedido flotante -->
     <div class="order-panel">
         <div class="order-header">
             <h2 class="panel-title">
@@ -94,7 +98,7 @@
                 <div class="order-summary">
                     <div class="summary-row total-row">
                         <span class="summary-label">Total:</span>
-                        <span class="summary-value">€{{ pedido_actual.total }}</span>
+                        <span class="summary-value">€{{ "%.2f"|format(pedido_actual.total) }}</span>
                     </div>
                     <div class="summary-info">
                         <small>Iniciado: {{ pedido_actual.fecha_creacion.strftime('%H:%M') if pedido_actual.fecha_creacion else 'Ahora' }}</small>
@@ -142,12 +146,14 @@
 </div>
 
 <script>
+// Expandir/contraer categorías como tarjetas
 function toggleCategory(categoria) {
     const container = document.getElementById(`products-${categoria}`);
     const categoryCard = document.querySelector(`[data-categoria="${categoria}"]`);
     const allCards = document.querySelectorAll('.category-card');
     const allContainers = document.querySelectorAll('.products-expanded-container');
     
+    // Cerrar todas las otras categorías
     allCards.forEach(card => {
         if (card.dataset.categoria !== categoria) {
             card.classList.remove('expanded');
@@ -160,18 +166,27 @@ function toggleCategory(categoria) {
     });
     
     if (container.style.display === 'none' || container.style.display === '') {
+        // Expandir categoría seleccionada
         container.style.display = 'block';
         categoryCard.classList.add('expanded');
+        
+        // Scroll suave al contenedor expandido
         setTimeout(() => {
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            container.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
         }, 100);
     } else {
+        // Contraer categoría actual
         container.style.display = 'none';
         categoryCard.classList.remove('expanded');
     }
 }
 
+// Añadir producto al pedido
 function addToOrder(mesaId, productoId) {
+    // Crear formulario dinámico
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/add_to_order';
@@ -199,6 +214,7 @@ function addToOrder(mesaId, productoId) {
     form.submit();
 }
 
+// Cerrar pedido
 function closeOrder(mesaId) {
     if (confirm('¿Cerrar pedido y marcar mesa lista para pagar?')) {
         const form = document.createElement('form');
@@ -209,6 +225,7 @@ function closeOrder(mesaId) {
     }
 }
 
+// Procesar pago
 function payOrder(mesaId, method) {
     if (confirm(`¿Confirmar pago con ${method}?`)) {
         const form = document.createElement('form');
