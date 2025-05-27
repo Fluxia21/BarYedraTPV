@@ -94,46 +94,18 @@
         
         {% if pedido_actual and pedido_actual.total > 0 %}
             <div class="current-order">
-                <!-- Desglose detallado por rondas -->
-                <div class="order-rounds">
-                    <h4><i class="fas fa-list"></i> Desglose por Rondas</h4>
-                    {% set productos_json = pedido_actual.productos|from_json %}
-                    {% for producto_info in productos_json %}
-                    <div class="order-item">
-                        <div class="item-main">
-                            <div class="item-info">
-                                <span class="item-name">{{ producto_info.nombre }}</span>
-                                <span class="item-details">
-                                    {{ producto_info.cantidad }}x € {{ "%.2f"|format(producto_info.precio) }}
-                                </span>
-                            </div>
-                            <div class="item-total">
-                                € {{ "%.2f"|format(producto_info.cantidad * producto_info.precio) }}
-                            </div>
-                        </div>
-                        <div class="item-actions">
-                            <button class="btn-remove" onclick="removeFromOrder({{ mesa.id }}, {{ producto_info.id }})" title="Eliminar producto">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <div class="quantity-controls">
-                                <button class="btn-qty" onclick="updateQuantity({{ mesa.id }}, {{ producto_info.id }}, {{ producto_info.cantidad - 1 }})" title="Reducir cantidad">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <span class="qty-display">{{ producto_info.cantidad }}</span>
-                                <button class="btn-qty" onclick="updateQuantity({{ mesa.id }}, {{ producto_info.id }}, {{ producto_info.cantidad + 1 }})" title="Aumentar cantidad">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                
                 <!-- Resumen del pedido -->
                 <div class="order-summary">
                     <div class="summary-row">
-                        <span class="summary-label">Subtotal:</span>
-                        <span class="summary-value">€{{ "%.2f"|format(pedido_actual.total) }}</span>
+                        <span class="summary-label">Productos en pedido:</span>
+                        <span class="summary-value">
+                            {% if pedido_actual.productos %}
+                                {% set pedido_productos = pedido_actual.productos|from_json %}
+                                {{ pedido_productos|length }} items
+                            {% else %}
+                                0 items
+                            {% endif %}
+                        </span>
                     </div>
                     <div class="summary-row total-row">
                         <span class="summary-label">Total:</span>
