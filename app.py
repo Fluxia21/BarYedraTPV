@@ -31,7 +31,7 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 db.init_app(app)
 
 # Import models after db initialization
-from models import Mesa, Producto, Pedido, Ticket
+from models import Mesa, Producto, Pedido, Ticket, MovimientoStock
 
 # Add custom Jinja2 filter for JSON parsing
 @app.template_filter('from_json')
@@ -332,6 +332,81 @@ def delete_product(producto_id):
     
     flash(f'Producto {producto.nombre} eliminado', 'success')
     return redirect(url_for('products'))
+
+@app.route('/inventory')
+def inventory():
+    """Inventory management view"""
+    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
+    
+    # Estadísticas de stock
+    productos_agotados = [p for p in productos if p.stock_agotado]
+    productos_bajo_stock = [p for p in productos if p.stock_bajo and not p.stock_agotado]
+    
+    return render_template('inventory.html', 
+                         productos=productos,
+                         productos_agotados=productos_agotados,
+                         productos_bajo_stock=productos_bajo_stock)
+
+@app.route('/update_stock', methods=['POST'])
+def update_stock():
+    """Update product stock"""
+    producto_id = int(request.form.get('producto_id'))
+    nuevo_stock = int(request.form.get('nuevo_stock'))
+    motivo = request.form.get('motivo', 'ajuste_inventario')
+    
+    producto = Producto.query.get_or_404(producto_id)
+    stock_anterior = producto.stock_actual
+    
+    # Crear movimiento de stock
+    movimiento = MovimientoStock(
+        producto_id=producto_id,
+        tipo_movimiento='ajuste',
+        cantidad=nuevo_stock - stock_anterior,
+        motivo=motivo,
+        stock_anterior=stock_anterior,
+        stock_nuevo=nuevo_stock
+    )
+    
+    # Actualizar stock
+    producto.stock_actual = nuevo_stock
+    producto.fecha_actualizacion = datetime.utcnow()
+    
+    db.session.add(movimiento)
+    db.session.commit()
+    
+    flash(f'Stock de {producto.nombre} actualizado a {nuevo_stock}', 'success')
+    return redirect(url_for('inventory'))
+
+@app.route('/add_stock', methods=['POST'])
+def add_stock():
+    """Add stock to product"""
+    producto_id = int(request.form.get('producto_id'))
+    cantidad = int(request.form.get('cantidad'))
+    motivo = request.form.get('motivo', 'compra')
+    
+    producto = Producto.query.get_or_404(producto_id)
+    stock_anterior = producto.stock_actual
+    nuevo_stock = stock_anterior + cantidad
+    
+    # Crear movimiento de entrada
+    movimiento = MovimientoStock(
+        producto_id=producto_id,
+        tipo_movimiento='entrada',
+        cantidad=cantidad,
+        motivo=motivo,
+        stock_anterior=stock_anterior,
+        stock_nuevo=nuevo_stock
+    )
+    
+    # Actualizar stock
+    producto.stock_actual = nuevo_stock
+    producto.fecha_actualizacion = datetime.utcnow()
+    
+    db.session.add(movimiento)
+    db.session.commit()
+    
+    flash(f'Añadidas {cantidad} unidades a {producto.nombre}', 'success')
+    return redirect(url_for('inventory'))
 
 # Create tables and initialize data
 with app.app_context():

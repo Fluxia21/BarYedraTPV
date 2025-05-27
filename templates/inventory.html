@@ -1,0 +1,236 @@
+{% extends "layout.html" %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1 class="page-title">Control de Inventario</h1>
+    <div class="inventory-alerts">
+        {% if productos_agotados %}
+            <div class="alert alert-danger touch-friendly">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ productos_agotados|length }} productos agotados
+            </div>
+        {% endif %}
+        {% if productos_bajo_stock %}
+            <div class="alert alert-warning touch-friendly">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ productos_bajo_stock|length }} productos con stock bajo
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="content-container">
+    <!-- Resumen de inventario -->
+    <div class="inventory-summary">
+        <div class="summary-card">
+            <div class="summary-icon products-total">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <div class="summary-info">
+                <h3>{{ productos|length }}</h3>
+                <p>Total Productos</p>
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-icon products-ok">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="summary-info">
+                <h3>{{ productos|length - productos_agotados|length - productos_bajo_stock|length }}</h3>
+                <p>Stock Normal</p>
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-icon products-low">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="summary-info">
+                <h3>{{ productos_bajo_stock|length }}</h3>
+                <p>Stock Bajo</p>
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-icon products-out">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="summary-info">
+                <h3>{{ productos_agotados|length }}</h3>
+                <p>Agotados</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de productos con stock -->
+    <div class="inventory-grid">
+        {% for producto in productos %}
+        <div class="inventory-item touch-friendly {% if producto.stock_agotado %}stock-agotado{% elif producto.stock_bajo %}stock-bajo{% else %}stock-ok{% endif %}">
+            <div class="inventory-header">
+                <div class="product-info">
+                    <h3 class="product-name">{{ producto.nombre }}</h3>
+                    <p class="product-category">{{ producto.categoria }}</p>
+                </div>
+                <div class="stock-status">
+                    {% if producto.stock_agotado %}
+                        <span class="status-badge agotado">AGOTADO</span>
+                    {% elif producto.stock_bajo %}
+                        <span class="status-badge bajo">STOCK BAJO</span>
+                    {% else %}
+                        <span class="status-badge ok">OK</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="stock-display">
+                <div class="current-stock">
+                    <span class="stock-number">{{ producto.stock_actual }}</span>
+                    <span class="stock-unit">{{ producto.unidad_medida }}</span>
+                </div>
+                <div class="min-stock">
+                    Mínimo: {{ producto.stock_minimo }}
+                </div>
+            </div>
+            
+            <div class="inventory-actions">
+                <button class="btn btn-primary btn-sm touch-friendly" onclick="showAddStockModal({{ producto.id }}, '{{ producto.nombre }}')">
+                    <i class="fas fa-plus"></i> Añadir
+                </button>
+                <button class="btn btn-secondary btn-sm touch-friendly" onclick="showUpdateStockModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.stock_actual }})">
+                    <i class="fas fa-edit"></i> Ajustar
+                </button>
+            </div>
+            
+            <div class="last-update">
+                Actualizado: {{ producto.fecha_actualizacion.strftime('%d/%m %H:%M') if producto.fecha_actualizacion else 'Nunca' }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal para añadir stock -->
+<div id="addStockModal" class="modal">
+    <div class="modal-content touch-optimized">
+        <div class="modal-header">
+            <h2><i class="fas fa-plus"></i> Añadir Stock</h2>
+            <button class="modal-close touch-friendly" onclick="hideAddStockModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form method="POST" action="{{ url_for('add_stock') }}" class="stock-form">
+            <input type="hidden" id="add_producto_id" name="producto_id">
+            
+            <div class="form-group">
+                <label class="form-label">Producto:</label>
+                <div id="add_producto_nombre" class="product-display"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="cantidad" class="form-label">Cantidad a Añadir</label>
+                <input type="number" class="form-input touch-friendly" id="cantidad" name="cantidad" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="motivo_add" class="form-label">Motivo</label>
+                <select class="form-input touch-friendly" id="motivo_add" name="motivo">
+                    <option value="compra">💰 Compra</option>
+                    <option value="reposicion">📦 Reposición</option>
+                    <option value="devolucion">↩️ Devolución</option>
+                    <option value="ajuste_inventario">🔧 Ajuste Manual</option>
+                </select>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary btn-lg touch-friendly" onclick="hideAddStockModal()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg touch-friendly">
+                    <i class="fas fa-plus"></i> Añadir Stock
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para ajustar stock -->
+<div id="updateStockModal" class="modal">
+    <div class="modal-content touch-optimized">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> Ajustar Stock</h2>
+            <button class="modal-close touch-friendly" onclick="hideUpdateStockModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form method="POST" action="{{ url_for('update_stock') }}" class="stock-form">
+            <input type="hidden" id="update_producto_id" name="producto_id">
+            
+            <div class="form-group">
+                <label class="form-label">Producto:</label>
+                <div id="update_producto_nombre" class="product-display"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Stock Actual:</label>
+                <div id="current_stock_display" class="current-stock-display"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="nuevo_stock" class="form-label">Nuevo Stock</label>
+                <input type="number" class="form-input touch-friendly" id="nuevo_stock" name="nuevo_stock" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="motivo_update" class="form-label">Motivo del Ajuste</label>
+                <select class="form-input touch-friendly" id="motivo_update" name="motivo">
+                    <option value="ajuste_inventario">🔧 Ajuste de Inventario</option>
+                    <option value="perdida">❌ Pérdida/Rotura</option>
+                    <option value="correccion">✏️ Corrección de Error</option>
+                    <option value="caducidad">⏰ Productos Caducados</option>
+                </select>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary btn-lg touch-friendly" onclick="hideUpdateStockModal()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-warning btn-lg touch-friendly">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Mostrar modal de añadir stock
+function showAddStockModal(productoId, productoNombre) {
+    document.getElementById('add_producto_id').value = productoId;
+    document.getElementById('add_producto_nombre').textContent = productoNombre;
+    document.getElementById('cantidad').value = '';
+    document.getElementById('addStockModal').style.display = 'flex';
+}
+
+function hideAddStockModal() {
+    document.getElementById('addStockModal').style.display = 'none';
+}
+
+// Mostrar modal de actualizar stock
+function showUpdateStockModal(productoId, productoNombre, stockActual) {
+    document.getElementById('update_producto_id').value = productoId;
+    document.getElementById('update_producto_nombre').textContent = productoNombre;
+    document.getElementById('current_stock_display').textContent = stockActual + ' unidades';
+    document.getElementById('nuevo_stock').value = stockActual;
+    document.getElementById('updateStockModal').style.display = 'flex';
+}
+
+function hideUpdateStockModal() {
+    document.getElementById('updateStockModal').style.display = 'none';
+}
+</script>
+{% endblock %}
