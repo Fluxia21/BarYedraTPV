@@ -800,11 +800,15 @@ def remove_from_order():
         flash('No hay pedido activo para esta mesa', 'error')
         return redirect(url_for('table_detail', mesa_id=mesa_id))
     
-    # Remove product from JSON
-    productos = json.loads(pedido.productos)
-    productos = [p for p in productos if p['id'] != producto_id]
+    # Remove product from JSON (using new format: {product_id: quantity})
+    import json
+    productos_dict = json.loads(pedido.productos) if pedido.productos else {}
+    producto_id_str = str(producto_id)
     
-    if len(productos) == 0:
+    if producto_id_str in productos_dict:
+        del productos_dict[producto_id_str]
+    
+    if len(productos_dict) == 0:
         # If no products left, delete the order and set table as free
         mesa = Mesa.query.get(mesa_id)
         if mesa:
@@ -814,8 +818,13 @@ def remove_from_order():
         flash('Producto eliminado. Mesa liberada al no quedar productos', 'info')
     else:
         # Recalculate total
-        total = sum(p['precio'] * p['cantidad'] for p in productos)
-        pedido.productos = json.dumps(productos)
+        total = 0
+        for pid, qty in productos_dict.items():
+            prod = Producto.query.get(int(pid))
+            if prod:
+                total += float(prod.precio) * qty
+        
+        pedido.productos = json.dumps(productos_dict)
         pedido.total = total
         db.session.commit()
         flash('Producto eliminado del pedido', 'success')
