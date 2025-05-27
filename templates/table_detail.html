@@ -70,14 +70,30 @@
                 <h3>Total a Pagar: <span id="totalAmount">€0.00</span></h3>
             </div>
             
-            <!-- Botones de método de pago -->
+            <!-- Botones de método de pago con toggle interactivo -->
             <div class="payment-buttons">
-                <button class="btn-efectivo" onclick="showCashCalculator()">
-                    <i class="fas fa-money-bill-wave"></i> EFECTIVO
+                <button class="btn-payment-method" id="btn-efectivo" onclick="selectPaymentMethod('efectivo')">
+                    <div class="payment-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="payment-text">EFECTIVO</div>
+                    <div class="selection-indicator"></div>
                 </button>
-                <button class="btn-tarjeta" onclick="payWithCard()">
-                    <i class="fas fa-credit-card"></i> TARJETA
+                <button class="btn-payment-method" id="btn-tarjeta" onclick="selectPaymentMethod('tarjeta')">
+                    <div class="payment-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="payment-text">TARJETA</div>
+                    <div class="selection-indicator"></div>
                 </button>
+            </div>
+            
+            <!-- Estado de selección -->
+            <div class="payment-status" id="paymentStatus" style="display: none;">
+                <div class="status-message">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="statusText">Método seleccionado</span>
+                </div>
             </div>
             
             <!-- Calculadora de cambio (oculta inicialmente) -->
@@ -465,8 +481,9 @@ function closeCategoryModal() {
     modal.style.display = 'none';
 }
 
-// Funciones simples para el modal de cierre de pedido
+// Funciones avanzadas para el modal de cierre de pedido con toggle interactivo
 let currentOrderTotal = 0;
+let selectedPaymentMethod = '';
 
 function openCloseOrderModal() {
     // Calcular el total del pedido actual
@@ -475,12 +492,106 @@ function openCloseOrderModal() {
     // Mostrar el total
     document.getElementById('totalAmount').textContent = '€' + currentOrderTotal.toFixed(2);
     
-    // Ocultar calculadora de cambio
+    // Resetear estado
+    resetPaymentSelection();
     document.getElementById('cashCalculator').style.display = 'none';
+    document.getElementById('paymentStatus').style.display = 'none';
     
     // Mostrar modal
     const modal = document.getElementById('closeOrderModal');
     modal.style.display = 'flex';
+}
+
+function resetPaymentSelection() {
+    // Limpiar selecciones anteriores
+    document.querySelectorAll('.btn-payment-method').forEach(btn => {
+        btn.classList.remove('selected', 'clicked');
+    });
+    selectedPaymentMethod = '';
+}
+
+function selectPaymentMethod(method) {
+    // Efecto ripple al hacer clic
+    const button = document.getElementById('btn-' + method);
+    button.classList.add('clicked');
+    setTimeout(() => button.classList.remove('clicked'), 600);
+    
+    // Resetear selección anterior
+    resetPaymentSelection();
+    
+    // Seleccionar nuevo método
+    selectedPaymentMethod = method;
+    button.classList.add('selected');
+    
+    // Mostrar estado de selección con animación
+    showPaymentStatus(method);
+    
+    // Acción específica según el método
+    setTimeout(() => {
+        if (method === 'efectivo') {
+            showCashCalculatorWithAnimation();
+        } else if (method === 'tarjeta') {
+            showCardConfirmation();
+        }
+    }, 800);
+}
+
+function showPaymentStatus(method) {
+    const statusDiv = document.getElementById('paymentStatus');
+    const statusText = document.getElementById('statusText');
+    
+    // Configurar mensaje según el método
+    if (method === 'efectivo') {
+        statusText.textContent = 'Efectivo seleccionado - Preparando calculadora...';
+        statusDiv.style.background = 'linear-gradient(135deg, #e8f5e8, #f1f8e9)';
+        statusDiv.style.borderColor = '#4caf50';
+    } else if (method === 'tarjeta') {
+        statusText.textContent = 'Tarjeta seleccionada - Procesando pago...';
+        statusDiv.style.background = 'linear-gradient(135deg, #e3f2fd, #f0f8ff)';
+        statusDiv.style.borderColor = '#2196f3';
+    }
+    
+    // Mostrar con animación
+    statusDiv.style.display = 'block';
+}
+
+function showCashCalculatorWithAnimation() {
+    const calculator = document.getElementById('cashCalculator');
+    const statusText = document.getElementById('statusText');
+    
+    // Actualizar mensaje
+    statusText.textContent = 'Calculadora de cambio lista';
+    
+    // Mostrar calculadora con animación suave
+    calculator.style.display = 'block';
+    calculator.style.opacity = '0';
+    calculator.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+        calculator.style.transition = 'all 0.5s ease-out';
+        calculator.style.opacity = '1';
+        calculator.style.transform = 'translateY(0)';
+        
+        // Enfocar campo de entrada
+        setTimeout(() => {
+            document.getElementById('cashReceived').focus();
+        }, 300);
+    }, 100);
+}
+
+function showCardConfirmation() {
+    const statusText = document.getElementById('statusText');
+    statusText.textContent = 'Listo para procesar pago con tarjeta';
+    
+    // Habilitar confirmación directa después de un momento
+    setTimeout(() => {
+        if (confirm('¿Confirmar pago con tarjeta por €' + currentOrderTotal.toFixed(2) + '?')) {
+            payWithCard();
+        } else {
+            resetPaymentSelection();
+            document.getElementById('paymentStatus').style.display = 'none';
+        }
+    }, 1000);
 }
 
 function showCashCalculator() {
@@ -958,41 +1069,195 @@ function confirmPayment() {
     color: #2e7d32;
 }
 
+/* Botones de método de pago interactivos */
 .payment-buttons {
     display: flex;
     gap: 20px;
     margin: 30px 0;
 }
 
-.btn-efectivo, .btn-tarjeta {
+.btn-payment-method {
     flex: 1;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
+    padding: 0;
+    border: 3px solid #e0e0e0;
+    border-radius: 15px;
+    background: white;
     cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-payment-method:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    border-color: #bbb;
+}
+
+.btn-payment-method.selected {
+    border-color: #4caf50;
+    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(76, 175, 80, 0.3);
+}
+
+.btn-payment-method.selected .payment-icon {
+    color: #4caf50;
+    transform: scale(1.1);
+}
+
+.btn-payment-method.selected .payment-text {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.btn-payment-method.selected .selection-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.payment-icon {
+    font-size: 32px;
+    color: #666;
+    margin-bottom: 10px;
     transition: all 0.3s ease;
 }
 
-.btn-efectivo {
+.payment-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.selection-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
     background: #4caf50;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.selection-indicator::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     color: white;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.btn-efectivo:hover {
-    background: #45a049;
-    transform: translateY(-2px);
+/* Estados específicos por tipo de pago */
+.btn-payment-method#btn-efectivo.selected {
+    border-color: #4caf50;
+    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
 }
 
-.btn-tarjeta {
+.btn-payment-method#btn-tarjeta.selected {
+    border-color: #2196f3;
+    background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
+}
+
+.btn-payment-method#btn-tarjeta.selected .payment-icon {
+    color: #2196f3;
+}
+
+.btn-payment-method#btn-tarjeta.selected .payment-text {
+    color: #1565c0;
+}
+
+.btn-payment-method#btn-tarjeta.selected .selection-indicator {
     background: #2196f3;
-    color: white;
 }
 
-.btn-tarjeta:hover {
-    background: #1976d2;
-    transform: translateY(-2px);
+/* Estado de selección de pago */
+.payment-status {
+    margin: 20px 0;
+    padding: 15px;
+    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+    border: 2px solid #4caf50;
+    border-radius: 10px;
+    text-align: center;
+    animation: slideInUp 0.5s ease-out;
+}
+
+.status-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #2e7d32;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.status-message i {
+    font-size: 20px;
+    animation: pulse 1.5s infinite;
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Efecto ripple al hacer clic */
+.btn-payment-method::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(76, 175, 80, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-payment-method.clicked::before {
+    width: 300px;
+    height: 300px;
 }
 
 .calculator-section {
