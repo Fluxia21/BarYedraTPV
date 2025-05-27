@@ -65,7 +65,37 @@
                 <button class="close-btn" onclick="closeOrderModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="payment-section">
+                <!-- Primera pantalla: Total y método de pago -->
+                <div id="paymentMethodScreen" class="payment-screen">
+                    <div class="total-display-main">
+                        <label>Total a Pagar:</label>
+                        <div class="total-amount-large" id="totalToPayMain">€0.00</div>
+                    </div>
+                    
+                    <div class="payment-method-section-main">
+                        <label>Selecciona Método de Pago:</label>
+                        <div class="payment-methods-main">
+                            <button class="payment-btn-main" onclick="selectMainPaymentMethod('efectivo')" id="efectivo-main-btn">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Efectivo</span>
+                            </button>
+                            <button class="payment-btn-main" onclick="selectMainPaymentMethod('tarjeta')" id="tarjeta-main-btn">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Tarjeta</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Segunda pantalla: Cálculo de cambio (solo para efectivo) -->
+                <div id="cashCalculationScreen" class="payment-screen" style="display: none;">
+                    <div class="cash-calculation-header">
+                        <h4><i class="fas fa-calculator"></i> Cálculo de Cambio</h4>
+                        <button class="btn-back" onclick="goBackToPaymentMethod()">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                    </div>
+                    
                     <div class="total-display">
                         <label>Total a Pagar:</label>
                         <div class="total-amount" id="totalToPay">€0.00</div>
@@ -76,25 +106,13 @@
                         <div class="money-input-container">
                             <span class="currency-symbol">€</span>
                             <input type="number" id="moneyReceived" step="0.01" min="0" 
-                                   placeholder="0.00" onchange="calculateChange()">
+                                   placeholder="0.00" oninput="calculateChange()">
                         </div>
                     </div>
                     
                     <div class="change-display">
                         <label>Cambio a Devolver:</label>
                         <div class="change-amount" id="changeToReturn">€0.00</div>
-                    </div>
-                </div>
-                
-                <div class="payment-method-section">
-                    <label>Forma de Pago:</label>
-                    <div class="payment-methods">
-                        <button class="payment-btn" onclick="selectPaymentMethod('efectivo')" id="efectivo-btn">
-                            <i class="fas fa-money-bill-wave"></i> Efectivo
-                        </button>
-                        <button class="payment-btn" onclick="selectPaymentMethod('tarjeta')" id="tarjeta-btn">
-                            <i class="fas fa-credit-card"></i> Tarjeta
-                        </button>
                     </div>
                 </div>
             </div>
@@ -474,16 +492,21 @@ function openCloseOrderModal() {
     // Calcular el total del pedido actual
     currentOrderTotal = calculateOrderTotal();
     
-    // Mostrar el total en el modal
+    // Mostrar primera pantalla con total
+    document.getElementById('totalToPayMain').textContent = '€' + currentOrderTotal.toFixed(2);
     document.getElementById('totalToPay').textContent = '€' + currentOrderTotal.toFixed(2);
     
-    // Limpiar campos
+    // Mostrar primera pantalla y ocultar segunda
+    document.getElementById('paymentMethodScreen').style.display = 'block';
+    document.getElementById('cashCalculationScreen').style.display = 'none';
+    
+    // Limpiar estado
+    selectedPaymentMethod = '';
     document.getElementById('moneyReceived').value = '';
     document.getElementById('changeToReturn').textContent = '€0.00';
-    selectedPaymentMethod = '';
     
-    // Resetear botones de pago
-    document.querySelectorAll('.payment-btn').forEach(btn => {
+    // Resetear botones
+    document.querySelectorAll('.payment-btn-main').forEach(btn => {
         btn.classList.remove('selected');
     });
     
@@ -536,6 +559,44 @@ function calculateChange() {
     
     // Validar si se puede confirmar el pago
     validatePayment();
+}
+
+// Función para seleccionar método de pago en la primera pantalla
+function selectMainPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    
+    // Actualizar botones
+    document.querySelectorAll('.payment-btn-main').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    document.getElementById(method + '-main-btn').classList.add('selected');
+    
+    if (method === 'efectivo') {
+        // Ir a la pantalla de cálculo de cambio
+        setTimeout(() => {
+            document.getElementById('paymentMethodScreen').style.display = 'none';
+            document.getElementById('cashCalculationScreen').style.display = 'block';
+            // Enfocar el campo de dinero recibido
+            document.getElementById('moneyReceived').focus();
+        }, 300);
+    } else if (method === 'tarjeta') {
+        // Para tarjeta, confirmar directamente
+        document.getElementById('confirmPaymentBtn').disabled = false;
+    }
+}
+
+// Función para volver a la pantalla de método de pago
+function goBackToPaymentMethod() {
+    document.getElementById('cashCalculationScreen').style.display = 'none';
+    document.getElementById('paymentMethodScreen').style.display = 'block';
+    
+    // Limpiar campos de efectivo
+    document.getElementById('moneyReceived').value = '';
+    document.getElementById('changeToReturn').textContent = '€0.00';
+    
+    // Deshabilitar botón de confirmar
+    document.getElementById('confirmPaymentBtn').disabled = true;
 }
 
 function selectPaymentMethod(method) {
@@ -765,21 +826,34 @@ function confirmPayment() {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .close-order-modal .modal-content {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    width: 450px;
-    max-width: 90vw;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    width: 500px;
+    max-width: 95vw;
     max-height: 90vh;
     overflow: hidden;
+    transform: scale(1);
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .close-order-modal .modal-header {
@@ -808,6 +882,124 @@ function confirmPayment() {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Pantallas del modal */
+.payment-screen {
+    padding: 25px;
+}
+
+/* Primera pantalla - Selección de método */
+.total-display-main {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.total-display-main label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.total-amount-large {
+    background: #e8f5e8;
+    border: 3px solid #4caf50;
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #2e7d32;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.payment-method-section-main {
+    text-align: center;
+}
+
+.payment-method-section-main label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.payment-methods-main {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.payment-btn-main {
+    flex: 1;
+    max-width: 180px;
+    height: 120px;
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.payment-btn-main i {
+    font-size: 32px;
+}
+
+.payment-btn-main:hover {
+    border-color: #4caf50;
+    background: #f1f8e9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
+}
+
+.payment-btn-main.selected {
+    border-color: #4caf50;
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+/* Segunda pantalla - Cálculo de cambio */
+.cash-calculation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eee;
+}
+
+.cash-calculation-header h4 {
+    margin: 0;
+    color: #2e7d32;
+    font-size: 18px;
+}
+
+.btn-back {
+    padding: 8px 15px;
+    border: 2px solid #666;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    border-color: #333;
+    background: #f5f5f5;
+    color: #333;
 }
 
 .payment-section {
