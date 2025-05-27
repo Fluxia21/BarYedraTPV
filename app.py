@@ -754,6 +754,15 @@ with app.app_context():
             ('Chupito de anís, brandi, whisky', 1.00, 'Licores', 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200&h=200&fit=crop&crop=center'),
             ('MAGNo, DYC, Larios, Vodka', 3.10, 'Licores', 'https://images.unsplash.com/photo-1560006082-5324937ce827?w=200&h=200&fit=crop&crop=center'),
             
+            # Licores Premium y Combinados
+            ('DYC combinado nacional', 5.10, 'Licores Premium', 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=200&h=200&fit=crop&crop=center'),
+            ('Combinado importación', 6.10, 'Licores Premium', 'https://images.unsplash.com/photo-1564391999744-7ad9e5340204?w=200&h=200&fit=crop&crop=center'),
+            ('Bacardí Refresco', 5.50, 'Licores Premium', 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=200&h=200&fit=crop&crop=center'),
+            ('Vodka Refresco', 5.50, 'Licores Premium', 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=200&h=200&fit=crop&crop=center'),
+            ('Ginebras Premium', 8.90, 'Licores Premium', 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200&h=200&fit=crop&crop=center'),
+            ('Rones Premium', 6.90, 'Licores Premium', 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=200&h=200&fit=crop&crop=center'),
+            ('Cardhu', 7.90, 'Licores Premium', 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=200&h=200&fit=crop&crop=center'),
+            
             # Comidas
             ('Tostada con Tomate', 2.50, 'Comidas', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200&h=200&fit=crop&crop=center'),
             ('Bocadillo Jamón', 4.50, 'Comidas', 'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=200&h=200&fit=crop&crop=center'),

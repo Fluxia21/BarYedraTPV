@@ -32,7 +32,7 @@
         <div class="category-box" data-categoria="{{ categoria }}">
             <div class="category-header-clickable" onclick="toggleCategory('{{ categoria }}')">
                 <div class="category-info">
-                    <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
+                    <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Licores Premium' %}cocktail{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
                     <h3 class="category-title">{{ categoria }}</h3>
                     <span class="product-count">({{ productos|length }} productos)</span>
                 </div>
