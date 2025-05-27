@@ -21,7 +21,7 @@
         
         <div class="products-grid">
             {% for producto in productos %}
-            <div class="product-card touch-friendly" onclick="toggleProductMenu({{ producto.id }})">
+            <div class="product-card touch-friendly">
                 <div class="product-image">
                     {% if producto.foto_url %}
                         <img src="{{ producto.foto_url }}" alt="{{ producto.nombre }}" class="product-photo">
@@ -40,19 +40,13 @@
                     {% endif %}
                 </div>
                 
-                <!-- Menú de acciones que aparece al hacer clic -->
-                <div class="product-actions-menu" id="menu-{{ producto.id }}" style="display: none;">
-                    <button class="btn btn-primary btn-lg touch-friendly" 
-                            onclick="editProduct({{ producto.id }}); event.stopPropagation();">
-                        <i class="fas fa-edit"></i> Editar
+                <!-- Botones de acción siempre visibles -->
+                <div class="product-actions-simple">
+                    <button class="btn-edit" onclick="editProduct({{ producto.id }})" title="Editar producto">
+                        ✏️ Editar
                     </button>
-                    <button class="btn btn-danger btn-lg touch-friendly" 
-                            onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}'); event.stopPropagation();">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                    <button class="btn btn-secondary btn-lg touch-friendly" 
-                            onclick="toggleProductMenu({{ producto.id }}); event.stopPropagation();">
-                        <i class="fas fa-times"></i> Cerrar
+                    <button class="btn-delete" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')" title="Eliminar producto">
+                        🗑️ Eliminar
                     </button>
                 </div>
             </div>
@@ -146,24 +140,6 @@ function hideAddProductModal() {
     document.getElementById('addProductModal').style.display = 'none';
 }
 
-function toggleProductMenu(productId) {
-    // Cerrar todos los menús abiertos
-    const allMenus = document.querySelectorAll('.product-actions-menu');
-    allMenus.forEach(menu => {
-        if (menu.id !== `menu-${productId}`) {
-            menu.style.display = 'none';
-        }
-    });
-    
-    // Mostrar/ocultar el menú del producto seleccionado
-    const menu = document.getElementById(`menu-${productId}`);
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
-    }
-}
-
 function editProduct(id) {
     window.location.href = `/edit_product/${id}`;
 }
@@ -173,129 +149,69 @@ function deleteProduct(id, nombre) {
         window.location.href = `/delete_product/${id}`;
     }
 }
-
-// Cerrar menús al hacer clic fuera
-document.addEventListener('click', function(event) {
-    if (!event.target.closest('.product-card')) {
-        const allMenus = document.querySelectorAll('.product-actions-menu');
-        allMenus.forEach(menu => {
-            menu.style.display = 'none';
-        });
-    }
-});
 </script>
 
 <style>
-/* Estilos para el menú de acciones de productos */
-.product-card {
-    position: relative;
+/* Estilos simples para botones de editar/eliminar */
+.product-actions-simple {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.btn-edit, .btn-delete {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.btn-edit {
+    background: #007bff;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.product-card {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
 }
 
 .product-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
-.product-actions-menu {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.9);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    padding: 20px;
-    z-index: 100;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.product-actions-menu .btn {
-    width: 100%;
-    max-width: 200px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.product-actions-menu .btn-primary {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    color: white;
-}
-
-.product-actions-menu .btn-primary:hover {
-    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
-    transform: scale(1.05);
-}
-
-.product-actions-menu .btn-danger {
-    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-    color: white;
-}
-
-.product-actions-menu .btn-danger:hover {
-    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-    transform: scale(1.05);
-}
-
-.product-actions-menu .btn-secondary {
-    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-    color: white;
-}
-
-.product-actions-menu .btn-secondary:hover {
-    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
-    transform: scale(1.05);
-}
-
-/* Indicador visual para productos clicables */
-.product-card::before {
-    content: "👆 Toca para opciones";
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10;
-}
-
-.product-card:hover::before {
-    opacity: 1;
-}
-
-/* Responsive para móviles */
+/* Responsive */
 @media (max-width: 768px) {
-    .product-actions-menu .btn {
+    .btn-edit, .btn-delete {
         padding: 15px 20px;
-        font-size: 18px;
-    }
-    
-    .product-card::before {
-        content: "👆";
         font-size: 16px;
     }
 }
