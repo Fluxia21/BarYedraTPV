@@ -67,7 +67,7 @@
                     </div>
                     <div class="product-details">
                         <div class="product-name">{{ producto.nombre }}</div>
-                        <div class="product-price">€{{ "%.2f"|format(producto.precio|float) }}</div>
+                        <div class="product-price">€{{ "%.2f"|format(producto.precio) }}</div>
                     </div>
                     <div class="add-indicator">
                         <i class="fas fa-plus"></i>
@@ -79,7 +79,7 @@
         {% endfor %}
     </div>
     
-    <!-- Panel de pedido flotante -->
+    <!-- Panel de pedido flotante mejorado -->
     <div class="order-panel">
         <div class="order-header">
             <h2 class="panel-title">
@@ -96,6 +96,17 @@
             <div class="current-order">
                 <!-- Resumen del pedido -->
                 <div class="order-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">Productos en pedido:</span>
+                        <span class="summary-value">
+                            {% if pedido_actual.productos %}
+                                {% set pedido_productos = pedido_actual.productos|from_json %}
+                                {{ pedido_productos|length }} items
+                            {% else %}
+                                0 items
+                            {% endif %}
+                        </span>
+                    </div>
                     <div class="summary-row total-row">
                         <span class="summary-label">Total:</span>
                         <span class="summary-value">€{{ "%.2f"|format(pedido_actual.total) }}</span>
@@ -187,59 +198,39 @@ function toggleCategory(categoria) {
 // Añadir producto al pedido
 function addToOrder(mesaId, productoId) {
     // Crear formulario dinámico
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/add_to_order';
+    const form = new FormData();
+    form.append('mesa_id', mesaId);
+    form.append('producto_id', productoId);
     
-    const mesaInput = document.createElement('input');
-    mesaInput.type = 'hidden';
-    mesaInput.name = 'mesa_id';
-    mesaInput.value = mesaId;
-    
-    const productoInput = document.createElement('input');
-    productoInput.type = 'hidden';
-    productoInput.name = 'producto_id';
-    productoInput.value = productoId;
-    
-    const cantidadInput = document.createElement('input');
-    cantidadInput.type = 'hidden';
-    cantidadInput.name = 'cantidad';
-    cantidadInput.value = 1;
-    
-    form.appendChild(mesaInput);
-    form.appendChild(productoInput);
-    form.appendChild(cantidadInput);
-    
-    document.body.appendChild(form);
-    form.submit();
+    fetch('/add_to_order', {
+        method: 'POST',
+        body: form
+    })
+    .then(response => {
+        if (response.ok) {
+            // Recargar la página para mostrar el producto añadido
+            location.reload();
+        } else {
+            alert('Error al añadir producto');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al añadir producto');
+    });
 }
 
 // Cerrar pedido
 function closeOrder(mesaId) {
-    if (confirm('¿Cerrar pedido y marcar mesa lista para pagar?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/close_order/' + mesaId;
-        document.body.appendChild(form);
-        form.submit();
+    if (confirm('¿Cerrar pedido y marcar mesa como lista para pagar?')) {
+        window.location.href = `/close_order/${mesaId}`;
     }
 }
 
-// Procesar pago
-function payOrder(mesaId, method) {
-    if (confirm(`¿Confirmar pago con ${method}?`)) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/pay_order/' + mesaId;
-        
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = 'forma_pago';
-        methodInput.value = method;
-        
-        form.appendChild(methodInput);
-        document.body.appendChild(form);
-        form.submit();
+// Procesar pago con método seleccionado
+function payOrder(mesaId, paymentMethod) {
+    if (confirm(`¿Procesar pago con ${paymentMethod}? Se generará el ticket automáticamente.`)) {
+        window.location.href = `/pay_order/${mesaId}?payment_method=${paymentMethod}`;
     }
 }
 </script>
