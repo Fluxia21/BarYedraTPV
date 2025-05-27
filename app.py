@@ -119,7 +119,46 @@ def add_to_order():
     db.session.commit()
     flash(f'Añadido {cantidad}x {producto.nombre} al pedido', 'success')
     
-    return redirect(url_for('table_detail', mesa_id=mesa_id))
+    return '', 200  # Return success for AJAX call
+
+@app.route('/update_quantity', methods=['POST'])
+def update_quantity():
+    """Update product quantity in current order"""
+    mesa_id = int(request.form.get('mesa_id'))
+    producto_id = int(request.form.get('producto_id'))
+    change = int(request.form.get('change'))
+    
+    pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
+    if not pedido:
+        return '', 404
+    
+    import json
+    productos_dict = json.loads(pedido.productos) if pedido.productos else {}
+    producto_id_str = str(producto_id)
+    
+    if producto_id_str in productos_dict:
+        productos_dict[producto_id_str] += change
+        if productos_dict[producto_id_str] <= 0:
+            del productos_dict[producto_id_str]
+    
+    # Recalculate total
+    total = 0
+    for pid, qty in productos_dict.items():
+        prod = Producto.query.get(int(pid))
+        if prod:
+            total += float(prod.precio) * qty
+    
+    pedido.productos = json.dumps(productos_dict)
+    pedido.total = total
+    
+    # If no products left, delete the order
+    if not productos_dict:
+        mesa = Mesa.query.get(mesa_id)
+        mesa.estado = 'libre'
+        db.session.delete(pedido)
+    
+    db.session.commit()
+    return '', 200
 
 @app.route('/close_order/<int:mesa_id>')
 def close_order(mesa_id):

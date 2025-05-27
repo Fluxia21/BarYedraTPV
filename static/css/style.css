@@ -664,6 +664,300 @@ select.form-input.touch-friendly {
     max-width: 200px;
 }
 
+/* ========== DETALLE DE MESA TÁCTIL ========== */
+
+.table-detail-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-xl);
+    min-height: calc(100vh - 160px);
+}
+
+.table-status-badge {
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: var(--spacing-md);
+}
+
+.table-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+/* Panel de productos */
+.products-panel {
+    background: var(--color-white);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid var(--color-gray-medium);
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+.panel-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--color-sidebar);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.product-category {
+    margin-bottom: var(--spacing-xl);
+}
+
+.category-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-sidebar);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.products-grid-detail {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.product-item {
+    background: linear-gradient(135deg, var(--color-white) 0%, #fafafa 100%);
+    border: 2px solid var(--color-gray-medium);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 70px;
+}
+
+.product-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-sidebar);
+}
+
+.product-item:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.product-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-gray-light);
+    border-radius: var(--border-radius);
+    color: var(--color-text-light);
+    font-size: 18px;
+}
+
+.product-mini-photo {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 2px;
+    font-size: 16px;
+}
+
+.product-price {
+    font-weight: 700;
+    color: var(--color-sidebar);
+    font-size: 15px;
+}
+
+.add-indicator {
+    width: 32px;
+    height: 32px;
+    background: var(--color-sidebar);
+    color: var(--color-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.product-item:hover .add-indicator {
+    background: var(--color-libre);
+    transform: scale(1.1);
+}
+
+/* Panel de pedido */
+.order-panel {
+    background: var(--color-white);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid var(--color-gray-medium);
+    height: fit-content;
+    position: sticky;
+    top: var(--spacing-lg);
+}
+
+.current-order {
+    margin-bottom: var(--spacing-lg);
+}
+
+.order-items {
+    margin-bottom: var(--spacing-lg);
+}
+
+.order-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: var(--spacing-sm);
+    align-items: center;
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-gray-medium);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-sm);
+    background: linear-gradient(135deg, var(--color-white) 0%, #fafafa 100%);
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-name {
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.item-price {
+    font-size: 12px;
+    color: var(--color-text-light);
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-sidebar);
+    background: var(--color-white);
+    color: var(--color-sidebar);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.qty-btn:hover {
+    background: var(--color-sidebar);
+    color: var(--color-white);
+    transform: scale(1.1);
+}
+
+.qty-display {
+    font-weight: 700;
+    color: var(--color-text);
+    min-width: 24px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.item-total {
+    font-weight: 700;
+    color: var(--color-sidebar);
+    font-size: 15px;
+    text-align: right;
+}
+
+.order-summary {
+    padding: var(--spacing-md) 0;
+    border-top: 2px solid var(--color-gray-medium);
+    border-bottom: 2px solid var(--color-gray-medium);
+    margin-bottom: var(--spacing-lg);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-row {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.summary-label {
+    color: var(--color-text);
+}
+
+.summary-value {
+    color: var(--color-sidebar);
+}
+
+.order-actions, .payment-actions {
+    margin-top: var(--spacing-lg);
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Estado vacío del pedido */
+.empty-order {
+    text-align: center;
+    padding: var(--spacing-xxl);
+    color: var(--color-text-light);
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: var(--color-gray-medium);
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-order h3 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text);
+}
+
+.empty-order p {
+    font-size: 14px;
+    margin: 0;
+}
+
 /* Tarjetas exactas del PDF - Perfeccionadas */
 .stats-grid {
     display: grid;
