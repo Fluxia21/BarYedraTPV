@@ -27,24 +27,37 @@
             <i class="fas fa-box"></i> Productos Disponibles
         </h2>
         
-        <!-- Categorías como cajas expansibles -->
-        {% for categoria, productos in productos_por_categoria.items() %}
-        <div class="category-box" data-categoria="{{ categoria }}">
-            <div class="category-header-clickable" onclick="toggleCategory('{{ categoria }}')">
-                <div class="category-info">
+        <!-- Categorías en cuadrícula como las mesas -->
+        <div class="categories-grid">
+            {% for categoria, productos in productos_por_categoria.items() %}
+            <div class="category-card" data-categoria="{{ categoria }}" onclick="toggleCategory('{{ categoria }}')">
+                <div class="category-icon">
                     <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Licores Premium' %}cocktail{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
-                    <h3 class="category-title">{{ categoria }}</h3>
-                    <span class="product-count">({{ productos|length }} productos)</span>
                 </div>
-                <div class="category-arrow">
+                <div class="category-name">{{ categoria }}</div>
+                <div class="category-product-count">{{ productos|length }} productos</div>
+                <div class="category-expand-indicator">
                     <i class="fas fa-chevron-down"></i>
                 </div>
             </div>
-            
-            <div class="products-container" id="products-{{ categoria }}" style="display: none;">
-                <div class="products-grid-detail">
-                    {% for producto in productos %}
-                    <div class="product-item touch-friendly" onclick="addToOrder({{ mesa.id }}, {{ producto.id }})">
+            {% endfor %}
+        </div>
+        
+        <!-- Productos expandidos -->
+        {% for categoria, productos in productos_por_categoria.items() %}
+        <div class="products-expanded-container" id="products-{{ categoria }}" style="display: none;">
+            <div class="expanded-header">
+                <h3>
+                    <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Licores Premium' %}cocktail{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
+                    {{ categoria }}
+                </h3>
+                <button class="btn-close-category" onclick="toggleCategory('{{ categoria }}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="products-grid-detail">
+                {% for producto in productos %}
+                <div class="product-item touch-friendly" onclick="addToOrder({{ mesa.id }}, {{ producto.id }})">
                     <div class="product-icon">
                         {% if producto.foto_url %}
                             <img src="{{ producto.foto_url }}" alt="{{ producto.nombre }}" class="product-mini-photo">
@@ -121,37 +134,41 @@
 </div>
 
 <script>
-// Expandir/contraer categorías
+// Expandir/contraer categorías como tarjetas
 function toggleCategory(categoria) {
     const container = document.getElementById(`products-${categoria}`);
-    const arrow = document.querySelector(`[data-categoria="${categoria}"] .category-arrow i`);
-    const categoryBox = document.querySelector(`[data-categoria="${categoria}"]`);
+    const categoryCard = document.querySelector(`[data-categoria="${categoria}"]`);
+    const allCards = document.querySelectorAll('.category-card');
+    const allContainers = document.querySelectorAll('.products-expanded-container');
+    
+    // Cerrar todas las otras categorías
+    allCards.forEach(card => {
+        if (card.dataset.categoria !== categoria) {
+            card.classList.remove('expanded');
+        }
+    });
+    allContainers.forEach(cont => {
+        if (cont.id !== `products-${categoria}`) {
+            cont.style.display = 'none';
+        }
+    });
     
     if (container.style.display === 'none' || container.style.display === '') {
-        // Expandir
+        // Expandir categoría seleccionada
         container.style.display = 'block';
-        arrow.classList.remove('fa-chevron-down');
-        arrow.classList.add('fa-chevron-up');
-        categoryBox.classList.add('expanded');
+        categoryCard.classList.add('expanded');
         
-        // Animación suave
-        container.style.maxHeight = '0px';
-        container.style.overflow = 'hidden';
-        container.style.transition = 'max-height 0.3s ease-out';
+        // Scroll suave al contenedor expandido
         setTimeout(() => {
-            container.style.maxHeight = container.scrollHeight + 'px';
-        }, 10);
+            container.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }, 100);
     } else {
-        // Contraer
-        container.style.maxHeight = '0px';
-        arrow.classList.remove('fa-chevron-up');
-        arrow.classList.add('fa-chevron-down');
-        categoryBox.classList.remove('expanded');
-        
-        setTimeout(() => {
-            container.style.display = 'none';
-            container.style.maxHeight = 'none';
-        }, 300);
+        // Contraer categoría actual
+        container.style.display = 'none';
+        categoryCard.classList.remove('expanded');
     }
 }
 
