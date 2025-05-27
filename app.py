@@ -184,7 +184,7 @@ def update_quantity():
     db.session.commit()
     return redirect(url_for('table_detail', mesa_id=mesa_id))
 
-@app.route('/close_order/<int:mesa_id>')
+@app.route('/close_order/<int:mesa_id>', methods=['GET', 'POST'])
 def close_order(mesa_id):
     """Close order and set table as ready to pay"""
     mesa = Mesa.query.get_or_404(mesa_id)
