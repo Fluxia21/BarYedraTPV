@@ -4,119 +4,127 @@
 
 {% block content %}
 <style>
-    .zona-section {
-        margin: 8px 0;
-        background: white;
-        border-radius: 6px;
-        padding: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        max-width: 1200px;
+    body {
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    .zona-title {
-        color: #ff9800;
-        font-size: 18px;
-        margin-bottom: 12px;
-        border-bottom: 2px solid #ff9800;
-        padding-bottom: 8px;
+    .container {
+        background: #f5f5f5;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .header {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+        color: #333;
+        font-size: 24px;
+        margin: 0;
+        font-weight: normal;
+    }
+
+    .section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+        color: #333;
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .mesas-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 15px;
-        max-width: 1200px;
-        margin: 0 auto;
     }
 
     .mesa-card {
-        background: #f8f9fa;
-        border: 3px solid #dee2e6;
-        border-radius: 10px;
-        padding: 15px;
+        background: #6FCF6F;
+        border: none;
+        border-radius: 8px;
+        padding: 20px;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
-        width: 400px;
-        height: 170px;
+        aspect-ratio: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-    }
-
-    .mesa-card.libre {
-        background: #d4edda;
-        border-color: #4caf50;
-    }
-
-    .mesa-card.ocupada {
-        background: #fff3cd;
-        border-color: #ffc107;
+        min-height: 120px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .mesa-card.pagada {
-        background: #f8d7da;
-        border-color: #dc3545;
+        background: #4A90E2;
+    }
+
+    .mesa-card.ocupada {
+        background: #F5A623;
     }
 
     .mesa-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .mesa-numero {
-        font-size: 24px;
+        color: white;
+        font-size: 36px;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         line-height: 1;
     }
 
     .mesa-estado {
-        font-size: 16px;
-        padding: 6px 10px;
-        border-radius: 8px;
         color: white;
-        font-weight: bold;
-        line-height: 1;
-    }
-
-    .estado-libre { background: #4caf50; }
-    .estado-ocupada { background: #ffc107; color: #333; }
-    .estado-pagada { background: #dc3545; }
-    
-    .terraza-info {
         font-size: 14px;
-        color: #ff9800;
-        font-weight: bold;
-        margin-top: 8px;
-        line-height: 1;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 </style>
 
-<h2>🌞 Mesas de Terraza</h2>
+<div class="container">
+    <div class="header">
+        <h1>Vista de Mesas</h1>
+    </div>
 
-<div class="zona-section">
-    <h3 class="zona-title">
-        Terraza
-        <span class="suplemento-terraza">+0,20€ suplemento</span>
-    </h3>
-    <div class="mesas-grid">
-        {% for mesa in mesas %}
-            <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">
-                <div class="mesa-numero">Mesa {{ mesa.numero }}</div>
-                <div class="mesa-estado estado-{{ mesa.estado }}">
-                    {% if mesa.estado == 'libre' %}
-                        ✅ Libre
-                    {% elif mesa.estado == 'ocupada' %}
-                        ⏰ Ocupada
-                    {% else %}
-                        💰 Por Pagar
-                    {% endif %}
+    <div class="section">
+        <div class="section-title">TERRAZA</div>
+        <div class="mesas-grid">
+            {% for mesa in mesas %}
+                <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">
+                    <div class="mesa-numero">{{ mesa.numero }}</div>
+                    <div class="mesa-estado">
+                        {% if mesa.estado == 'libre' %}
+                            LIBRE
+                        {% elif mesa.estado == 'ocupada' %}
+                            OCUPADA
+                        {% else %}
+                            PAGADA
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="terraza-info">🌞 +0,20€</div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </div>
 
