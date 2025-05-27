@@ -4,32 +4,6 @@
 
 {% block content %}
 <style>
-    .zona-header {
-        background: #ff9800;
-        color: white;
-        padding: 12px;
-        border-radius: 6px;
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        max-width: 1200px;
-        margin: 0 auto 10px auto;
-    }
-
-    .suplemento-aviso {
-        background: #fff3cd;
-        color: #856404;
-        padding: 8px;
-        border-radius: 6px;
-        text-align: center;
-        margin-bottom: 10px;
-        font-weight: bold;
-        max-width: 1200px;
-        margin: 0 auto 10px auto;
-        font-size: 14px;
-    }
-
     .zona-section {
         margin: 8px 0;
         background: white;
@@ -37,7 +11,14 @@
         padding: 10px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         max-width: 1200px;
-        margin: 0 auto;
+    }
+
+    .zona-title {
+        color: #ff9800;
+        font-size: 18px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #ff9800;
+        padding-bottom: 8px;
     }
 
     .mesas-grid {
@@ -113,15 +94,13 @@
     }
 </style>
 
-<div class="zona-header">
-    🌞 TERRAZA (+0,20€ por producto)
-</div>
-
-<div class="suplemento-aviso">
-    ⚠️ ATENCIÓN: Todos los productos en terraza tienen suplemento de +0,20€
-</div>
+<h2>🌞 Mesas de Terraza</h2>
 
 <div class="zona-section">
+    <h3 class="zona-title">
+        Terraza
+        <span class="suplemento-terraza">+0,20€ suplemento</span>
+    </h3>
     <div class="mesas-grid">
         {% for mesa in mesas %}
             <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">

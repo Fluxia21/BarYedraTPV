@@ -4,19 +4,6 @@
 
 {% block content %}
 <style>
-    .zona-header {
-        background: #2e7d32;
-        color: white;
-        padding: 12px;
-        border-radius: 6px;
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        max-width: 1200px;
-        margin: 0 auto 10px auto;
-    }
-
     .zona-section {
         margin: 8px 0;
         background: white;
@@ -24,7 +11,14 @@
         padding: 10px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         max-width: 1200px;
-        margin: 0 auto;
+    }
+
+    .zona-title {
+        color: #2e7d32;
+        font-size: 18px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 8px;
     }
 
     .mesas-grid {
@@ -91,11 +85,10 @@
     .estado-pagada { background: #dc3545; }
 </style>
 
-<div class="zona-header">
-    🏛️ SALA INTERIOR
-</div>
+<h2>🏛️ Mesas de Sala</h2>
 
 <div class="zona-section">
+    <h3 class="zona-title">Sala</h3>
     <div class="mesas-grid">
         {% for mesa in mesas %}
             <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">
