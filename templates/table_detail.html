@@ -405,18 +405,18 @@ function closeCategoryModal() {
 /* Estilos para categorías fijas sin scroll */
 .categories-grid-fixed {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
     height: calc(100vh - 300px);
     max-height: 400px;
     overflow: hidden;
-    padding: 20px 0;
+    padding: 15px 0;
 }
 
 .category-card-fixed {
     background: linear-gradient(135deg, #4caf50, #2e7d32);
-    border-radius: 12px;
-    padding: 25px;
+    border-radius: 8px;
+    padding: 12px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -425,8 +425,8 @@ function closeCategoryModal() {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    height: 120px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    height: 80px;
 }
 
 .category-card-fixed:hover {
@@ -436,18 +436,20 @@ function closeCategoryModal() {
 }
 
 .category-card-fixed .category-icon {
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 18px;
+    margin-bottom: 4px;
 }
 
 .category-card-fixed .category-name {
-    font-size: 16px;
+    font-size: 11px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
+    line-height: 1.1;
+    text-align: center;
 }
 
 .category-card-fixed .category-product-count {
-    font-size: 12px;
+    font-size: 9px;
     opacity: 0.9;
 }
 
