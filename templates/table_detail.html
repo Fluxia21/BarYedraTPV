@@ -56,74 +56,52 @@
         </div>
     </div>
 
-    <!-- Modal para cerrar pedido y calcular cambio -->
+    <!-- Modal simple para cerrar pedido -->
     <div id="closeOrderModal" class="close-order-modal" style="display: none;">
         <div class="modal-overlay" onclick="closeOrderModal()"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-calculator"></i> Cerrar Pedido - Mesa {{ mesa.numero }}</h3>
-                <button class="close-btn" onclick="closeOrderModal()">&times;</button>
+        <div class="modal-content-simple">
+            <div class="modal-header-simple">
+                <h2>Cerrar Pedido - Mesa {{ mesa.numero }}</h2>
+                <button class="close-btn-simple" onclick="closeOrderModal()">&times;</button>
             </div>
-            <div class="modal-body">
-                <!-- Primera pantalla: Total y método de pago -->
-                <div id="paymentMethodScreen" class="payment-screen">
-                    <div class="total-display-main">
-                        <label>Total a Pagar:</label>
-                        <div class="total-amount-large" id="totalToPayMain">€0.00</div>
+            
+            <!-- Mostrar total -->
+            <div class="total-section">
+                <h3>Total a Pagar: <span id="totalAmount">€0.00</span></h3>
+            </div>
+            
+            <!-- Botones de método de pago -->
+            <div class="payment-buttons">
+                <button class="btn-efectivo" onclick="showCashCalculator()">
+                    <i class="fas fa-money-bill-wave"></i> EFECTIVO
+                </button>
+                <button class="btn-tarjeta" onclick="payWithCard()">
+                    <i class="fas fa-credit-card"></i> TARJETA
+                </button>
+            </div>
+            
+            <!-- Calculadora de cambio (oculta inicialmente) -->
+            <div id="cashCalculator" style="display: none;">
+                <div class="calculator-section">
+                    <h3>Calculadora de Cambio</h3>
+                    
+                    <div class="input-group">
+                        <label>Dinero Recibido:</label>
+                        <input type="number" id="cashReceived" placeholder="0.00" step="0.01" 
+                               oninput="calculateChangeSimple()" style="font-size: 20px; padding: 10px;">
                     </div>
                     
-                    <div class="payment-method-section-main">
-                        <label>Selecciona Método de Pago:</label>
-                        <div class="payment-methods-main">
-                            <button class="payment-btn-main" onclick="selectMainPaymentMethod('efectivo')" id="efectivo-main-btn">
-                                <i class="fas fa-money-bill-wave"></i>
-                                <span>Efectivo</span>
-                            </button>
-                            <button class="payment-btn-main" onclick="selectMainPaymentMethod('tarjeta')" id="tarjeta-main-btn">
-                                <i class="fas fa-credit-card"></i>
-                                <span>Tarjeta</span>
-                            </button>
-                        </div>
+                    <div class="change-result">
+                        <h3>Cambio a Devolver: <span id="changeAmount">€0.00</span></h3>
                     </div>
-                </div>
-                
-                <!-- Segunda pantalla: Cálculo de cambio (solo para efectivo) -->
-                <div id="cashCalculationScreen" class="payment-screen" style="display: none;">
-                    <div class="cash-calculation-header">
-                        <h4><i class="fas fa-calculator"></i> Cálculo de Cambio</h4>
-                        <button class="btn-back" onclick="goBackToPaymentMethod()">
-                            <i class="fas fa-arrow-left"></i> Volver
+                    
+                    <div class="calculator-buttons">
+                        <button class="btn-back-calc" onclick="hideCashCalculator()">← Volver</button>
+                        <button class="btn-confirm-cash" onclick="confirmCashPayment()" id="confirmCashBtn" disabled>
+                            Confirmar Pago
                         </button>
                     </div>
-                    
-                    <div class="total-display">
-                        <label>Total a Pagar:</label>
-                        <div class="total-amount" id="totalToPay">€0.00</div>
-                    </div>
-                    
-                    <div class="received-input">
-                        <label for="moneyReceived">Dinero Recibido:</label>
-                        <div class="money-input-container">
-                            <span class="currency-symbol">€</span>
-                            <input type="number" id="moneyReceived" step="0.01" min="0" 
-                                   placeholder="0.00" 
-                                   oninput="calculateChange()" 
-                                   onchange="calculateChange()" 
-                                   onkeyup="calculateChange()">
-                        </div>
-                    </div>
-                    
-                    <div class="change-display">
-                        <label>Cambio a Devolver:</label>
-                        <div class="change-amount" id="changeToReturn">€0.00</div>
-                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeOrderModal()">Cancelar</button>
-                <button class="btn-confirm" onclick="confirmPayment()" id="confirmPaymentBtn" disabled>
-                    <i class="fas fa-check"></i> Confirmar Pago
-                </button>
             </div>
         </div>
     </div>
@@ -487,38 +465,105 @@ function closeCategoryModal() {
     modal.style.display = 'none';
 }
 
-// Funciones para el modal de cierre de pedido
-let selectedPaymentMethod = '';
+// Funciones simples para el modal de cierre de pedido
 let currentOrderTotal = 0;
 
 function openCloseOrderModal() {
     // Calcular el total del pedido actual
     currentOrderTotal = calculateOrderTotal();
     
-    // Mostrar primera pantalla con total
-    document.getElementById('totalToPayMain').textContent = '€' + currentOrderTotal.toFixed(2);
-    document.getElementById('totalToPay').textContent = '€' + currentOrderTotal.toFixed(2);
+    // Mostrar el total
+    document.getElementById('totalAmount').textContent = '€' + currentOrderTotal.toFixed(2);
     
-    // Mostrar primera pantalla y ocultar segunda
-    document.getElementById('paymentMethodScreen').style.display = 'block';
-    document.getElementById('cashCalculationScreen').style.display = 'none';
+    // Ocultar calculadora de cambio
+    document.getElementById('cashCalculator').style.display = 'none';
     
-    // Limpiar estado
-    selectedPaymentMethod = '';
-    document.getElementById('moneyReceived').value = '';
-    document.getElementById('changeToReturn').textContent = '€0.00';
-    
-    // Resetear botones
-    document.querySelectorAll('.payment-btn-main').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    // Deshabilitar botón de confirmar
-    document.getElementById('confirmPaymentBtn').disabled = true;
-    
-    // Mostrar modal con display flex
+    // Mostrar modal
     const modal = document.getElementById('closeOrderModal');
     modal.style.display = 'flex';
+}
+
+function showCashCalculator() {
+    console.log('Mostrando calculadora de efectivo');
+    document.getElementById('cashCalculator').style.display = 'block';
+    
+    // Limpiar campo
+    document.getElementById('cashReceived').value = '';
+    document.getElementById('changeAmount').textContent = '€0.00';
+    document.getElementById('confirmCashBtn').disabled = true;
+    
+    // Enfocar campo
+    setTimeout(() => {
+        document.getElementById('cashReceived').focus();
+    }, 100);
+}
+
+function hideCashCalculator() {
+    document.getElementById('cashCalculator').style.display = 'none';
+}
+
+function calculateChangeSimple() {
+    const cashInput = document.getElementById('cashReceived');
+    const changeDisplay = document.getElementById('changeAmount');
+    const confirmBtn = document.getElementById('confirmCashBtn');
+    
+    const received = parseFloat(cashInput.value) || 0;
+    const change = received - currentOrderTotal;
+    
+    console.log('Calculando:', {received, currentOrderTotal, change});
+    
+    if (change < 0) {
+        changeDisplay.textContent = '€' + Math.abs(change).toFixed(2) + ' (Falta)';
+        changeDisplay.style.color = 'red';
+        confirmBtn.disabled = true;
+    } else {
+        changeDisplay.textContent = '€' + change.toFixed(2);
+        changeDisplay.style.color = 'green';
+        confirmBtn.disabled = false;
+    }
+}
+
+function payWithCard() {
+    // Para tarjeta, confirmar directamente
+    confirmPayment('tarjeta');
+}
+
+function confirmCashPayment() {
+    const received = parseFloat(document.getElementById('cashReceived').value) || 0;
+    if (received >= currentOrderTotal) {
+        confirmPayment('efectivo');
+    }
+}
+
+function confirmPayment(method) {
+    // Crear formulario para enviar datos
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/pay_order/{{ mesa.id }}`;
+    
+    const paymentMethodInput = document.createElement('input');
+    paymentMethodInput.type = 'hidden';
+    paymentMethodInput.name = 'forma_pago';
+    paymentMethodInput.value = method;
+    form.appendChild(paymentMethodInput);
+    
+    if (method === 'efectivo') {
+        const received = parseFloat(document.getElementById('cashReceived').value) || 0;
+        const receivedInput = document.createElement('input');
+        receivedInput.type = 'hidden';
+        receivedInput.name = 'dinero_recibido';
+        receivedInput.value = received.toFixed(2);
+        form.appendChild(receivedInput);
+        
+        const changeInput = document.createElement('input');
+        changeInput.type = 'hidden';
+        changeInput.name = 'cambio';
+        changeInput.value = (received - currentOrderTotal).toFixed(2);
+        form.appendChild(changeInput);
+    }
+    
+    document.body.appendChild(form);
+    form.submit();
 }
 
 function closeOrderModal() {
@@ -850,7 +895,7 @@ function confirmPayment() {
     font-weight: bold;
 }
 
-/* Estilos para el modal de cierre de pedido */
+/* Estilos para el modal simple de cierre de pedido */
 .close-order-modal {
     position: fixed;
     top: 0;
@@ -862,6 +907,162 @@ function confirmPayment() {
     justify-content: center;
     align-items: center;
     z-index: 9999;
+}
+
+.modal-content-simple {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    width: 500px;
+    max-width: 90vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.modal-header-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+.modal-header-simple h2 {
+    margin: 0;
+    color: #333;
+}
+
+.close-btn-simple {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.total-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: #e8f5e8;
+    border-radius: 10px;
+    border: 3px solid #4caf50;
+}
+
+.total-section h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #2e7d32;
+}
+
+.payment-buttons {
+    display: flex;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.btn-efectivo, .btn-tarjeta {
+    flex: 1;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-efectivo {
+    background: #4caf50;
+    color: white;
+}
+
+.btn-efectivo:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.btn-tarjeta {
+    background: #2196f3;
+    color: white;
+}
+
+.btn-tarjeta:hover {
+    background: #1976d2;
+    transform: translateY(-2px);
+}
+
+.calculator-section {
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.input-group {
+    margin: 20px 0;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.change-result {
+    margin: 20px 0;
+    padding: 15px;
+    background: #fff3e0;
+    border-radius: 8px;
+    border: 2px solid #ff9800;
+}
+
+.change-result h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.calculator-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-back-calc, .btn-confirm-cash {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-back-calc {
+    background: #666;
+    color: white;
+}
+
+.btn-confirm-cash {
+    background: #4caf50;
+    color: white;
+}
+
+.btn-confirm-cash:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 .close-order-modal .modal-content {
