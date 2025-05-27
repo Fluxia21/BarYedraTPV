@@ -513,8 +513,9 @@ function openCloseOrderModal() {
     // Deshabilitar botón de confirmar
     document.getElementById('confirmPaymentBtn').disabled = true;
     
-    // Mostrar modal
-    document.getElementById('closeOrderModal').style.display = 'flex';
+    // Mostrar modal con display flex
+    const modal = document.getElementById('closeOrderModal');
+    modal.style.display = 'flex';
 }
 
 function closeOrderModal() {
@@ -573,13 +574,13 @@ function selectMainPaymentMethod(method) {
     document.getElementById(method + '-main-btn').classList.add('selected');
     
     if (method === 'efectivo') {
-        // Ir a la pantalla de cálculo de cambio
+        // Ir inmediatamente a la pantalla de cálculo de cambio
+        document.getElementById('paymentMethodScreen').style.display = 'none';
+        document.getElementById('cashCalculationScreen').style.display = 'block';
+        // Enfocar el campo de dinero recibido después de un momento
         setTimeout(() => {
-            document.getElementById('paymentMethodScreen').style.display = 'none';
-            document.getElementById('cashCalculationScreen').style.display = 'block';
-            // Enfocar el campo de dinero recibido
             document.getElementById('moneyReceived').focus();
-        }, 300);
+        }, 100);
     } else if (method === 'tarjeta') {
         // Para tarjeta, confirmar directamente
         document.getElementById('confirmPaymentBtn').disabled = false;
@@ -824,13 +825,13 @@ function confirmPayment() {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 9999;
 }
 
 .close-order-modal .modal-content {
