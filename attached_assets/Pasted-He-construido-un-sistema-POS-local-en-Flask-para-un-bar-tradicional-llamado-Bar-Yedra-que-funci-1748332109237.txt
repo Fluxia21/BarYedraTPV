@@ -1,0 +1,59 @@
+He construido un sistema POS local en Flask para un bar tradicional llamado **Bar Yedra**, que funciona sin internet desde un ordenador con Windows 7 y pantalla táctil. El sistema ya incluye:
+
+- Gestión de mesas por zonas (Terraza, Sala, Barra)
+- Procesamiento de pedidos por mesa con selección de productos
+- Caja diaria con resumen por tipo de pago
+- Impresión de tickets
+- Interfaz táctil amigable
+
+Quiero que me ayudes a **mejorar el sistema** en estos aspectos clave, con cambios concretos y funcionales:
+
+---
+
+### 1. **Diseño táctil más profesional**
+- Revisa y mejora los **estilos CSS** para que todo se vea moderno y ordenado.
+- Aumenta el tamaño de botones, márgenes y tipografías para **uso táctil** (pantalla 1366x768).
+- Añade **iconos intuitivos** (libre, ocupada, pagar, imprimir…) usando una librería local como Font Awesome offline.
+- Usa una **paleta neutra con acentos de color para los estados de las mesas**:
+  - Verde = libre
+  - Amarillo = ocupada
+  - Azul = lista para pagar
+
+---
+
+### 2. **Navegación y estructura**
+- Optimiza la **barra lateral** para que sea visible pero compacta.
+- Añade un **modo de pantalla completa** para el navegador (sin scroll innecesario).
+- Resalta claramente la **zona seleccionada** (Terraza, Sala, Barra).
+
+---
+
+### 3. **Flujo de pedidos fluido**
+- Cuando se pulse una mesa:
+  - Abre un **modal** o sección lateral con los productos
+  - Muestra los productos con **botones grandes, imágenes opcionales y precios**
+  - Permite añadir productos con un toque, editar o eliminar fácilmente
+- Añade confirmaciones visuales: “Producto añadido” / “Mesa cerrada” / “Ticket generado”
+
+---
+
+### 4. **Caja y tickets**
+- Mejora el diseño de la sección de caja con:
+  - Cajas claras para total efectivo, tarjeta, tickets del día
+  - Gráficos simples de ingresos diarios o semanales si es posible
+- Mejora el **formato del ticket**:
+  - Nombre del bar
+  - Fecha y hora
+  - Productos, precios, total, forma de pago
+  - Gracias por su visita
+
+---
+
+### 5. **Rendimiento y uso local**
+- Asegúrate de que **todo funciona offline y rápido**, sin peticiones externas
+- Minimiza uso de librerías o frameworks que requieran internet
+- Usa rutas relativas para CSS, JS e imágenes
+
+---
+
+Haz todos estos cambios paso a paso conmigo. Después de cada sección, píde​me validación. El objetivo es entregar hoy una versión profesional, clara y totalmente funcional del sistema.

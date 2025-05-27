@@ -1,5 +1,6 @@
 import os
 import logging
+import json
 from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -31,6 +32,17 @@ db.init_app(app)
 
 # Import models after db initialization
 from models import Mesa, Producto, Pedido, Ticket
+
+# Add custom Jinja2 filter for JSON parsing
+@app.template_filter('from_json')
+def from_json_filter(value):
+    """Convert JSON string to Python object"""
+    if value:
+        try:
+            return json.loads(value)
+        except (json.JSONDecodeError, TypeError):
+            return []
+    return []
 
 @app.route('/')
 def index():
