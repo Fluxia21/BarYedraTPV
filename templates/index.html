@@ -5,15 +5,11 @@
 {% block page_title %}Vista de Mesas{% endblock %}
 
 {% block content %}
-<!-- Stats Cards del Dashboard como en el PDF -->
+<!-- Stats Cards del Dashboard -->
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-card-title">Ventas del día</div>
-        <div class="stat-card-value">1.250 €</div>
-    </div>
-    <div class="stat-card">
         <div class="stat-card-title">Pedidos activos</div>
-        <div class="stat-card-value">4</div>
+        <div class="stat-card-value">{{ pedidos_activos|length if pedidos_activos else 0 }}</div>
     </div>
     <div class="stat-card">
         <div class="stat-card-title">Mesas libres</div>
