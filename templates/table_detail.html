@@ -334,11 +334,9 @@ const productosData = {
         {% for producto in productos %}
         {
             id: {{ producto.id }},
-            nombre: "{{ producto.nombre }}",
-            precio: {{ producto.precio }},
-            {% if es_terraza %}
-            precio_con_suplemento: {{ producto.precio + suplemento_terraza }}
-            {% endif %}
+            nombre: "{{ producto.nombre|e }}",
+            precio: {{ producto.precio }}{% if es_terraza %},
+            precio_con_suplemento: {{ producto.precio + suplemento_terraza }}{% endif %}
         }{% if not loop.last %},{% endif %}
         {% endfor %}
     ]{% if not loop.last %},{% endif %}
@@ -346,45 +344,55 @@ const productosData = {
 };
 
 function openCategoryModal(categoria) {
-    const modal = document.getElementById('categoryModal');
-    const modalTitle = document.getElementById('modalCategoryTitle');
-    const productosGrid = document.getElementById('modalProductsGrid');
-    
-    modalTitle.textContent = categoria;
-    productosGrid.innerHTML = '';
-    
-    const productos = productosData[categoria];
-    productos.forEach(producto => {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card-modal';
-        productCard.onclick = () => {
-            addToOrder({{ mesa.id }}, producto.id);
-            closeCategoryModal();
-        };
+    try {
+        const modal = document.getElementById('categoryModal');
+        const modalTitle = document.getElementById('modalCategoryTitle');
+        const productosGrid = document.getElementById('modalProductsGrid');
         
-        let precioHTML;
-        {% if es_terraza %}
-        if (producto.precio_con_suplemento) {
-            precioHTML = `
-                <div class="price-base">€${producto.precio.toFixed(2)}</div>
-                <div class="product-price price-terraza">€${producto.precio_con_suplemento.toFixed(2)}</div>
-            `;
-        } else {
-            precioHTML = `<div class="product-price">€${producto.precio.toFixed(2)}</div>`;
+        if (!modal || !modalTitle || !productosGrid) {
+            console.error('Modal elements not found');
+            return;
         }
-        {% else %}
-        precioHTML = `<div class="product-price">€${producto.precio.toFixed(2)}</div>`;
-        {% endif %}
         
-        productCard.innerHTML = `
-            <div class="product-name-modal">${producto.nombre}</div>
-            ${precioHTML}
-        `;
+        modalTitle.textContent = categoria;
+        productosGrid.innerHTML = '';
         
-        productosGrid.appendChild(productCard);
-    });
-    
-    modal.style.display = 'block';
+        const productos = productosData[categoria];
+        if (!productos) {
+            console.error('No products found for category:', categoria);
+            return;
+        }
+        
+        productos.forEach(producto => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card-modal';
+            productCard.addEventListener('click', function() {
+                addToOrder({{ mesa.id }}, producto.id);
+                closeCategoryModal();
+            });
+            
+            let precioHTML = '';
+            {% if es_terraza %}
+            if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+                precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
+                           '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
+            } else {
+                precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+            }
+            {% else %}
+            precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+            {% endif %}
+            
+            productCard.innerHTML = '<div class="product-name-modal">' + producto.nombre + '</div>' + precioHTML;
+            
+            productosGrid.appendChild(productCard);
+        });
+        
+        modal.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error opening category modal:', error);
+    }
 }
 
 function closeCategoryModal() {
