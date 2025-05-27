@@ -222,17 +222,30 @@ def pay_order(mesa_id):
 
 @app.route('/print_receipt/<int:pedido_id>')
 def print_receipt(pedido_id):
-    """Generate printable receipt"""
+    """Generate printable receipt with detailed product information"""
     pedido = Pedido.query.get_or_404(pedido_id)
     mesa = Mesa.query.get(pedido.mesa_id)
     
+    # Parse products and get detailed information
     import json
-    productos_list = json.loads(pedido.productos) if pedido.productos else []
+    productos_dict = json.loads(pedido.productos) if pedido.productos else {}
+    
+    # Build detailed products list with quantities and prices
+    productos_detalle = []
+    for producto_id_str, cantidad in productos_dict.items():
+        producto = Producto.query.get(int(producto_id_str))
+        if producto:
+            productos_detalle.append({
+                'nombre': producto.nombre,
+                'precio': float(producto.precio),
+                'cantidad': cantidad,
+                'subtotal': float(producto.precio) * cantidad
+            })
     
     return render_template('receipt_print.html', 
                          pedido=pedido, 
                          mesa=mesa,
-                         productos=productos_list)
+                         productos_detalle=productos_detalle)
 
 @app.route('/cash_register')
 def cash_register():
