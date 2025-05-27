@@ -714,9 +714,9 @@ with app.app_context():
     if Mesa.query.count() == 0:
         # Create tables for each zone
         zonas = {
-            'Terraza': 6,  # 6 tables in terrace
-            'Sala': 8,     # 8 tables in main room
-            'Barra': 4     # 4 bar spots
+            'Terraza': 8,  # 8 tables in terrace
+            'Sala': 5,     # 5 tables in main room
+            'Barra': 8     # 8 bar spots
         }
         
         for zona, num_mesas in zonas.items():
