@@ -1,7 +1,17 @@
 import os
 import logging
 import json
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+from io import BytesIO
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
+from docx import Document
+from docx.shared import Inches
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -407,6 +417,294 @@ def add_stock():
     
     flash(f'Añadidas {cantidad} unidades a {producto.nombre}', 'success')
     return redirect(url_for('inventory'))
+
+@app.route('/reports')
+def reports():
+    """Sales reports dashboard"""
+    today = date.today()
+    inicio_semana = today - timedelta(days=today.weekday())
+    inicio_mes = today.replace(day=1)
+    
+    # Calcular estadísticas rápidas
+    pedidos_hoy = Pedido.query.filter(
+        db.func.date(Pedido.fecha_pago) == today,
+        Pedido.estado == 'pagado'
+    ).count()
+    
+    ventas_hoy = db.session.query(db.func.sum(Pedido.total)).filter(
+        db.func.date(Pedido.fecha_pago) == today,
+        Pedido.estado == 'pagado'
+    ).scalar() or 0
+    
+    ventas_semana = db.session.query(db.func.sum(Pedido.total)).filter(
+        Pedido.fecha_pago >= inicio_semana,
+        Pedido.estado == 'pagado'
+    ).scalar() or 0
+    
+    ventas_mes = db.session.query(db.func.sum(Pedido.total)).filter(
+        Pedido.fecha_pago >= inicio_mes,
+        Pedido.estado == 'pagado'
+    ).scalar() or 0
+    
+    return render_template('reports.html',
+                         pedidos_hoy=pedidos_hoy,
+                         ventas_hoy=ventas_hoy,
+                         ventas_semana=ventas_semana,
+                         ventas_mes=ventas_mes,
+                         fecha=today)
+
+@app.route('/export_excel/<periodo>')
+def export_excel(periodo):
+    """Export sales report to Excel"""
+    today = date.today()
+    
+    if periodo == 'dia':
+        fecha_inicio = today
+        fecha_fin = today
+        titulo = f"Ventas del Día - {today.strftime('%d/%m/%Y')}"
+    elif periodo == 'semana':
+        fecha_inicio = today - timedelta(days=today.weekday())
+        fecha_fin = today
+        titulo = f"Ventas de la Semana - {fecha_inicio.strftime('%d/%m')} al {fecha_fin.strftime('%d/%m/%Y')}"
+    else:  # mes
+        fecha_inicio = today.replace(day=1)
+        fecha_fin = today
+        titulo = f"Ventas del Mes - {fecha_inicio.strftime('%B %Y')}"
+    
+    # Obtener datos
+    pedidos = Pedido.query.filter(
+        Pedido.fecha_pago >= fecha_inicio,
+        Pedido.fecha_pago <= fecha_fin + timedelta(days=1),
+        Pedido.estado == 'pagado'
+    ).all()
+    
+    # Crear workbook
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Reporte de Ventas"
+    
+    # Encabezados con estilo
+    encabezados = ['Fecha', 'Hora', 'Mesa', 'Total', 'Forma de Pago', 'Ticket #']
+    for col, encabezado in enumerate(encabezados, 1):
+        celda = ws.cell(row=1, col=col, value=encabezado)
+        celda.font = Font(bold=True, color='FFFFFF')
+        celda.fill = PatternFill(start_color='2E7D32', end_color='2E7D32', fill_type='solid')
+        celda.alignment = Alignment(horizontal='center')
+    
+    # Datos
+    total_general = 0
+    for row, pedido in enumerate(pedidos, 2):
+        mesa = Mesa.query.get(pedido.mesa_id)
+        ws.cell(row=row, col=1, value=pedido.fecha_pago.strftime('%d/%m/%Y'))
+        ws.cell(row=row, col=2, value=pedido.fecha_pago.strftime('%H:%M'))
+        ws.cell(row=row, col=3, value=f"{mesa.zona} {mesa.numero}")
+        ws.cell(row=row, col=4, value=float(pedido.total))
+        ws.cell(row=row, col=5, value=pedido.forma_pago.title())
+        ws.cell(row=row, col=6, value=pedido.id)
+        total_general += float(pedido.total)
+    
+    # Totales
+    row_total = len(pedidos) + 3
+    ws.cell(row=row_total, col=3, value="TOTAL:").font = Font(bold=True)
+    ws.cell(row=row_total, col=4, value=total_general).font = Font(bold=True)
+    
+    # Ajustar ancho de columnas
+    for col in ws.columns:
+        max_length = max(len(str(cell.value)) for cell in col)
+        ws.column_dimensions[col[0].column_letter].width = max_length + 2
+    
+    # Guardar en memoria
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    from flask import send_file
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=f'ventas_{periodo}_{today.strftime("%Y%m%d")}.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+@app.route('/export_word/<periodo>')
+def export_word(periodo):
+    """Export sales report to Word"""
+    today = date.today()
+    
+    if periodo == 'dia':
+        fecha_inicio = today
+        fecha_fin = today
+        titulo = f"Reporte de Ventas del Día - {today.strftime('%d/%m/%Y')}"
+    elif periodo == 'semana':
+        fecha_inicio = today - timedelta(days=today.weekday())
+        fecha_fin = today
+        titulo = f"Reporte de Ventas de la Semana - {fecha_inicio.strftime('%d/%m')} al {fecha_fin.strftime('%d/%m/%Y')}"
+    else:  # mes
+        fecha_inicio = today.replace(day=1)
+        fecha_fin = today
+        titulo = f"Reporte de Ventas del Mes - {fecha_inicio.strftime('%B %Y')}"
+    
+    # Obtener datos
+    pedidos = Pedido.query.filter(
+        Pedido.fecha_pago >= fecha_inicio,
+        Pedido.fecha_pago <= fecha_fin + timedelta(days=1),
+        Pedido.estado == 'pagado'
+    ).all()
+    
+    # Crear documento
+    doc = Document()
+    
+    # Título
+    titulo_p = doc.add_heading('BAR YEDRA', 0)
+    titulo_p.alignment = 1  # Centrado
+    
+    subtitulo = doc.add_heading(titulo, 1)
+    subtitulo.alignment = 1
+    
+    # Estadísticas
+    total_efectivo = sum(float(p.total) for p in pedidos if p.forma_pago == 'efectivo')
+    total_tarjeta = sum(float(p.total) for p in pedidos if p.forma_pago == 'tarjeta')
+    total_general = total_efectivo + total_tarjeta
+    
+    doc.add_paragraph(f"Total de pedidos: {len(pedidos)}")
+    doc.add_paragraph(f"Total en efectivo: €{total_efectivo:.2f}")
+    doc.add_paragraph(f"Total en tarjeta: €{total_tarjeta:.2f}")
+    doc.add_paragraph(f"TOTAL GENERAL: €{total_general:.2f}")
+    
+    # Tabla de ventas
+    if pedidos:
+        table = doc.add_table(rows=1, cols=6)
+        table.style = 'Table Grid'
+        
+        # Encabezados
+        encabezados = ['Fecha', 'Hora', 'Mesa', 'Total', 'Forma de Pago', 'Ticket #']
+        for i, encabezado in enumerate(encabezados):
+            table.cell(0, i).text = encabezado
+        
+        # Datos
+        for pedido in pedidos:
+            mesa = Mesa.query.get(pedido.mesa_id)
+            row_cells = table.add_row().cells
+            row_cells[0].text = pedido.fecha_pago.strftime('%d/%m/%Y')
+            row_cells[1].text = pedido.fecha_pago.strftime('%H:%M')
+            row_cells[2].text = f"{mesa.zona} {mesa.numero}"
+            row_cells[3].text = f"€{pedido.total:.2f}"
+            row_cells[4].text = pedido.forma_pago.title()
+            row_cells[5].text = str(pedido.id)
+    
+    # Guardar en memoria
+    output = BytesIO()
+    doc.save(output)
+    output.seek(0)
+    
+    from flask import send_file
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=f'ventas_{periodo}_{today.strftime("%Y%m%d")}.docx',
+        mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    )
+
+@app.route('/export_pdf/<periodo>')
+def export_pdf(periodo):
+    """Export sales report to PDF"""
+    today = date.today()
+    
+    if periodo == 'dia':
+        fecha_inicio = today
+        fecha_fin = today
+        titulo = f"Ventas del Día - {today.strftime('%d/%m/%Y')}"
+    elif periodo == 'semana':
+        fecha_inicio = today - timedelta(days=today.weekday())
+        fecha_fin = today
+        titulo = f"Ventas de la Semana - {fecha_inicio.strftime('%d/%m')} al {fecha_fin.strftime('%d/%m/%Y')}"
+    else:  # mes
+        fecha_inicio = today.replace(day=1)
+        fecha_fin = today
+        titulo = f"Ventas del Mes - {fecha_inicio.strftime('%B %Y')}"
+    
+    # Obtener datos
+    pedidos = Pedido.query.filter(
+        Pedido.fecha_pago >= fecha_inicio,
+        Pedido.fecha_pago <= fecha_fin + timedelta(days=1),
+        Pedido.estado == 'pagado'
+    ).all()
+    
+    # Crear PDF
+    output = BytesIO()
+    doc = SimpleDocTemplate(output, pagesize=A4)
+    story = []
+    styles = getSampleStyleSheet()
+    
+    # Título
+    title = Paragraph("BAR YEDRA", styles['Title'])
+    subtitle = Paragraph(titulo, styles['Heading1'])
+    story.append(title)
+    story.append(subtitle)
+    story.append(Spacer(1, 12))
+    
+    # Estadísticas
+    total_efectivo = sum(float(p.total) for p in pedidos if p.forma_pago == 'efectivo')
+    total_tarjeta = sum(float(p.total) for p in pedidos if p.forma_pago == 'tarjeta')
+    total_general = total_efectivo + total_tarjeta
+    
+    stats_data = [
+        ['Total de pedidos:', str(len(pedidos))],
+        ['Total en efectivo:', f"€{total_efectivo:.2f}"],
+        ['Total en tarjeta:', f"€{total_tarjeta:.2f}"],
+        ['TOTAL GENERAL:', f"€{total_general:.2f}"]
+    ]
+    
+    stats_table = Table(stats_data)
+    stats_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+        ('FONTNAME', (0, 3), (1, 3), 'Helvetica-Bold'),
+    ]))
+    
+    story.append(stats_table)
+    story.append(Spacer(1, 20))
+    
+    # Tabla de ventas
+    if pedidos:
+        data = [['Fecha', 'Hora', 'Mesa', 'Total', 'Forma de Pago', 'Ticket #']]
+        for pedido in pedidos:
+            mesa = Mesa.query.get(pedido.mesa_id)
+            data.append([
+                pedido.fecha_pago.strftime('%d/%m/%Y'),
+                pedido.fecha_pago.strftime('%H:%M'),
+                f"{mesa.zona} {mesa.numero}",
+                f"€{pedido.total:.2f}",
+                pedido.forma_pago.title(),
+                str(pedido.id)
+            ])
+        
+        table = Table(data)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.green),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 14),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ]))
+        
+        story.append(table)
+    
+    doc.build(story)
+    output.seek(0)
+    
+    from flask import send_file
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=f'ventas_{periodo}_{today.strftime("%Y%m%d")}.pdf',
+        mimetype='application/pdf'
+    )
 
 # Create tables and initialize data
 with app.app_context():
