@@ -22,22 +22,24 @@
 
     .mesas-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-        gap: 4px;
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 3px;
     }
 
     .mesa-card {
         background: #f8f9fa;
-        border: 2px solid #dee2e6;
-        border-radius: 4px;
-        padding: 6px 4px;
+        border: 1px solid #dee2e6;
+        border-radius: 3px;
+        padding: 2px;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
-        min-height: 55px;
+        width: 40px;
+        height: 40px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
     }
 
     .mesa-card.libre {
@@ -61,17 +63,19 @@
     }
 
     .mesa-numero {
-        font-size: 12px;
+        font-size: 9px;
         font-weight: bold;
-        margin-bottom: 2px;
+        margin-bottom: 1px;
+        line-height: 1;
     }
 
     .mesa-estado {
-        font-size: 8px;
-        padding: 2px 4px;
-        border-radius: 8px;
+        font-size: 6px;
+        padding: 1px 2px;
+        border-radius: 4px;
         color: white;
         font-weight: bold;
+        line-height: 1;
     }
 
     .estado-libre { background: #4caf50; }
@@ -88,10 +92,11 @@
     }
     
     .terraza-info {
-        font-size: 10px;
+        font-size: 5px;
         color: #ff9800;
         font-weight: bold;
-        margin-top: 2px;
+        margin-top: 1px;
+        line-height: 1;
     }
 </style>
 
