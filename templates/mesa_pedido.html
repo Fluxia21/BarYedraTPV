@@ -44,70 +44,153 @@
         margin-top: 5px;
     }
 
-    .categoria-section {
-        margin: 8px 0;
-        background: white;
-        border-radius: 6px;
-        padding: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .categorias-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        height: calc(100% - 100px);
+        max-width: 950px;
+    }
+
+    .categoria-card {
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        height: 120px;
+    }
+
+    .categoria-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, #5cbf60, #388e3c);
     }
 
     .categoria-title {
-        color: #2e7d32;
-        font-size: 14px;
+        font-size: 16px;
+        font-weight: bold;
         margin-bottom: 8px;
-        border-bottom: 1px solid #4caf50;
-        padding-bottom: 4px;
+    }
+
+    .categoria-count {
+        font-size: 12px;
+        opacity: 0.9;
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 1000px;
+        height: 80%;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 10px;
+    }
+
+    .modal-title {
+        color: #2e7d32;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .close-btn {
+        background: #f44336;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .close-btn:hover {
+        background: #d32f2f;
     }
 
     .products-grid {
         display: grid;
-        grid-template-columns: repeat(16, 1fr);
-        gap: 3px;
-        max-width: 950px;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 10px;
+        padding: 10px 0;
     }
 
     .product-card {
         background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 3px;
-        padding: 2px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
-        height: 30px;
+        height: 100px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 50px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .product-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         background: #e8f5e8;
+        border-color: #4caf50;
     }
 
     .product-name {
-        font-size: 7px;
+        font-size: 12px;
         font-weight: bold;
         color: #2e7d32;
-        margin-bottom: 1px;
-        line-height: 1;
+        margin-bottom: 5px;
+        line-height: 1.2;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .product-price {
-        font-size: 8px;
+        font-size: 14px;
         font-weight: bold;
         color: #ff6f00;
-        margin-bottom: 0px;
+        margin-bottom: 2px;
     }
 
     .price-base {
-        font-size: 6px;
+        font-size: 10px;
         color: #999;
         text-decoration: line-through;
     }
@@ -167,30 +250,100 @@
 
     <button class="btn-volver" onclick="window.location.href='/'">← Volver a Mesas</button>
 
-    {% for categoria, productos in productos_por_categoria.items() %}
-        <div class="categoria-section">
-            <h3 class="categoria-title">{{ categoria }}</h3>
-            <div class="products-grid">
-                {% for producto in productos %}
-                    <div class="product-card" onclick="agregarProducto({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio_final }})">
-                        <div class="product-name">{{ producto.nombre }}</div>
-                        {% if es_terraza and producto.precio_base != producto.precio_final %}
-                            <div class="price-base">€{{ "%.2f"|format(producto.precio_base) }}</div>
-                            <div class="product-price price-terraza">€{{ "%.2f"|format(producto.precio_final) }}</div>
-                        {% else %}
-                            <div class="product-price">€{{ "%.2f"|format(producto.precio_final) }}</div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+    <div class="categorias-container">
+        {% for categoria, productos in productos_por_categoria.items() %}
+            <div class="categoria-card" onclick="abrirModalCategoria('{{ categoria }}')">
+                <div class="categoria-title">{{ categoria }}</div>
+                <div class="categoria-count">{{ productos|length }} productos</div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
+<!-- Modal para mostrar productos de una categoría -->
+<div id="modalProductos" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Seleccionar Producto</h2>
+            <button class="close-btn" onclick="cerrarModal()">&times;</button>
+        </div>
+        <div class="products-grid" id="productosGrid">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<!-- Datos de productos para JavaScript -->
 <script>
+const productosData = {
+    {% for categoria, productos in productos_por_categoria.items() %}
+    "{{ categoria }}": [
+        {% for producto in productos %}
+        {
+            id: {{ producto.id }},
+            nombre: "{{ producto.nombre }}",
+            precio_base: {{ producto.precio_base if producto.precio_base else producto.precio_final }},
+            precio_final: {{ producto.precio_final }},
+            es_terraza: {{ 'true' if es_terraza else 'false' }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]{% if not loop.last %},{% endif %}
+    {% endfor %}
+};
+</div>
+
+function abrirModalCategoria(categoria) {
+    const modal = document.getElementById('modalProductos');
+    const modalTitle = document.getElementById('modalTitle');
+    const productosGrid = document.getElementById('productosGrid');
+    
+    modalTitle.textContent = categoria;
+    productosGrid.innerHTML = '';
+    
+    const productos = productosData[categoria];
+    productos.forEach(producto => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.onclick = () => agregarProducto(producto.id, producto.nombre, producto.precio_final);
+        
+        let precioHTML;
+        if (producto.es_terraza && producto.precio_base !== producto.precio_final) {
+            precioHTML = `
+                <div class="price-base">€${producto.precio_base.toFixed(2)}</div>
+                <div class="product-price price-terraza">€${producto.precio_final.toFixed(2)}</div>
+            `;
+        } else {
+            precioHTML = `<div class="product-price">€${producto.precio_final.toFixed(2)}</div>`;
+        }
+        
+        productCard.innerHTML = `
+            <div class="product-name">${producto.nombre}</div>
+            ${precioHTML}
+        `;
+        
+        productosGrid.appendChild(productCard);
+    });
+    
+    modal.style.display = 'block';
+}
+
+function cerrarModal() {
+    const modal = document.getElementById('modalProductos');
+    modal.style.display = 'none';
+}
+
 function agregarProducto(id, nombre, precio) {
     // Aquí iría la lógica para agregar el producto al pedido
     alert('Producto añadido: ' + nombre + ' - €' + precio.toFixed(2));
+    cerrarModal();
+}
+
+// Cerrar modal al hacer clic fuera de él
+window.onclick = function(event) {
+    const modal = document.getElementById('modalProductos');
+    if (event.target == modal) {
+        cerrarModal();
+    }
 }
 </script>
 
