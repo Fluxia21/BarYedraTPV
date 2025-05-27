@@ -140,7 +140,9 @@ def add_to_order():
     pedido.total = total
     
     db.session.commit()
-    return '', 200  # Return success for AJAX call
+    
+    # Redirect back to table detail page
+    return redirect(url_for('table_detail', mesa_id=mesa_id))
 
 @app.route('/update_quantity', methods=['POST'])
 def update_quantity():
@@ -179,7 +181,7 @@ def update_quantity():
         db.session.delete(pedido)
     
     db.session.commit()
-    return '', 200
+    return redirect(url_for('table_detail', mesa_id=mesa_id))
 
 @app.route('/close_order/<int:mesa_id>')
 def close_order(mesa_id):
