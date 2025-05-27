@@ -406,17 +406,18 @@ function closeCategoryModal() {
 .categories-grid-fixed {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: 8px;
-    height: calc(100vh - 300px);
-    max-height: 400px;
+    height: 280px;
     overflow: hidden;
-    padding: 15px 0;
+    padding: 10px;
+    width: 100%;
 }
 
 .category-card-fixed {
     background: linear-gradient(135deg, #4caf50, #2e7d32);
     border-radius: 8px;
-    padding: 12px;
+    padding: 8px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -426,7 +427,8 @@ function closeCategoryModal() {
     justify-content: center;
     align-items: center;
     box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    height: 80px;
+    height: 100%;
+    min-height: 60px;
 }
 
 .category-card-fixed:hover {
