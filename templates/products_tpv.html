@@ -245,10 +245,10 @@
                     <div class="product-description">{{ producto.descripcion or 'Sin descripción' }}</div>
                     
                     <div class="product-buttons">
-                        <button class="btn-edit-orange" onclick="editarProducto({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.descripcion or '' }}', '{{ producto.foto_url or '' }}')" title="Editar producto">
+                        <button class="btn-edit-orange" onclick="editarProducto({{ producto.id }}, '{{ producto.nombre|replace("'", "\\'") }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ (producto.descripcion or '')|replace("'", "\\'") }}', '{{ (producto.foto_url or '')|replace("'", "\\'") }}')" title="Editar producto">
                             ✏️ EDITAR
                         </button>
-                        <button class="btn-delete-red" onclick="eliminarProducto({{ producto.id }}, '{{ producto.nombre }}')" title="Eliminar producto">
+                        <button class="btn-delete-red" onclick="eliminarProducto({{ producto.id }}, '{{ producto.nombre|replace("'", "\\'") }}')" title="Eliminar producto">
                             🗑️ ELIMINAR
                         </button>
                     </div>
@@ -350,13 +350,17 @@ function mostrarModalAnadir() {
 }
 
 function editarProducto(id, nombre, precio, categoria, descripcion, fotoUrl) {
-    document.getElementById('editNombre').value = nombre;
-    document.getElementById('editPrecio').value = precio;
-    document.getElementById('editCategoria').value = categoria;
-    document.getElementById('editDescripcion').value = descripcion;
-    document.getElementById('editFotoUrl').value = fotoUrl;
+    // Rellenar el formulario con los datos del producto
+    document.getElementById('editNombre').value = nombre || '';
+    document.getElementById('editPrecio').value = precio || '';
+    document.getElementById('editCategoria').value = categoria || 'Otros';
+    document.getElementById('editDescripcion').value = descripcion || '';
+    document.getElementById('editFotoUrl').value = fotoUrl || '';
     
+    // Configurar la acción del formulario para actualizar este producto
     document.getElementById('formEditar').action = '/update_product/' + id;
+    
+    // Mostrar el modal de edición
     document.getElementById('modalEditar').style.display = 'block';
 }
 
