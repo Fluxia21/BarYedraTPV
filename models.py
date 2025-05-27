@@ -3,6 +3,7 @@ from datetime import datetime
 
 class Mesa(db.Model):
     """Table model"""
+    __tablename__ = 'mesa'
     id = db.Column(db.Integer, primary_key=True)
     numero = db.Column(db.Integer, nullable=False)
     zona = db.Column(db.String(50), nullable=False)  # Terraza, Sala, Barra
@@ -16,6 +17,7 @@ class Mesa(db.Model):
 
 class Producto(db.Model):
     """Product model with categories, photos and stock management"""
+    __tablename__ = 'producto'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     precio = db.Column(db.Numeric(10, 2), nullable=False)
@@ -46,6 +48,7 @@ class Producto(db.Model):
 
 class Pedido(db.Model):
     """Order model"""
+    __tablename__ = 'pedido'
     id = db.Column(db.Integer, primary_key=True)
     mesa_id = db.Column(db.Integer, db.ForeignKey('mesa.id'), nullable=False)
     productos = db.Column(db.Text)  # JSON string with products and quantities
@@ -63,6 +66,7 @@ class Pedido(db.Model):
 
 class Ticket(db.Model):
     """Ticket/Receipt model"""
+    __tablename__ = 'ticket'
     id = db.Column(db.Integer, primary_key=True)
     pedido_id = db.Column(db.Integer, db.ForeignKey('pedido.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -72,6 +76,7 @@ class Ticket(db.Model):
 
 class MovimientoStock(db.Model):
     """Stock movement tracking model"""
+    __tablename__ = 'movimiento_stock'
     id = db.Column(db.Integer, primary_key=True)
     producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'), nullable=False)
     tipo_movimiento = db.Column(db.String(20), nullable=False)  # 'entrada', 'salida', 'ajuste'
