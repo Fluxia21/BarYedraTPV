@@ -1,0 +1,41 @@
+Estoy desarrollando una aplicación POS en Flask para el **Bar Yedra**. El sistema ya es funcional, pero necesito que el diseño visual se ajuste a la **estética mostrada en el PDF original del proyecto**. Ayúdame a aplicar el estilo correcto a todas las pantallas.
+
+### Objetivo estético:
+Replicar una **interfaz táctil moderna, clara y profesional**, con inspiración en los diseños del dossier PDF que incluye:
+
+- Cuadrículas limpias, con bordes suaves o sin bordes
+- Colores neutros predominantes (blanco, gris claro)
+- Acentos de color según estado: verde (libre), amarillo (ocupada), rojo o azul (pagada)
+- Botones grandes, planos, con etiquetas claras (sin decoraciones innecesarias)
+- Tipografía sencilla, sin serifas (como **Inter**, **Roboto** o **Open Sans**)
+- Paneles organizados en columnas y tarjetas, con sombreados sutiles
+- Íconos simples (idealmente usando Font Awesome o SVG locales)
+
+### Cambios que necesito:
+1. **Diseña un archivo `static/css/style.css` desde cero** con:
+   - Reset limpio
+   - Paleta: blanco, gris muy claro, gris medio, acentos en verde (#4CAF50), amarillo (#FFC107) y azul (#2196F3)
+   - Tipografía: sans-serif moderna
+   - Botones grandes y planos con efecto hover sutil
+   - Sombras muy suaves en tarjetas
+
+2. **Aplica este estilo a todas las plantillas HTML**:
+   - Página principal `/` con tarjetas por mesa (divididas por zonas)
+   - Panel de productos con botones grandes y legibles
+   - Caja diaria con bloques visuales y cifras claras
+   - Navegación lateral compacta y moderna (background blanco o gris muy claro)
+
+3. **Usabilidad táctil**
+   - Todo debe poder usarse con el dedo sin errores
+   - Evita elementos pequeños o muy juntos
+   - Márgenes y paddings generosos
+
+4. **Privacidad visual**
+   - Añade un botón tipo “Ocultar cifras” para la caja diaria o ingresos visibles
+
+### Recursos:
+- Asegúrate de que el diseño cargue completamente desde archivos locales. Nada online.
+- Usa rutas relativas en CSS, JS, e imágenes.
+- No uses frameworks pesados (como Bootstrap), todo debe ser liviano y rápido.
+
+Haz los cambios y enséñame el resultado. Vamos pantalla por pantalla.

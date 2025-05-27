@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Bar Yedra - Sistema TPV{% endblock %}</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -14,34 +12,35 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
-                <i class="fas fa-wine-glass-alt me-2"></i>Bar Yedra
-            </a>
-            
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{{ url_for('index') }}">
-                    <i class="fas fa-table me-1"></i>Mesas
+            <div class="navbar-content">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <i class="fas fa-wine-glass-alt"></i>Bar Yedra
                 </a>
-                <a class="nav-link" href="{{ url_for('cash_register') }}">
-                    <i class="fas fa-cash-register me-1"></i>Caja
-                </a>
-                <a class="nav-link" href="{{ url_for('products') }}">
-                    <i class="fas fa-box me-1"></i>Productos
-                </a>
+                
+                <ul class="navbar-nav">
+                    <li><a class="nav-link" href="{{ url_for('index') }}">
+                        <i class="fas fa-table"></i>Mesas
+                    </a></li>
+                    <li><a class="nav-link" href="{{ url_for('cash_register') }}">
+                        <i class="fas fa-cash-register"></i>Caja
+                    </a></li>
+                    <li><a class="nav-link" href="{{ url_for('products') }}">
+                        <i class="fas fa-box"></i>Productos
+                    </a></li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <!-- Flash Messages -->
-    <div class="container-fluid mt-3">
+    <div class="container-fluid">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ 'success' if category == 'success' else 'info' if category == 'info' else 'danger' }} alert-dismissible fade show" role="alert">
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'info' if category == 'info' else 'danger' }} fade-in">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -53,8 +52,11 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Privacy Toggle Button -->
+    <button class="privacy-toggle" onclick="togglePrivacy()" title="Ocultar/Mostrar cifras">
+        <i class="fas fa-eye" id="privacy-icon"></i>
+    </button>
+
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     

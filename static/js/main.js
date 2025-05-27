@@ -1,25 +1,16 @@
-// Main JavaScript for Bar Yedra TPV System
+// Main JavaScript for Bar Yedra TPV System - Clean Design
 
-// Initialize Bootstrap tooltips and popovers
+// Variables globales
+let privacyMode = false;
+
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-    // Initialize Bootstrap popovers
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl);
-    });
-
     // Auto-hide alerts after 5 seconds
     setTimeout(function() {
-        var alerts = document.querySelectorAll('.alert-dismissible');
+        var alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
-            var bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 300);
         });
     }, 5000);
 
@@ -35,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 30000);
     }
+
+    // Add staggered animation to cards
+    const cards = document.querySelectorAll('.table-card, .product-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.05}s`;
+    });
 });
 
 // Touch-friendly interactions
@@ -251,6 +248,84 @@ function showOfflineIndicator() {
 // Initialize number inputs when DOM is ready
 document.addEventListener('DOMContentLoaded', setupNumberInputs);
 
+// Privacy toggle function
+function togglePrivacy() {
+    privacyMode = !privacyMode;
+    const icon = document.getElementById('privacy-icon');
+    const sensitiveElements = document.querySelectorAll('.product-price, .table th:contains("€"), .table td:contains("€"), [class*="total"], [class*="precio"], [class*="price"]');
+    
+    if (privacyMode) {
+        icon.className = 'fas fa-eye-slash';
+        sensitiveElements.forEach(el => {
+            if (el.textContent.includes('€') || el.textContent.includes('Total') || el.classList.contains('product-price')) {
+                el.classList.add('privacy-blur');
+            }
+        });
+        // También ocultar números en elementos que contienen precios
+        document.querySelectorAll('*').forEach(el => {
+            if (el.textContent.match(/€\d/)) {
+                el.classList.add('privacy-blur');
+            }
+        });
+    } else {
+        icon.className = 'fas fa-eye';
+        document.querySelectorAll('.privacy-blur').forEach(el => {
+            el.classList.remove('privacy-blur');
+        });
+    }
+}
+
+// Enhanced form validation
+function validateForm(formElement) {
+    const requiredFields = formElement.querySelectorAll('[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.style.borderColor = 'var(--color-danger)';
+            isValid = false;
+        } else {
+            field.style.borderColor = 'var(--color-gray-medium)';
+        }
+    });
+    
+    return isValid;
+}
+
+// Enhanced button loading states
+function setButtonLoading(button, loading = true) {
+    if (loading) {
+        button.disabled = true;
+        button.style.opacity = '0.6';
+        const originalText = button.innerHTML;
+        button.setAttribute('data-original-text', originalText);
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+    } else {
+        button.disabled = false;
+        button.style.opacity = '1';
+        const originalText = button.getAttribute('data-original-text');
+        if (originalText) {
+            button.innerHTML = originalText;
+        }
+    }
+}
+
+// Print functionality
+function printReceipt(pedidoId) {
+    const printWindow = window.open(`/print_receipt/${pedidoId}`, '_blank');
+    printWindow.onload = function() {
+        printWindow.print();
+    };
+}
+
+// Smooth scroll to element
+function scrollToElement(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
 // Export functions for global use
 window.YedraTPV = {
     formatCurrency,
@@ -260,6 +335,8 @@ window.YedraTPV = {
     setButtonLoading,
     validateForm,
     printReceipt,
+    togglePrivacy,
+    scrollToElement,
     saveToLocalStorage,
     loadFromLocalStorage
 };

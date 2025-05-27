@@ -3,24 +3,21 @@
 {% block title %}Mesas - Bar Yedra{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h2 class="mb-4">
-            <i class="fas fa-table me-2"></i>Estado de las Mesas
-        </h2>
+<div class="container">
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="text-center font-weight-bold">Estado de las Mesas</h1>
     </div>
-</div>
 
-<!-- Terraza -->
-<div class="row mb-4">
-    <div class="col-12">
-        <h4 class="zone-title">
-            <i class="fas fa-umbrella-beach me-2"></i>Terraza
-        </h4>
+    <!-- Terraza -->
+    <div class="mb-5">
+        <h2 class="zone-title">
+            <i class="fas fa-umbrella-beach"></i> Terraza
+        </h2>
         <div class="row">
             {% for mesa in mesas_terraza %}
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
-                <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+            <div class="col-4 col-3">
+                <div class="table-card table-{{ mesa.estado }} fade-in" onclick="goToTable({{ mesa.id }})">
                     <div class="table-number">{{ mesa.numero }}</div>
                     <div class="table-status">{{ mesa.estado|title }}</div>
                     <div class="table-zone">{{ mesa.zona }}</div>
@@ -29,18 +26,16 @@
             {% endfor %}
         </div>
     </div>
-</div>
 
-<!-- Sala -->
-<div class="row mb-4">
-    <div class="col-12">
-        <h4 class="zone-title">
-            <i class="fas fa-couch me-2"></i>Sala
-        </h4>
+    <!-- Sala -->
+    <div class="mb-5">
+        <h2 class="zone-title">
+            <i class="fas fa-couch"></i> Sala
+        </h2>
         <div class="row">
             {% for mesa in mesas_sala %}
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
-                <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+            <div class="col-4 col-3">
+                <div class="table-card table-{{ mesa.estado }} fade-in" onclick="goToTable({{ mesa.id }})">
                     <div class="table-number">{{ mesa.numero }}</div>
                     <div class="table-status">{{ mesa.estado|title }}</div>
                     <div class="table-zone">{{ mesa.zona }}</div>
@@ -49,18 +44,16 @@
             {% endfor %}
         </div>
     </div>
-</div>
 
-<!-- Barra -->
-<div class="row mb-4">
-    <div class="col-12">
-        <h4 class="zone-title">
-            <i class="fas fa-glass-martini-alt me-2"></i>Barra
-        </h4>
+    <!-- Barra -->
+    <div class="mb-5">
+        <h2 class="zone-title">
+            <i class="fas fa-wine-glass-alt"></i> Barra
+        </h2>
         <div class="row">
             {% for mesa in mesas_barra %}
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
-                <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+            <div class="col-4 col-3">
+                <div class="table-card table-{{ mesa.estado }} fade-in" onclick="goToTable({{ mesa.id }})">
                     <div class="table-number">{{ mesa.numero }}</div>
                     <div class="table-status">{{ mesa.estado|title }}</div>
                     <div class="table-zone">{{ mesa.zona }}</div>
@@ -69,25 +62,27 @@
             {% endfor %}
         </div>
     </div>
-</div>
 
-<!-- Legend -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="table-legend">
-            <h5>Leyenda:</h5>
+    <!-- Legend Card -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-info-circle"></i> Estados de Mesa
+            </h3>
+        </div>
+        <div class="card-body">
             <div class="d-flex flex-wrap gap-3">
-                <div class="legend-item">
-                    <div class="legend-color table-libre"></div>
-                    <span>Libre</span>
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 20px; height: 20px; background: var(--color-libre); border-radius: 4px;"></div>
+                    <span class="font-weight-semibold">Libre</span>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color table-ocupada"></div>
-                    <span>Ocupada</span>
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 20px; height: 20px; background: var(--color-ocupada); border-radius: 4px;"></div>
+                    <span class="font-weight-semibold">Ocupada</span>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color table-pagada"></div>
-                    <span>Lista para pagar</span>
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 20px; height: 20px; background: var(--color-pagada); border-radius: 4px;"></div>
+                    <span class="font-weight-semibold">Lista para pagar</span>
                 </div>
             </div>
         </div>
