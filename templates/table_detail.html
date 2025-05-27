@@ -27,52 +27,32 @@
             <i class="fas fa-box"></i> Productos Disponibles
         </h2>
         
-        <!-- Categorías en cuadrícula -->
-        <div class="categories-grid">
+        <!-- Categorías en cuadrícula fija sin scroll -->
+        <div class="categories-grid-fixed">
             {% for categoria, productos in productos_por_categoria.items() %}
-            <div class="category-card" data-categoria="{{ categoria }}" onclick="toggleCategory('{{ categoria }}')">
+            <div class="category-card-fixed" onclick="openCategoryModal('{{ categoria }}')">
                 <div class="category-icon">
                     <i class="fas fa-box"></i>
                 </div>
                 <div class="category-name">{{ categoria }}</div>
                 <div class="category-product-count">{{ productos|length }} productos</div>
-                <div class="category-expand-indicator">
-                    <i class="fas fa-chevron-down"></i>
-                </div>
             </div>
             {% endfor %}
         </div>
-        
-        <!-- Productos expandidos -->
-        {% for categoria, productos in productos_por_categoria.items() %}
-        <div class="products-expanded-container" id="products-{{ categoria }}" style="display: none;">
-            <div class="expanded-header">
-                <h3>
-                    <i class="fas fa-box"></i>
-                    {{ categoria }}
-                </h3>
-                <button class="btn-close-category" onclick="toggleCategory('{{ categoria }}')">
-                    <i class="fas fa-times"></i>
-                </button>
+    </div>
+
+    <!-- Modal para mostrar productos de una categoría -->
+    <div id="categoryModal" class="category-modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeCategoryModal()"></div>
+        <div class="modal-content-category">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalCategoryTitle">Seleccionar Producto</h2>
+                <button class="close-btn" onclick="closeCategoryModal()">&times;</button>
             </div>
-            <div class="products-grid-detail">
-                {% for producto in productos %}
-                <div class="product-item touch-friendly" onclick="addToOrder({{ mesa.id }}, {{ producto.id }})">
-                    <div class="product-icon">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <div class="product-details">
-                        <div class="product-name">{{ producto.nombre }}</div>
-                        <div class="product-price">€{{ "%.2f"|format(producto.precio) }}</div>
-                    </div>
-                    <div class="add-indicator">
-                        <i class="fas fa-plus"></i>
-                    </div>
-                </div>
-                {% endfor %}
+            <div class="products-grid-modal" id="modalProductsGrid">
+                <!-- Los productos se cargarán aquí dinámicamente -->
             </div>
         </div>
-        {% endfor %}
     </div>
     
     <!-- Panel de pedido fijo (derecha) -->
@@ -346,5 +326,252 @@ function hidePaymentOptions(mesaId) {
         modal.classList.remove('show');
     }
 }
+
+// Datos de productos para el modal
+const productosData = {
+    {% for categoria, productos in productos_por_categoria.items() %}
+    "{{ categoria }}": [
+        {% for producto in productos %}
+        {
+            id: {{ producto.id }},
+            nombre: "{{ producto.nombre }}",
+            precio: {{ producto.precio }},
+            {% if es_terraza %}
+            precio_con_suplemento: {{ producto.precio + suplemento_terraza }}
+            {% endif %}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]{% if not loop.last %},{% endif %}
+    {% endfor %}
+};
+
+function openCategoryModal(categoria) {
+    const modal = document.getElementById('categoryModal');
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    modalTitle.textContent = categoria;
+    productosGrid.innerHTML = '';
+    
+    const productos = productosData[categoria];
+    productos.forEach(producto => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card-modal';
+        productCard.onclick = () => {
+            addToOrder({{ mesa.id }}, producto.id);
+            closeCategoryModal();
+        };
+        
+        let precioHTML;
+        {% if es_terraza %}
+        if (producto.precio_con_suplemento) {
+            precioHTML = `
+                <div class="price-base">€${producto.precio.toFixed(2)}</div>
+                <div class="product-price price-terraza">€${producto.precio_con_suplemento.toFixed(2)}</div>
+            `;
+        } else {
+            precioHTML = `<div class="product-price">€${producto.precio.toFixed(2)}</div>`;
+        }
+        {% else %}
+        precioHTML = `<div class="product-price">€${producto.precio.toFixed(2)}</div>`;
+        {% endif %}
+        
+        productCard.innerHTML = `
+            <div class="product-name-modal">${producto.nombre}</div>
+            ${precioHTML}
+        `;
+        
+        productosGrid.appendChild(productCard);
+    });
+    
+    modal.style.display = 'block';
+}
+
+function closeCategoryModal() {
+    const modal = document.getElementById('categoryModal');
+    modal.style.display = 'none';
+}
 </script>
+
+<style>
+/* Estilos para categorías fijas sin scroll */
+.categories-grid-fixed {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    height: calc(100vh - 300px);
+    max-height: 400px;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.category-card-fixed {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    height: 120px;
+}
+
+.category-card-fixed:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, #5cbf60, #388e3c);
+}
+
+.category-card-fixed .category-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.category-card-fixed .category-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.category-card-fixed .category-product-count {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Estilos para el modal */
+.category-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content-category {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 1000px;
+    height: 80%;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1001;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 15px;
+}
+
+.modal-title {
+    color: #2e7d32;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.close-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: #d32f2f;
+}
+
+.products-grid-modal {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.product-card-modal {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-card-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    background: #e8f5e8;
+    border-color: #4caf50;
+}
+
+.product-name-modal {
+    font-size: 12px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.product-price {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff6f00;
+}
+
+.price-base {
+    font-size: 10px;
+    color: #999;
+    text-decoration: line-through;
+    margin-bottom: 3px;
+}
+
+.price-terraza {
+    color: #ff9800;
+    font-weight: bold;
+}
+</style>
+
 {% endblock %}
