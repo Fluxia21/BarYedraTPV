@@ -5,18 +5,6 @@
 {% block page_title %}Vista de Mesas{% endblock %}
 
 {% block content %}
-<!-- Stats Cards del Dashboard -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-card-title">Pedidos activos</div>
-        <div class="stat-card-value">{{ pedidos_activos|length if pedidos_activos else 0 }}</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-card-title">Mesas libres</div>
-        <div class="stat-card-value">{{ (mesas_terraza + mesas_sala + mesas_barra)|selectattr('estado', 'equalto', 'libre')|list|length }}</div>
-    </div>
-</div>
-
 <!-- Grid de mesas exacto del PDF -->
 <div class="card">
     <div class="card-header">
