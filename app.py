@@ -2,6 +2,7 @@ import os
 import logging
 import json
 from datetime import datetime, date, timedelta
+from decimal import Decimal
 from io import BytesIO
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
@@ -86,7 +87,7 @@ def table_detail(mesa_id):
     
     # Verificar si es mesa de terraza para aplicar suplemento
     es_terraza = mesa.zona.lower() == 'terraza'
-    suplemento_terraza = 0.20 if es_terraza else 0.00
+    suplemento_terraza = Decimal('0.20') if es_terraza else Decimal('0.00')
     
     # Agrupar productos por categoría
     productos_por_categoria = {}
