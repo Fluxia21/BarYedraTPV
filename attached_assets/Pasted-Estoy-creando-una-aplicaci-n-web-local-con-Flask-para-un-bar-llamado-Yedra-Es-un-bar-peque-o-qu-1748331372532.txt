@@ -1,0 +1,56 @@
+Estoy creando una aplicación web local con Flask para un bar llamado **Yedra**. Es un bar pequeño que lleva más de 30 años funcionando y necesita digitalizar su sistema de pedidos, caja y empleados. 
+
+La app se instalará en **un ordenador con Windows 7**, **sin acceso a internet**, y debe estar **100% operativa hoy mismo**. Necesito que el asistente de IA de Replit me ayude a crear este sistema paso a paso.
+
+### OBJETIVO DEL PROYECTO
+Desarrollar una web local funcional que incluya:
+
+1. **Vista de mesas** dividida en:
+   - Terraza
+   - Sala
+   - Barra
+   - Cada mesa tendrá estado (libre, ocupada, pagada)
+
+2. **Gestión de pedidos**:
+   - Al hacer clic en una mesa se abre una ventana para añadir productos.
+   - Los productos se suman a un pedido temporal asociado a la mesa.
+   - Debe poder enviarse el pedido, guardarse o imprimirse (plantilla imprimible simple).
+
+3. **Caja diaria**:
+   - Mostrar total diario por tipo de pago (efectivo o tarjeta).
+   - Botón de “Cerrar caja” que guarda el informe y resetea los datos.
+   - Generar historial de tickets.
+
+4. **Base de datos SQLite** con tablas:
+   - `mesas`: id, zona, estado
+   - `productos`: id, nombre, precio
+   - `pedidos`: id, mesa_id, productos (lista), total, fecha, forma_pago
+   - `tickets`: id, pedido_id, timestamp
+
+5. **Interfaz simple y táctil**:
+   - Botones grandes
+   - Vista clara con colores por estado
+   - Compatible con pantalla táctil
+
+6. **Sin necesidad de internet.**
+   - Todo funciona desde `localhost` en el navegador del ordenador del bar.
+
+### TECNOLOGÍAS
+- Python 3
+- Flask
+- SQLite
+- HTML/CSS/JS
+- Jinja2 para plantillas
+
+### INSTRUCCIONES PARA EL ASISTENTE
+1. Crea el archivo `app.py` con las rutas básicas y configuración de Flask.
+2. Configura SQLite con modelos y datos iniciales.
+3. Crea plantillas HTML con estilo táctil.
+4. Agrega funcionalidad para:
+   - Cargar productos
+   - Asignar pedidos a mesas
+   - Ver caja diaria
+   - Cerrar caja y generar informe
+5. Que sea 100% funcional sin internet.
+
+Ayúdame paso a paso para terminar esto hoy. Pídeme confirmación antes de pasar a la siguiente etapa.
