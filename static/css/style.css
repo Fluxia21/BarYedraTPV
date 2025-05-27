@@ -862,22 +862,31 @@ select.form-input.touch-friendly {
 }
 
 .product-icon {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--color-gray-light);
-    border-radius: var(--border-radius);
+    border-radius: 12px;
     color: var(--color-text-light);
-    font-size: 18px;
+    font-size: 24px;
+    flex-shrink: 0;
 }
 
 .product-mini-photo {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
-    border-radius: var(--border-radius);
+    border-radius: 12px;
+    flex-shrink: 0;
+    border: 2px solid #e8f5e8;
+    transition: all 0.15s ease;
+}
+
+.product-item:hover .product-mini-photo {
+    border-color: var(--color-sidebar);
+    transform: scale(1.05);
 }
 
 .product-details {

@@ -724,49 +724,50 @@ with app.app_context():
                 mesa = Mesa(numero=i, zona=zona, estado='libre')
                 db.session.add(mesa)
         
-        # Add sample products
+        # Add sample products with photos
         productos_iniciales = [
             # Cafés y bebidas calientes
-            ('Café Solo', 1.20, 'Cafés'),
-            ('Café con Leche', 1.40, 'Cafés'),
-            ('Cortado', 1.30, 'Cafés'),
-            ('Té', 1.20, 'Cafés'),
-            ('Carajillo', 4.10, 'Licores'),
+            ('Café Solo', 1.20, 'Cafés', 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&h=200&fit=crop&crop=center'),
+            ('Café con Leche', 1.40, 'Cafés', 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&h=200&fit=crop&crop=center'),
+            ('Cortado', 1.30, 'Cafés', 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&h=200&fit=crop&crop=center'),
+            ('Té', 1.20, 'Cafés', 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200&h=200&fit=crop&crop=center'),
+            ('Carajillo', 4.10, 'Licores', 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=200&h=200&fit=crop&crop=center'),
             
             # Bebidas frías
-            ('Agua', 1.50, 'Bebidas'),
-            ('Coca Cola', 2.00, 'Bebidas'),
+            ('Agua', 1.50, 'Bebidas', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop&crop=center'),
+            ('Coca Cola', 2.00, 'Bebidas', 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop&crop=center'),
             
             # Alcoholes
-            ('Cerveza', 2.50, 'Cervezas'),
-            ('Vino Tinto', 2.00, 'Vinos'),
-            ('Vino Blanco', 2.00, 'Vinos'),
+            ('Cerveza', 2.50, 'Cervezas', 'https://images.unsplash.com/photo-1618885472179-5e474019f2a9?w=200&h=200&fit=crop&crop=center'),
+            ('Vino Tinto', 2.00, 'Vinos', 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=200&h=200&fit=crop&crop=center'),
+            ('Vino Blanco', 2.00, 'Vinos', 'https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=200&h=200&fit=crop&crop=center'),
             
             # Licores
-            ('Baileys', 4.10, 'Licores'),
-            ('Licores sin alcohol', 2.90, 'Licores'),
-            ('Orujo, hierbas, pacharán', 2.90, 'Licores'),
-            ('Anís, brandi o ponche', 2.70, 'Licores'),
-            ('Jägermeister', 4.10, 'Licores'),
-            ('Cardhu', 8.50, 'Licores'),
-            ('Whisky (Jony, JB, Ballantines)', 4.10, 'Licores'),
-            ('Chupito nacional', 1.70, 'Licores'),
-            ('Chupito de anís, brandi, whisky', 1.00, 'Licores'),
-            ('MAGNo, DYC, Larios, Vodka', 3.10, 'Licores'),
+            ('Baileys', 4.10, 'Licores', 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=200&h=200&fit=crop&crop=center'),
+            ('Licores sin alcohol', 2.90, 'Licores', 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200&h=200&fit=crop&crop=center'),
+            ('Orujo, hierbas, pacharán', 2.90, 'Licores', 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=200&h=200&fit=crop&crop=center'),
+            ('Anís, brandi o ponche', 2.70, 'Licores', 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=200&h=200&fit=crop&crop=center'),
+            ('Jägermeister', 4.10, 'Licores', 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=200&h=200&fit=crop&crop=center'),
+            ('Cardhu', 8.50, 'Licores', 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=200&h=200&fit=crop&crop=center'),
+            ('Whisky (Jony, JB, Ballantines)', 4.10, 'Licores', 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=200&h=200&fit=crop&crop=center'),
+            ('Chupito nacional', 1.70, 'Licores', 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200&h=200&fit=crop&crop=center'),
+            ('Chupito de anís, brandi, whisky', 1.00, 'Licores', 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200&h=200&fit=crop&crop=center'),
+            ('MAGNo, DYC, Larios, Vodka', 3.10, 'Licores', 'https://images.unsplash.com/photo-1560006082-5324937ce827?w=200&h=200&fit=crop&crop=center'),
             
             # Comidas
-            ('Tostada con Tomate', 2.50, 'Comidas'),
-            ('Bocadillo Jamón', 4.50, 'Comidas'),
-            ('Tortilla Española', 3.50, 'Comidas'),
-            ('Patatas Bravas', 3.00, 'Comidas'),
-            ('Aceitunas', 2.00, 'Comidas'),
+            ('Tostada con Tomate', 2.50, 'Comidas', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200&h=200&fit=crop&crop=center'),
+            ('Bocadillo Jamón', 4.50, 'Comidas', 'https://images.unsplash.com/photo-1539252554453-80ab65ce3586?w=200&h=200&fit=crop&crop=center'),
+            ('Tortilla Española', 3.50, 'Comidas', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=200&h=200&fit=crop&crop=center'),
+            ('Patatas Bravas', 3.00, 'Comidas', 'https://images.unsplash.com/photo-1573821663912-6df460f9c684?w=200&h=200&fit=crop&crop=center'),
+            ('Aceitunas', 2.00, 'Comidas', 'https://images.unsplash.com/photo-1452827073306-6e6e661baf57?w=200&h=200&fit=crop&crop=center'),
         ]
         
-        for nombre, precio, categoria in productos_iniciales:
+        for nombre, precio, categoria, foto_url in productos_iniciales:
             producto = Producto(
                 nombre=nombre, 
                 precio=precio, 
                 categoria=categoria,
+                foto_url=foto_url,
                 stock_actual=25,
                 stock_minimo=5,
                 unidad_medida='unidad'
