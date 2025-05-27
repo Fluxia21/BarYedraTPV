@@ -725,31 +725,32 @@ select.form-input.touch-friendly {
     margin-bottom: var(--spacing-xl);
 }
 
-/* Cuadrícula de categorías como las mesas */
+/* Cuadrícula de categorías cuadradas */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: var(--spacing-xl);
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xxl);
 }
 
-/* Tarjetas de categoría con estética de mesas libres */
+/* Tarjetas cuadradas desplegables */
 .category-card {
     background-color: var(--color-white);
     border-radius: var(--border-radius-large);
-    padding: var(--spacing-xl);
+    padding: var(--spacing-lg);
     text-align: center;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    min-height: 140px;
-    min-width: 140px;
+    height: 150px;
+    width: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     border: 2px solid var(--color-sidebar);
     position: relative;
     overflow: hidden;
+    aspect-ratio: 1;
 }
 
 .category-card::before {
@@ -785,8 +786,8 @@ select.form-input.touch-friendly {
 }
 
 .category-icon {
-    font-size: 36px;
-    margin-bottom: var(--spacing-sm);
+    font-size: 32px;
+    margin-bottom: 8px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     line-height: 1;
     color: var(--color-text);
@@ -798,13 +799,13 @@ select.form-input.touch-friendly {
 }
 
 .category-name {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: var(--spacing-sm);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
     opacity: 0.9;
-    line-height: 1.2;
+    line-height: 1.1;
     color: var(--color-text);
 }
 
@@ -814,11 +815,11 @@ select.form-input.touch-friendly {
 }
 
 .category-product-count {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--color-text-light);
     font-weight: 600;
     opacity: 0.7;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 4px;
 }
 
 .category-card.expanded .category-product-count {
@@ -827,7 +828,7 @@ select.form-input.touch-friendly {
 }
 
 .category-expand-indicator {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--color-text-light);
     opacity: 0.6;
     transition: all 0.3s ease;
