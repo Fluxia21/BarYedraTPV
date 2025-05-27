@@ -63,7 +63,7 @@
                     </div>
                     <div class="product-details">
                         <div class="product-name">{{ producto.nombre }}</div>
-                        <div class="product-price">Ver precio en caja</div>
+                        <div class="product-price">€{{ "%.2f"|format(producto.precio) }}</div>
                     </div>
                     <div class="add-indicator">
                         <i class="fas fa-plus"></i>
@@ -90,11 +90,34 @@
         
         {% if pedido_actual and pedido_actual.total > 0 %}
             <div class="current-order">
+                <!-- Productos en el pedido -->
+                <div class="order-items">
+                    {% set productos_pedido = pedido_actual.productos|from_json if pedido_actual.productos else {} %}
+                    {% for producto_id, cantidad in productos_pedido.items() %}
+                        {% set producto = productos_dict[producto_id|int] %}
+                        <div class="order-item">
+                            <div class="item-details">
+                                <div class="item-name">{{ producto.nombre }}</div>
+                                <div class="item-price">€{{ "%.2f"|format(producto.precio) }}</div>
+                            </div>
+                            <div class="item-quantity">
+                                <button class="btn-quantity" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, {{ cantidad - 1 }})">-</button>
+                                <span class="quantity">{{ cantidad }}</span>
+                                <button class="btn-quantity" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, {{ cantidad + 1 }})">+</button>
+                            </div>
+                            <div class="item-subtotal">€{{ "%.2f"|format(producto.precio * cantidad) }}</div>
+                            <button class="btn-remove" onclick="removeFromOrder({{ mesa.id }}, {{ producto.id }})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+                
                 <!-- Resumen del pedido -->
                 <div class="order-summary">
                     <div class="summary-row total-row">
                         <span class="summary-label">Total:</span>
-                        <span class="summary-value">€{{ pedido_actual.total }}</span>
+                        <span class="summary-value">€{{ "%.2f"|format(pedido_actual.total) }}</span>
                     </div>
                     <div class="summary-info">
                         <small>Iniciado: {{ pedido_actual.fecha_creacion.strftime('%H:%M') if pedido_actual.fecha_creacion else 'Ahora' }}</small>
@@ -221,6 +244,63 @@ function payOrder(mesaId, method) {
         methodInput.value = method;
         
         form.appendChild(methodInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function updateQuantity(mesaId, productoId, newQuantity) {
+    if (newQuantity <= 0) {
+        removeFromOrder(mesaId, productoId);
+        return;
+    }
+    
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/update_quantity';
+    
+    const mesaInput = document.createElement('input');
+    mesaInput.type = 'hidden';
+    mesaInput.name = 'mesa_id';
+    mesaInput.value = mesaId;
+    
+    const productoInput = document.createElement('input');
+    productoInput.type = 'hidden';
+    productoInput.name = 'producto_id';
+    productoInput.value = productoId;
+    
+    const cantidadInput = document.createElement('input');
+    cantidadInput.type = 'hidden';
+    cantidadInput.name = 'cantidad';
+    cantidadInput.value = newQuantity;
+    
+    form.appendChild(mesaInput);
+    form.appendChild(productoInput);
+    form.appendChild(cantidadInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function removeFromOrder(mesaId, productoId) {
+    if (confirm('¿Eliminar este producto del pedido?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/remove_from_order';
+        
+        const mesaInput = document.createElement('input');
+        mesaInput.type = 'hidden';
+        mesaInput.name = 'mesa_id';
+        mesaInput.value = mesaId;
+        
+        const productoInput = document.createElement('input');
+        productoInput.type = 'hidden';
+        productoInput.name = 'producto_id';
+        productoInput.value = productoId;
+        
+        form.appendChild(mesaInput);
+        form.appendChild(productoInput);
+        
         document.body.appendChild(form);
         form.submit();
     }
