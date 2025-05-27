@@ -22,20 +22,17 @@
 
 <div class="table-detail-layout">
     <!-- Panel de productos (izquierda) -->
-    <div class="products-panel" style="height: calc(100vh - 200px); overflow: hidden;">
-        <h2 class="panel-title">
-            <i class="fas fa-box"></i> Productos Disponibles
-        </h2>
+    <div class="products-panel-new">
+        <div class="products-header">
+            <h2>Productos Disponibles</h2>
+        </div>
         
-        <!-- Categorías en cuadrícula fija sin scroll -->
-        <div class="categories-grid-fixed" style="height: calc(100% - 60px);">
+        <!-- Cuadrícula de categorías fija -->
+        <div class="categories-container">
             {% for categoria, productos in productos_por_categoria.items() %}
-            <div class="category-card-fixed" onclick="openCategoryModal('{{ categoria }}')">
-                <div class="category-icon">
-                    <i class="fas fa-box"></i>
-                </div>
-                <div class="category-name">{{ categoria }}</div>
-                <div class="category-product-count">{{ productos|length }} productos</div>
+            <div class="category-item" onclick="openCategoryModal('{{ categoria }}')">
+                <div class="category-label">{{ categoria }}</div>
+                <div class="category-badge">{{ productos|length }}</div>
             </div>
             {% endfor %}
         </div>
@@ -402,58 +399,86 @@ function closeCategoryModal() {
 </script>
 
 <style>
-/* Estilos para categorías fijas sin scroll */
-.categories-grid-fixed {
+/* Nueva interfaz simple para productos disponibles */
+.products-panel-new {
+    width: 100%;
+    height: calc(100vh - 180px);
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.products-header {
+    background: #2e7d32;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+}
+
+.products-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.categories-container {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 6px;
-    height: 100% !important;
+    gap: 8px;
+    padding: 12px;
+    height: 100%;
     overflow: hidden;
-    padding: 5px;
-    width: 100%;
-    box-sizing: border-box;
 }
 
-.category-card-fixed {
-    background: linear-gradient(135deg, #4caf50, #2e7d32);
+.category-item {
+    background: white;
+    border: 2px solid #e0e0e0;
     border-radius: 8px;
-    padding: 8px;
-    text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    height: 100%;
-    min-height: 60px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.category-card-fixed:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    background: linear-gradient(135deg, #5cbf60, #388e3c);
+.category-item:hover {
+    border-color: #4caf50;
+    background: #f1f8e9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.category-card-fixed .category-icon {
-    font-size: 18px;
-    margin-bottom: 4px;
-}
-
-.category-card-fixed .category-name {
+.category-label {
     font-size: 11px;
-    font-weight: bold;
-    margin-bottom: 2px;
-    line-height: 1.1;
+    font-weight: 600;
+    color: #333;
     text-align: center;
+    padding: 0 4px;
+    line-height: 1.2;
 }
 
-.category-card-fixed .category-product-count {
-    font-size: 9px;
-    opacity: 0.9;
+.category-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #4caf50;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
 }
 
 /* Estilos para el modal */
