@@ -149,7 +149,7 @@ def update_quantity():
     """Update product quantity in current order"""
     mesa_id = int(request.form.get('mesa_id'))
     producto_id = int(request.form.get('producto_id'))
-    change = int(request.form.get('change'))
+    nueva_cantidad = int(request.form.get('cantidad'))
     
     pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
     if not pedido:
@@ -160,9 +160,10 @@ def update_quantity():
     producto_id_str = str(producto_id)
     
     if producto_id_str in productos_dict:
-        productos_dict[producto_id_str] += change
-        if productos_dict[producto_id_str] <= 0:
+        if nueva_cantidad <= 0:
             del productos_dict[producto_id_str]
+        else:
+            productos_dict[producto_id_str] = nueva_cantidad
     
     # Recalculate total
     total = 0
