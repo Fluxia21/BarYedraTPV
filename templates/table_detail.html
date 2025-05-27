@@ -22,13 +22,13 @@
 
 <div class="table-detail-layout">
     <!-- Panel de productos (izquierda) -->
-    <div class="products-panel">
+    <div class="products-panel" style="height: calc(100vh - 200px); overflow: hidden;">
         <h2 class="panel-title">
             <i class="fas fa-box"></i> Productos Disponibles
         </h2>
         
         <!-- Categorías en cuadrícula fija sin scroll -->
-        <div class="categories-grid-fixed">
+        <div class="categories-grid-fixed" style="height: calc(100% - 60px);">
             {% for categoria, productos in productos_por_categoria.items() %}
             <div class="category-card-fixed" onclick="openCategoryModal('{{ categoria }}')">
                 <div class="category-icon">
@@ -335,8 +335,8 @@ const productosData = {
         {
             id: {{ producto.id }},
             nombre: "{{ producto.nombre|e }}",
-            precio: {{ producto.precio }}{% if es_terraza %},
-            precio_con_suplemento: {{ producto.precio + suplemento_terraza }}{% endif %}
+            precio: {{ producto.precio|float }}{% if es_terraza %},
+            precio_con_suplemento: {{ (producto.precio|float + suplemento_terraza|float)|round(2) }}{% endif %}
         }{% if not loop.last %},{% endif %}
         {% endfor %}
     ]{% if not loop.last %},{% endif %}
@@ -407,11 +407,12 @@ function closeCategoryModal() {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 8px;
-    height: 280px;
+    gap: 6px;
+    height: 100% !important;
     overflow: hidden;
-    padding: 10px;
+    padding: 5px;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .category-card-fixed {
