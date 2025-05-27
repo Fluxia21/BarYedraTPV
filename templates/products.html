@@ -40,13 +40,13 @@
                     {% endif %}
                 </div>
                 
-                <!-- Botones de acción -->
-                <div class="product-buttons">
-                    <button class="btn-edit-orange" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')" title="Editar producto">
-                        <i class="fas fa-pencil-alt"></i> Editar
+                <!-- Botones simples sin estilos complejos -->
+                <div style="display: flex; gap: 10px; margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 8px;">
+                    <button style="flex: 1; padding: 12px; background: #ff8c00; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')">
+                        ✏️ EDITAR
                     </button>
-                    <button class="btn-delete-red" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')" title="Eliminar producto">
-                        <i class="fas fa-trash"></i> Eliminar
+                    <button style="flex: 1; padding: 12px; background: #dc3545; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
+                        🗑️ ELIMINAR
                     </button>
                 </div>
             </div>
