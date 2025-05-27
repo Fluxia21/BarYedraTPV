@@ -27,16 +27,24 @@
             <i class="fas fa-box"></i> Productos Disponibles
         </h2>
         
-        <!-- Productos por categoría -->
+        <!-- Categorías como cajas expansibles -->
         {% for categoria, productos in productos_por_categoria.items() %}
-        <div class="product-category">
-            <h3 class="category-header">
-                <i class="fas fa-tag"></i> {{ categoria }}
-            </h3>
+        <div class="category-box" data-categoria="{{ categoria }}">
+            <div class="category-header-clickable" onclick="toggleCategory('{{ categoria }}')">
+                <div class="category-info">
+                    <i class="fas fa-{% if categoria == 'Cafés' %}coffee{% elif categoria == 'Licores' %}wine-glass{% elif categoria == 'Bebidas' %}glass-water{% elif categoria == 'Cervezas' %}beer{% elif categoria == 'Vinos' %}wine-bottle{% elif categoria == 'Comidas' %}utensils{% else %}box{% endif %}"></i>
+                    <h3 class="category-title">{{ categoria }}</h3>
+                    <span class="product-count">({{ productos|length }} productos)</span>
+                </div>
+                <div class="category-arrow">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
             
-            <div class="products-grid-detail">
-                {% for producto in productos %}
-                <div class="product-item touch-friendly" onclick="addToOrder({{ mesa.id }}, {{ producto.id }})">
+            <div class="products-container" id="products-{{ categoria }}" style="display: none;">
+                <div class="products-grid-detail">
+                    {% for producto in productos %}
+                    <div class="product-item touch-friendly" onclick="addToOrder({{ mesa.id }}, {{ producto.id }})">
                     <div class="product-icon">
                         {% if producto.foto_url %}
                             <img src="{{ producto.foto_url }}" alt="{{ producto.nombre }}" class="product-mini-photo">
@@ -113,6 +121,40 @@
 </div>
 
 <script>
+// Expandir/contraer categorías
+function toggleCategory(categoria) {
+    const container = document.getElementById(`products-${categoria}`);
+    const arrow = document.querySelector(`[data-categoria="${categoria}"] .category-arrow i`);
+    const categoryBox = document.querySelector(`[data-categoria="${categoria}"]`);
+    
+    if (container.style.display === 'none' || container.style.display === '') {
+        // Expandir
+        container.style.display = 'block';
+        arrow.classList.remove('fa-chevron-down');
+        arrow.classList.add('fa-chevron-up');
+        categoryBox.classList.add('expanded');
+        
+        // Animación suave
+        container.style.maxHeight = '0px';
+        container.style.overflow = 'hidden';
+        container.style.transition = 'max-height 0.3s ease-out';
+        setTimeout(() => {
+            container.style.maxHeight = container.scrollHeight + 'px';
+        }, 10);
+    } else {
+        // Contraer
+        container.style.maxHeight = '0px';
+        arrow.classList.remove('fa-chevron-up');
+        arrow.classList.add('fa-chevron-down');
+        categoryBox.classList.remove('expanded');
+        
+        setTimeout(() => {
+            container.style.display = 'none';
+            container.style.maxHeight = 'none';
+        }, 300);
+    }
+}
+
 // Añadir producto al pedido
 function addToOrder(mesaId, productoId) {
     // Crear formulario dinámico

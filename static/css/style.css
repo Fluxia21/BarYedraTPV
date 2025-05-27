@@ -714,6 +714,104 @@ select.form-input.touch-friendly {
     margin-bottom: var(--spacing-xl);
 }
 
+/* Estilos para categorías expandibles */
+.category-box {
+    background: linear-gradient(135deg, var(--color-white) 0%, #f8f9fa 100%);
+    border: 2px solid var(--color-gray-medium);
+    border-radius: var(--border-radius-large);
+    margin-bottom: var(--spacing-md);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.category-box:hover {
+    border-color: var(--color-sidebar);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
+}
+
+.category-box.expanded {
+    border-color: var(--color-sidebar);
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.15);
+}
+
+.category-header-clickable {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    transition: all 0.3s ease;
+    min-height: 80px;
+}
+
+.category-header-clickable:hover {
+    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.category-info i {
+    font-size: 24px;
+    color: var(--color-sidebar);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(46, 125, 50, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.category-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.product-count {
+    font-size: 14px;
+    color: var(--color-text-light);
+    background: var(--color-gray-light);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-left: var(--spacing-sm);
+}
+
+.category-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--color-sidebar);
+    color: var(--color-white);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.category-arrow i {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.category-box.expanded .category-arrow {
+    background: var(--color-libre);
+    transform: rotate(180deg);
+}
+
+.products-container {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+    background: #ffffff;
+}
+
 .category-header {
     font-size: 18px;
     font-weight: 600;
