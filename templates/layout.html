@@ -5,56 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Bar Yedra - Sistema TPV{% endblock %}</title>
     
+    <!-- Accessibility enhancements -->
+    <meta name="description" content="Sistema de punto de venta para Bar Yedra - Gestión de mesas, pedidos e inventario">
+    <meta name="theme-color" content="#2e7d32">
+    
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <!-- Accessibility CSS -->
+    <style>
+        /* Skip links for keyboard navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--color-sidebar);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+            font-weight: bold;
+        }
+        .skip-link:focus {
+            top: 6px;
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .table-card, .category-card, .product-item {
+                border-width: 3px !important;
+                border-color: #000 !important;
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Enhanced focus indicators */
+        .table-card:focus, .category-card:focus, .product-item:focus, .btn:focus, .nav-link:focus {
+            outline: 3px solid #005fcc;
+            outline-offset: 2px;
+        }
+        
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
 </head>
 <body>
+    <!-- Skip links for keyboard navigation -->
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <a href="#sidebar-nav" class="skip-link">Saltar a la navegación</a>
     <div class="app-layout">
-        <!-- Sidebar exacto del PDF -->
-        <aside class="sidebar">
+        <!-- Sidebar with accessibility enhancements -->
+        <aside class="sidebar" role="navigation" aria-label="Navegación principal">
             <div class="sidebar-header">
-                <a class="sidebar-brand" href="{{ url_for('index') }}">
+                <a class="sidebar-brand" href="{{ url_for('index') }}" aria-label="Bar Yedra - Ir al inicio">
                     BAR YEDRA
                 </a>
             </div>
             
-            <nav>
-                <ul class="sidebar-nav">
-                    <li>
-                        <a class="nav-link" href="{{ url_for('index') }}">
-                            <i class="fas fa-home"></i>
+            <nav id="sidebar-nav" aria-label="Menú principal">
+                <ul class="sidebar-nav" role="menubar">
+                    <li role="none">
+                        <a class="nav-link" href="{{ url_for('index') }}" role="menuitem" aria-label="Ir a inicio y gestión de mesas">
+                            <i class="fas fa-home" aria-hidden="true"></i>
                             Inicio
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="{{ url_for('index') }}">
-                            <i class="fas fa-table"></i>
+                    <li role="none">
+                        <a class="nav-link" href="{{ url_for('index') }}" role="menuitem" aria-label="Gestionar mesas del restaurante">
+                            <i class="fas fa-table" aria-hidden="true"></i>
                             Mesas
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="{{ url_for('cash_register') }}">
-                            <i class="fas fa-cash-register"></i>
+                    <li role="none">
+                        <a class="nav-link" href="{{ url_for('cash_register') }}" role="menuitem" aria-label="Ver caja diaria y ventas">
+                            <i class="fas fa-cash-register" aria-hidden="true"></i>
                             Caja diaria
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="{{ url_for('products') }}">
-                            <i class="fas fa-box"></i>
+                    <li role="none">
+                        <a class="nav-link" href="{{ url_for('products') }}" role="menuitem" aria-label="Gestionar productos del menú">
+                            <i class="fas fa-box" aria-hidden="true"></i>
                             Productos
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="{{ url_for('inventory') }}">
-                            <i class="fas fa-warehouse"></i>
+                    <li role="none">
+                        <a class="nav-link" href="{{ url_for('inventory') }}" role="menuitem" aria-label="Controlar inventario y stock">
+                            <i class="fas fa-warehouse" aria-hidden="true"></i>
                             Inventario
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="{{ url_for('reports') }}">
-                            <i class="fas fa-chart-bar"></i>
+                    <li role="none">
+                        <a class="nav-link" href="{{ url_for('reports') }}" role="menuitem" aria-label="Ver reportes de ventas">
+                            <i class="fas fa-chart-bar" aria-hidden="true"></i>
                             Reportes
                         </a>
                     </li>
