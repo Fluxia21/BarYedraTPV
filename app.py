@@ -486,7 +486,7 @@ def export_excel(periodo):
     # Encabezados con estilo
     encabezados = ['Fecha', 'Hora', 'Mesa', 'Total', 'Forma de Pago', 'Ticket #']
     for col, encabezado in enumerate(encabezados, 1):
-        celda = ws.cell(row=1, col=col, value=encabezado)
+        celda = ws.cell(row=1, column=col, value=encabezado)
         celda.font = Font(bold=True, color='FFFFFF')
         celda.fill = PatternFill(start_color='2E7D32', end_color='2E7D32', fill_type='solid')
         celda.alignment = Alignment(horizontal='center')
@@ -495,18 +495,18 @@ def export_excel(periodo):
     total_general = 0
     for row, pedido in enumerate(pedidos, 2):
         mesa = Mesa.query.get(pedido.mesa_id)
-        ws.cell(row=row, col=1, value=pedido.fecha_pago.strftime('%d/%m/%Y'))
-        ws.cell(row=row, col=2, value=pedido.fecha_pago.strftime('%H:%M'))
-        ws.cell(row=row, col=3, value=f"{mesa.zona} {mesa.numero}")
-        ws.cell(row=row, col=4, value=float(pedido.total))
-        ws.cell(row=row, col=5, value=pedido.forma_pago.title())
-        ws.cell(row=row, col=6, value=pedido.id)
+        ws.cell(row=row, column=1, value=pedido.fecha_pago.strftime('%d/%m/%Y'))
+        ws.cell(row=row, column=2, value=pedido.fecha_pago.strftime('%H:%M'))
+        ws.cell(row=row, column=3, value=f"{mesa.zona} {mesa.numero}")
+        ws.cell(row=row, column=4, value=float(pedido.total))
+        ws.cell(row=row, column=5, value=pedido.forma_pago.title())
+        ws.cell(row=row, column=6, value=pedido.id)
         total_general += float(pedido.total)
     
     # Totales
     row_total = len(pedidos) + 3
-    ws.cell(row=row_total, col=3, value="TOTAL:").font = Font(bold=True)
-    ws.cell(row=row_total, col=4, value=total_general).font = Font(bold=True)
+    ws.cell(row=row_total, column=3, value="TOTAL:").font = Font(bold=True)
+    ws.cell(row=row_total, column=4, value=total_general).font = Font(bold=True)
     
     # Ajustar ancho de columnas
     for col in ws.columns:
