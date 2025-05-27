@@ -1,0 +1,51 @@
+
+=====================================
+   BAR YEDRA - SISTEMA TPV
+=====================================
+
+Iniciando servidor...
+
+Traceback (most recent call last):
+  File "run_server.py", line 13, in <module>
+    from app import app, db
+  File "C:\Users\Usuario\Desktop\YedraMenuManager\app.py", line 45, in <module>
+    from models import Mesa, Producto, Pedido, Ticket, MovimientoStock
+  File "C:\Users\Usuario\Desktop\YedraMenuManager\models.py", line 4, in <module
+>
+    class Mesa(db.Model):
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\flask_sqlalchemy\model.py", line 100, in __init__
+    super().__init__(name, bases, d, **kwargs)
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\flask_sqlalchemy\model.py", line 120, in __init__
+    super().__init__(name, bases, d, **kwargs)
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\decl_api.py", line 195, in __init__
+    _as_declarative(reg, cls, dict_)
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\decl_base.py", line 247, in _as_declarative
+    return _MapperConfig.setup_mapping(registry, cls, dict_, None, {})
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\decl_base.py", line 328, in setup_mapping
+    return _ClassScanMapperConfig(
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\decl_base.py", line 520, in __init__
+    super().__init__(registry, cls_, mapper_kw)
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\decl_base.py", line 344, in __init__
+    instrumentation.register_class(
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\instrumentation.py", line 684, in register_class
+    manager._update_state(
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\instrumentation.py", line 209, in _update_state
+    registry._add_manager(self)
+  File "C:\Users\Usuario\AppData\Local\Programs\Python\Python38\lib\site-package
+s\sqlalchemy\orm\decl_api.py", line 1380, in _add_manager
+    raise exc.ArgumentError(
+sqlalchemy.exc.ArgumentError: Class '<class 'models.Mesa'>' already has a primar
+y mapper defined.
+
+El servidor se ha cerrado.
+Presiona cualquier tecla para salir...
+

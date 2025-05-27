@@ -1,0 +1,113 @@
+{% extends "base_tpv.html" %}
+
+{% block title %}Mesas - Bar Yedra TPV{% endblock %}
+
+{% block content %}
+<style>
+    .zona-section {
+        margin: 30px 0;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .zona-title {
+        color: #2e7d32;
+        font-size: 24px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 10px;
+    }
+
+    .mesas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .mesa-card {
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .mesa-card.libre {
+        background: #d4edda;
+        border-color: #4caf50;
+    }
+
+    .mesa-card.ocupada {
+        background: #fff3cd;
+        border-color: #ffc107;
+    }
+
+    .mesa-card.pagada {
+        background: #f8d7da;
+        border-color: #dc3545;
+    }
+
+    .mesa-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .mesa-numero {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .mesa-estado {
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .estado-libre { background: #4caf50; }
+    .estado-ocupada { background: #ffc107; color: #333; }
+    .estado-pagada { background: #dc3545; }
+</style>
+
+<h2>🍽️ Gestión de Mesas</h2>
+
+{% for zona, mesas in mesas_por_zona.items() %}
+    <div class="zona-section">
+        <h3 class="zona-title">{{ zona }}</h3>
+        <div class="mesas-grid">
+            {% for mesa in mesas %}
+                <div class="mesa-card {{ mesa.estado }}" onclick="gestionarMesa({{ mesa.id }}, {{ mesa.numero }}, '{{ mesa.estado }}')">
+                    <div class="mesa-numero">Mesa {{ mesa.numero }}</div>
+                    <div class="mesa-estado estado-{{ mesa.estado }}">
+                        {% if mesa.estado == 'libre' %}
+                            ✅ Libre
+                        {% elif mesa.estado == 'ocupada' %}
+                            ⏰ Ocupada
+                        {% else %}
+                            💰 Por Pagar
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+function gestionarMesa(id, numero, estado) {
+    if (estado === 'libre') {
+        alert('Mesa ' + numero + ' - Libre\n\nEsta mesa está disponible para nuevos clientes.');
+    } else if (estado === 'ocupada') {
+        alert('Mesa ' + numero + ' - Ocupada\n\nLos clientes están actualmente en la mesa.');
+    } else {
+        alert('Mesa ' + numero + ' - Por Pagar\n\nLa cuenta está pendiente de pago.');
+    }
+}
+</script>
+{% endblock %}
