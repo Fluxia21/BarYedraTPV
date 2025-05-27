@@ -40,15 +40,22 @@
                     {% endif %}
                 </div>
                 
-                <!-- Botones simples sin estilos complejos -->
-                <div style="display: flex; gap: 10px; margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 8px;">
-                    <button style="flex: 1; padding: 12px; background: #ff8c00; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')">
-                        ✏️ EDITAR
-                    </button>
-                    <button style="flex: 1; padding: 12px; background: #dc3545; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
-                        🗑️ ELIMINAR
-                    </button>
-                </div>
+                <!-- Botones de prueba muy simples -->
+                <p style="background: yellow; padding: 10px; margin: 10px 0;">BOTONES DE PRODUCTO:</p>
+                <table style="width: 100%; margin: 10px 0;">
+                    <tr>
+                        <td style="width: 50%; padding: 5px;">
+                            <button style="width: 100%; padding: 15px; background: orange; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')">
+                                EDITAR
+                            </button>
+                        </td>
+                        <td style="width: 50%; padding: 5px;">
+                            <button style="width: 100%; padding: 15px; background: red; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
+                                ELIMINAR
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
             {% endfor %}
         </div>
