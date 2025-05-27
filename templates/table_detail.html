@@ -106,7 +106,10 @@
                         <div class="money-input-container">
                             <span class="currency-symbol">€</span>
                             <input type="number" id="moneyReceived" step="0.01" min="0" 
-                                   placeholder="0.00" oninput="calculateChange()">
+                                   placeholder="0.00" 
+                                   oninput="calculateChange()" 
+                                   onchange="calculateChange()" 
+                                   onkeyup="calculateChange()">
                         </div>
                     </div>
                     
@@ -541,17 +544,27 @@ function calculateOrderTotal() {
 }
 
 function calculateChange() {
-    const received = parseFloat(document.getElementById('moneyReceived').value) || 0;
-    const change = received - currentOrderTotal;
-    
+    const moneyReceivedInput = document.getElementById('moneyReceived');
     const changeElement = document.getElementById('changeToReturn');
     
+    if (!moneyReceivedInput || !changeElement) {
+        console.log('Elementos no encontrados');
+        return;
+    }
+    
+    const received = parseFloat(moneyReceivedInput.value) || 0;
+    const change = received - currentOrderTotal;
+    
+    console.log('Calculando cambio:', {received, currentOrderTotal, change});
+    
     if (change < 0) {
-        changeElement.textContent = '€' + Math.abs(change).toFixed(2);
+        // Dinero insuficiente - mostrar en rojo
+        changeElement.textContent = '€' + Math.abs(change).toFixed(2) + ' (Falta)';
         changeElement.style.color = '#d32f2f';
         changeElement.style.background = '#ffebee';
         changeElement.style.borderColor = '#f44336';
     } else {
+        // Cambio correcto - mostrar en naranja
         changeElement.textContent = '€' + change.toFixed(2);
         changeElement.style.color = '#e65100';
         changeElement.style.background = '#fff3e0';
