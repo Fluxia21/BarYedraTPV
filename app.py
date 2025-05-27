@@ -27,10 +27,11 @@ db = SQLAlchemy(model_class=Base)
 
 # Create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "yedra-bar-secret-key-2024")
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+app.secret_key = "yedra-bar-secret-key-2024"
+# ProxyFix no necesario para uso local
+# app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Configure SQLite database for local operation
+# Configure SQLite database for local operation (portable)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///yedra_bar.db"
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
