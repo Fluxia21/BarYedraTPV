@@ -44,156 +44,114 @@ def init_database():
         
         print(f"Added {mesa_count} tables")
         
-        # Add sample products with realistic bar prices
+        # Add products organized by business priority
         productos_iniciales = [
-            # Cafés
-            ('Café solo', 1.60),
-            ('Café con leche', 1.80),
-            ('Café con leche sin lactosa', 1.80),
-            ('Café con leche y hielo', 1.70),
-            ('Café para llevar', 1.70),
-            ('Café bombón', 2.00),
-            ('Cortado', 1.30),
-            ('TERRAZA CAFÉ CON LECHE', 1.50),
-            ('TERRAZA CAFÉ CON LECHE HIELO', 1.70),
-            ('TERRAZA CAFÉ CON 2CHUR', 2.50),
+            # CAFÉS Y BEBIDAS CALIENTES (Principal consumo)
+            ('Café Solo', 1.60, 'Cafés', 1),
+            ('Café con Leche', 1.80, 'Cafés', 2),
+            ('Cortado', 1.30, 'Cafés', 3),
+            ('Café Bombón', 2.00, 'Cafés', 4),
+            ('Café con Leche Helado', 1.90, 'Cafés', 5),
+            ('Café para Llevar', 1.70, 'Cafés', 6),
+            ('Descafeinado Solo', 1.60, 'Cafés', 7),
+            ('Descafeinado con Leche', 1.80, 'Cafés', 8),
+            ('Carajillo', 2.50, 'Cafés', 9),
             
-            # Tés e Infusiones
-            ('Infusión', 2.00),
-            ('ColaCao infusión', 3.30),
-            ('Taza de chocolate', 2.30),
-            ('Té', 1.20),
-            ('Manzanilla', 1.20),
-            ('Poleo', 1.20),
-            ('Té Verde', 1.30),
+            # DESAYUNOS COMPLETOS (Alto consumo)
+            ('Desayuno Clásico', 3.50, 'Desayunos', 1),
+            ('Desayuno Especial', 4.50, 'Desayunos', 2),
+            ('Café + Tostada', 3.20, 'Desayunos', 3),
+            ('Café + 2 Churros', 2.70, 'Desayunos', 4),
+            ('ColaCao + Churros', 3.30, 'Desayunos', 5),
+            ('Chocolate + Churros', 3.50, 'Desayunos', 6),
+            ('Zumo + Tostada', 4.20, 'Desayunos', 7),
             
-            # Desayunos
-            ('Café con 2 churros', 2.70),
-            ('Churro o porra', 0.80),
-            ('Churro o porra TERRAZA UN', 0.80),
-            ('DESAYUNO CLÁSICO', 3.00),
-            ('DESAYUNO ESPECIAL', 4.70),
-            ('TERRAZA DESAYUNO', 2.80),
-            ('TERRAZA DESAY. COLA CAO', 3.10),
-            ('Vaso de leche', 1.60),
-            ('Zumo de naranja', 2.80),
-            ('BOLLERÍA', 1.70),
-            ('Mantequilla o mermelada', 0.30),
-            ('Suplemento aceite o tomate', 0.30),
-            ('Suplemento leche sin lactosa', 0.20),
+            # BOCADILLOS FRÍOS (Alto consumo)
+            ('Bocadillo Jamón York', 4.50, 'Bocadillos Fríos', 1),
+            ('Bocadillo Jamón Serrano', 5.50, 'Bocadillos Fríos', 2),
+            ('Bocadillo Queso', 3.50, 'Bocadillos Fríos', 3),
+            ('Bocadillo Chorizo', 4.00, 'Bocadillos Fríos', 4),
+            ('Bocadillo Lomo', 4.80, 'Bocadillos Fríos', 5),
+            ('Bocadillo Atún', 4.20, 'Bocadillos Fríos', 6),
+            ('Bocadillo Mixto', 4.00, 'Bocadillos Fríos', 7),
             
-            # Bebidas Frías
-            ('Agua Mineral', 1.50),
-            ('Agua con Gas', 1.60),
-            ('Coca Cola', 2.00),
-            ('Fanta Naranja', 2.00),
-            ('Sprite', 2.00),
-            ('Aquarius', 2.20),
-            ('Zumo Natural Naranja', 2.50),
-            ('Zumo Tomate', 2.00),
+            # MONTADOS CALIENTES (Alto consumo)
+            ('Montado Jamón y Queso', 5.50, 'Montados Calientes', 1),
+            ('Montado Lomo y Queso', 5.80, 'Montados Calientes', 2),
+            ('Montado York y Queso', 4.80, 'Montados Calientes', 3),
+            ('Montado Chorizo', 4.50, 'Montados Calientes', 4),
+            ('Montado Tortilla', 4.20, 'Montados Calientes', 5),
+            ('Montado Bacon', 5.20, 'Montados Calientes', 6),
             
-            # Bebidas Alcohólicas
-            ('Cerveza Estrella', 2.50),
-            ('Cerveza Mahou', 2.50),
-            ('Cerveza sin Alcohol', 2.20),
-            ('Vino Tinto', 2.00),
-            ('Vino Blanco', 2.00),
-            ('Vino Rosado', 2.00),
-            ('Jerez', 2.50),
-            ('Whisky', 4.00),
-            ('Vodka', 3.50),
-            ('Gin Tonic', 4.50),
-            ('Rum Cola', 4.00),
+            # TOSTADAS Y BOLLERÍA (Alto consumo)
+            ('Tostada con Tomate', 2.50, 'Tostadas', 1),
+            ('Tostada con Mantequilla', 2.00, 'Tostadas', 2),
+            ('Tostada con Mermelada', 2.30, 'Tostadas', 3),
+            ('Tostada con Aceite', 2.00, 'Tostadas', 4),
+            ('Churro', 0.80, 'Tostadas', 5),
+            ('Porra', 0.90, 'Tostadas', 6),
+            ('Croissant', 1.50, 'Tostadas', 7),
+            ('Magdalena', 1.20, 'Tostadas', 8),
             
-            # Tapas y Comida
-            ('Tostada con Tomate', 2.50),
-            ('Tostada con Mantequilla', 2.00),
-            ('Bocadillo Jamón York', 4.50),
-            ('Bocadillo Jamón Serrano', 5.50),
-            ('Bocadillo Chorizo', 4.00),
-            ('Bocadillo Queso', 3.50),
-            ('Bocadillo Tortilla', 4.00),
-            ('Tortilla Española', 3.50),
-            ('Tortilla Francesa', 3.00),
-            ('Patatas Bravas', 3.00),
-            ('Aceitunas', 2.00),
-            ('Aceitunas Rellenas', 2.50),
-            ('Almendras', 2.50),
-            ('Jamón Serrano', 8.50),
-            ('Queso Manchego', 6.00),
-            ('Croquetas (6 uds)', 4.50),
-            ('Calamares', 6.00),
-            ('Boquerones', 4.50),
+            # BEBIDAS FRÍAS (Consumo medio)
+            ('Agua Mineral', 1.50, 'Bebidas Frías', 1),
+            ('Coca Cola', 2.00, 'Bebidas Frías', 2),
+            ('Fanta Naranja', 2.00, 'Bebidas Frías', 3),
+            ('Sprite', 2.00, 'Bebidas Frías', 4),
+            ('Aquarius', 2.20, 'Bebidas Frías', 5),
+            ('Zumo Naranja Natural', 2.80, 'Bebidas Frías', 6),
+            ('Zumo Tomate', 2.00, 'Bebidas Frías', 7),
+            ('Nestea', 2.20, 'Bebidas Frías', 8),
             
-            # Raciones
-            ('Ensalada Mixta', 5.50),
-            ('Ensalada de Tomate', 4.50),
-            ('Gambas al Ajillo', 8.50),
-            ('Pulpo a la Gallega', 9.50),
-            ('Paella (por persona)', 12.00),
-            ('Pescado del Día', 10.00),
-            ('Solomillo', 15.00),
+            # CERVEZAS (Consumo medio)
+            ('Cerveza Estrella', 2.50, 'Cervezas', 1),
+            ('Cerveza Mahou', 2.50, 'Cervezas', 2),
+            ('Cerveza sin Alcohol', 2.20, 'Cervezas', 3),
+            ('Caña', 1.80, 'Cervezas', 4),
+            ('Tercio', 2.80, 'Cervezas', 5),
             
-            # Postres
-            ('Flan Casero', 3.00),
-            ('Natillas', 2.50),
-            ('Helado (3 bolas)', 3.50),
-            ('Fruta del Tiempo', 3.00),
-            ('Tarta del Día', 3.50),
+            # INFUSIONES (Consumo medio)
+            ('Té', 1.50, 'Infusiones', 1),
+            ('Manzanilla', 1.50, 'Infusiones', 2),
+            ('Poleo', 1.50, 'Infusiones', 3),
+            ('Tila', 1.50, 'Infusiones', 4),
+            ('Chocolate', 2.30, 'Infusiones', 5),
+            ('ColaCao', 2.50, 'Infusiones', 6),
             
-            # Helados
-            ('KIKOS', 3.10),
-            ('Dulce de leche', 3.10),
-            ('Hazell Roll', 2.70),
-            ('Ibizza Roll', 2.70),
-            ('Crik Crak', 2.70),
-            ('LACASITOS (snack)', 2.70),
-            ('LACASITOS (helado)', 3.10),
-            ('GOL', 2.60),
-            ('Granini', 2.10),
-            ('Mint lolly', 2.10),
-            ('Cacaolat', 3.00),
-            ('Mini polos', 2.60),
-            ('FORMAT XL', 3.10),
-            ('Polos fresa', 2.10),
-            ('Polos limón', 2.10),
-            ('Trina naranja', 2.60),
-            ('CONO SIN AZÚCARES AÑADIDOS', 3.10),
-            ('DONUTS', 3.00),
-            ('CHUPACHUPS', 3.00),
-            ('DANONINO', 2.60),
+            # TAPAS RÁPIDAS (Consumo ocasional)
+            ('Tortilla Española', 3.50, 'Tapas', 1),
+            ('Tortilla Francesa', 3.00, 'Tapas', 2),
+            ('Aceitunas', 2.00, 'Tapas', 3),
+            ('Patatas Bravas', 3.50, 'Tapas', 4),
+            ('Croquetas (6 uds)', 4.50, 'Tapas', 5),
+            
+            # SUPLEMENTOS Y EXTRAS
+            ('Extra Tomate', 0.30, 'Suplementos', 1),
+            ('Extra Aceite', 0.30, 'Suplementos', 2),
+            ('Leche sin Lactosa', 0.20, 'Suplementos', 3),
+            ('Extra Queso', 0.50, 'Suplementos', 4),
+            ('Extra Jamón', 1.00, 'Suplementos', 5),
         ]
         
-        producto_count = 0
-        
-        # Definir categorías automáticas basadas en los productos
-        categorias_productos = {
-            'Cafés': ['Café solo', 'Café con leche', 'Café con leche sin lactosa', 'Café con leche y hielo', 'Café para llevar', 'Café bombón', 'Cortado', 'Carajillo', 'Descafeinado', 'TERRAZA CAFÉ CON LECHE', 'TERRAZA CAFÉ CON LECHE HIELO', 'TERRAZA CAFÉ CON 2CHUR'],
-            'Tés e Infusiones': ['Infusión', 'ColaCao infusión', 'Taza de chocolate', 'Té', 'Manzanilla', 'Poleo', 'Tila', 'Té Verde'],
-            'Desayunos': ['Café con 2 churros', 'Churro o porra', 'Churro o porra TERRAZA UN', 'DESAYUNO CLÁSICO', 'DESAYUNO ESPECIAL', 'TERRAZA DESAYUNO', 'TERRAZA DESAY. COLA CAO', 'Vaso de leche', 'Zumo de naranja', 'BOLLERÍA', 'Mantequilla o mermelada', 'Suplemento aceite o tomate', 'Suplemento leche sin lactosa'],
-            'Refrescos': ['Coca Cola', 'Coca Cola Zero', 'Fanta Naranja', 'Fanta Limón', 'Sprite', 'Aquarius', 'Nestea', 'Agua'],
-            'Cervezas': ['Cerveza Caña', 'Cerveza Botellín', 'Cerveza Sin Alcohol'],
-            'Vinos': ['Vino Tinto', 'Vino Blanco', 'Vino Rosado'],
-            'Licores Premium': ['Anís', 'Pacharán', 'Licor de Hierbas', 'Brandy', 'Coñac', 'Jerez', 'Whisky', 'Vodka', 'Gin Tonic', 'Rum Cola'],
-            'Tapas y Comida': ['Tostada con Tomate', 'Tostada con Mantequilla', 'Bocadillo Jamón York', 'Bocadillo Jamón Serrano', 'Bocadillo Chorizo', 'Bocadillo Queso', 'Bocadillo Tortilla', 'Tortilla Española', 'Tortilla Francesa', 'Patatas Bravas', 'Aceitunas', 'Aceitunas Rellenas', 'Almendras', 'Jamón Serrano', 'Queso Manchego', 'Croquetas (6 uds)', 'Calamares', 'Boquerones'],
-            'Raciones': ['Ensalada Mixta', 'Ensalada de Tomate', 'Gambas al Ajillo', 'Pulpo a la Gallega', 'Paella (por persona)', 'Pescado del Día', 'Solomillo'],
-            'Postres': ['Flan Casero', 'Natillas', 'Helado (3 bolas)', 'Fruta del Tiempo', 'Tarta del Día'],
-            'HELADOS': ['KIKOS', 'Dulce de leche', 'Hazell Roll', 'Ibizza Roll', 'Crik Crak', 'LACASITOS (snack)', 'LACASITOS (helado)', 'GOL', 'Granini', 'Mint lolly', 'Cacaolat', 'Mini polos', 'FORMAT XL', 'Polos fresa', 'Polos limón', 'Trina naranja', 'CONO SIN AZÚCARES AÑADIDOS', 'DONUTS', 'CHUPACHUPS', 'DANONINO']
-        }
-        
-        for nombre, precio in productos_iniciales:
-            # Determinar la categoría del producto
-            categoria = 'General'  # Categoría por defecto
-            for cat, productos in categorias_productos.items():
-                if nombre in productos:
-                    categoria = cat
-                    break
-            
-            producto = Producto(nombre=nombre, precio=precio, categoria=categoria, activo=True)
+        # Create products with proper categorization
+        for item in productos_iniciales:
+            if len(item) == 5:  # New format with category and order
+                nombre, precio, categoria, orden = item[0], item[1], item[2], item[3]
+            else:  # Old format - skip these
+                continue
+                
+            producto = Producto(
+                nombre=nombre,
+                precio=precio,
+                categoria=categoria,
+                orden=orden,
+                activo=True,
+                stock_actual=50,
+                stock_minimo=5
+            )
             db.session.add(producto)
-            producto_count += 1
         
-        print(f"Added {producto_count} products")
+        print(f"Added {len(productos_iniciales)} products")
         
         # Commit all changes
         db.session.commit()
