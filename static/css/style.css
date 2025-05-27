@@ -667,10 +667,10 @@ select.form-input.touch-friendly {
 /* ========== DETALLE DE MESA TÁCTIL ========== */
 
 .table-detail-layout {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: flex;
     gap: var(--spacing-xl);
     min-height: calc(100vh - 160px);
+    position: relative;
 }
 
 .table-status-badge {
@@ -687,8 +687,9 @@ select.form-input.touch-friendly {
     align-items: center;
 }
 
-/* Panel de productos */
+/* Panel de productos (izquierda, scrolleable) */
 .products-panel {
+    flex: 1;
     background: var(--color-white);
     border-radius: var(--border-radius-large);
     padding: var(--spacing-lg);
@@ -699,15 +700,25 @@ select.form-input.touch-friendly {
 }
 
 .panel-title {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 800;
     color: var(--color-text);
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-md);
-    border-bottom: 2px solid var(--color-sidebar);
+    border-bottom: 3px solid var(--color-sidebar);
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, transparent 0%, rgba(46, 125, 50, 0.05) 100%);
+    padding: var(--spacing-md);
+    border-radius: 12px;
+    margin: -var(--spacing-md) -var(--spacing-md) var(--spacing-lg) -var(--spacing-md);
+}
+
+.panel-title i {
+    font-size: 26px;
+    color: var(--color-sidebar);
 }
 
 .product-category {
@@ -1031,16 +1042,20 @@ select.form-input.touch-friendly {
     transform: scale(1.05) rotate(2deg);
 }
 
-/* Panel de pedido */
+/* Panel de pedido (derecha, fijo y siempre visible) */
 .order-panel {
-    background: var(--color-white);
+    width: 380px;
+    min-width: 380px;
+    background: linear-gradient(145deg, var(--color-white) 0%, #f8fdf8 100%);
     border-radius: var(--border-radius-large);
     padding: var(--spacing-lg);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 2px solid var(--color-gray-medium);
-    height: fit-content;
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.15);
+    border: 3px solid #e1f5e1;
+    height: calc(100vh - 200px);
     position: sticky;
     top: var(--spacing-lg);
+    overflow-y: auto;
+    z-index: 10;
 }
 
 .current-order {
