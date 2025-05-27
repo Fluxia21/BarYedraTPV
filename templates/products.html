@@ -40,12 +40,12 @@
                     {% endif %}
                 </div>
                 
-                <!-- Botones de acción siempre visibles -->
-                <div class="product-actions-simple">
-                    <button class="btn-edit" onclick="editProduct({{ producto.id }})" title="Editar producto">
-                        <i class="fas fa-edit"></i> Editar
+                <!-- Botones de acción -->
+                <div class="product-buttons">
+                    <button class="btn-edit-orange" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')" title="Editar producto">
+                        <i class="fas fa-pencil-alt"></i> Editar
                     </button>
-                    <button class="btn-delete" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')" title="Eliminar producto">
+                    <button class="btn-delete-red" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')" title="Eliminar producto">
                         <i class="fas fa-trash"></i> Eliminar
                     </button>
                 </div>
@@ -67,6 +67,64 @@
         </button>
     </div>
     {% endif %}
+</div>
+
+<!-- Modal para editar producto -->
+<div id="editProductModal" class="modal" style="display: none;">
+    <div class="modal-content touch-optimized">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit"></i> Editar Producto</h2>
+            <button class="modal-close touch-friendly" onclick="hideEditProductModal()">
+                <i class="icon-x"></i>
+            </button>
+        </div>
+        
+        <form id="editProductForm" method="POST" action="" class="product-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="edit_nombre" class="form-label">Nombre del Producto</label>
+                    <input type="text" id="edit_nombre" name="nombre" required class="form-input touch-friendly">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_precio" class="form-label">Precio (€)</label>
+                    <input type="number" id="edit_precio" name="precio" step="0.01" min="0" required class="form-input touch-friendly">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_categoria" class="form-label">Categoría</label>
+                    <select id="edit_categoria" name="categoria" required class="form-input touch-friendly">
+                        <option value="Cafés">Cafés</option>
+                        <option value="Desayunos">Desayunos</option>
+                        <option value="Montados">Montados</option>
+                        <option value="Platos Calientes">Platos Calientes</option>
+                        <option value="Helados">Helados</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_foto_url" class="form-label">URL de la Imagen</label>
+                    <input type="url" id="edit_foto_url" name="foto_url" class="form-input touch-friendly" placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
+                
+                <div class="form-group form-group-full">
+                    <label for="edit_descripcion" class="form-label">Descripción</label>
+                    <textarea id="edit_descripcion" name="descripcion" rows="3" class="form-input touch-friendly" placeholder="Descripción opcional del producto"></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-primary btn-lg touch-friendly">
+                    <i class="icon-save"></i> Guardar Cambios
+                </button>
+                <button type="button" class="btn btn-secondary btn-lg touch-friendly" onclick="hideEditProductModal()">
+                    <i class="icon-x"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Modal para añadir producto - Optimizado para táctil -->
@@ -140,8 +198,23 @@ function hideAddProductModal() {
     document.getElementById('addProductModal').style.display = 'none';
 }
 
-function editProduct(id) {
-    window.location.href = `/edit_product/${id}`;
+function openEditModal(id, nombre, precio, categoria, foto_url, descripcion) {
+    // Llenar el formulario con los datos del producto
+    document.getElementById('edit_nombre').value = nombre;
+    document.getElementById('edit_precio').value = precio;
+    document.getElementById('edit_categoria').value = categoria;
+    document.getElementById('edit_foto_url').value = foto_url;
+    document.getElementById('edit_descripcion').value = descripcion;
+    
+    // Configurar la acción del formulario
+    document.getElementById('editProductForm').action = `/update_product/${id}`;
+    
+    // Mostrar el modal
+    document.getElementById('editProductModal').style.display = 'flex';
+}
+
+function hideEditProductModal() {
+    document.getElementById('editProductModal').style.display = 'none';
 }
 
 function deleteProduct(id, nombre) {
@@ -152,8 +225,8 @@ function deleteProduct(id, nombre) {
 </script>
 
 <style>
-/* Estilos simples para botones de editar/eliminar */
-.product-actions-simple {
+/* Estilos para botones de editar/eliminar */
+.product-buttons {
     display: flex;
     gap: 10px;
     margin-top: 15px;
@@ -162,7 +235,7 @@ function deleteProduct(id, nombre) {
     border-radius: 8px;
 }
 
-.btn-edit, .btn-delete {
+.btn-edit-orange, .btn-delete-red {
     flex: 1;
     padding: 12px 16px;
     border: none;
@@ -172,26 +245,32 @@ function deleteProduct(id, nombre) {
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
-.btn-edit {
-    background: #007bff;
+.btn-edit-orange {
+    background: #ff8c00;
     color: white;
 }
 
-.btn-edit:hover {
-    background: #0056b3;
+.btn-edit-orange:hover {
+    background: #ff7700;
     transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 140, 0, 0.3);
 }
 
-.btn-delete {
+.btn-delete-red {
     background: #dc3545;
     color: white;
 }
 
-.btn-delete:hover {
+.btn-delete-red:hover {
     background: #c82333;
     transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
 }
 
 .product-card {
@@ -210,7 +289,7 @@ function deleteProduct(id, nombre) {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .btn-edit, .btn-delete {
+    .btn-edit-orange, .btn-delete-red {
         padding: 15px 20px;
         font-size: 16px;
     }
