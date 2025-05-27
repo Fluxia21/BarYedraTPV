@@ -46,16 +46,17 @@
 
     .products-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 6px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 4px;
     }
 
     .product-card {
         background: #f8f9fa;
         border: 2px solid #dee2e6;
-        border-radius: 6px;
-        padding: 8px;
+        border-radius: 4px;
+        padding: 6px;
         transition: all 0.3s ease;
+        min-height: 70px;
     }
 
     .product-card:hover {
@@ -64,43 +65,45 @@
     }
 
     .product-name {
-        font-size: 11px;
+        font-size: 9px;
         font-weight: bold;
         color: #2e7d32;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
+        line-height: 1.1;
     }
 
     .product-price {
-        font-size: 13px;
+        font-size: 11px;
         font-weight: bold;
         color: #ff6f00;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
     }
 
     .product-description {
         color: #666;
-        font-size: 9px;
-        margin-bottom: 5px;
-        min-height: 15px;
-        line-height: 1.1;
+        font-size: 7px;
+        margin-bottom: 3px;
+        min-height: 10px;
+        line-height: 1.0;
+        display: none; /* Ocultar descripción para ganar espacio */
     }
 
     .product-buttons {
         display: flex;
-        gap: 6px;
-        margin-top: 8px;
+        gap: 2px;
+        margin-top: 4px;
     }
 
     .btn-edit-orange {
         flex: 1;
-        padding: 5px;
+        padding: 3px;
         background: #ff8c00;
         color: white;
         border: none;
-        border-radius: 3px;
+        border-radius: 2px;
         font-weight: bold;
         cursor: pointer;
-        font-size: 9px;
+        font-size: 7px;
     }
 
     .btn-edit-orange:hover {
@@ -110,14 +113,14 @@
 
     .btn-delete-red {
         flex: 1;
-        padding: 5px;
+        padding: 3px;
         background: #dc3545;
         color: white;
         border: none;
-        border-radius: 3px;
+        border-radius: 2px;
         font-weight: bold;
         cursor: pointer;
-        font-size: 9px;
+        font-size: 7px;
     }
 
     .btn-delete-red:hover {
