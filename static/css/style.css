@@ -674,6 +674,34 @@ select.form-input.touch-friendly {
     margin-right: 420px; /* Espacio para la ventana flotante del pedido */
 }
 
+/* Panel minimizado */
+.order-panel.minimized {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    padding: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.order-panel.minimized .order-header {
+    display: none;
+}
+
+.order-panel.minimized .current-order {
+    display: none;
+}
+
+.order-panel.minimized::before {
+    content: "📋";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+}
+
 .table-status-badge {
     padding: 8px 16px;
     border-radius: 25px;

@@ -786,5 +786,62 @@ with app.app_context():
         db.session.commit()
         print("Database initialized with sample data")
 
+@app.route('/remove_from_order', methods=['POST'])
+def remove_from_order():
+    """Remove product from current order"""
+    mesa_id = request.form.get('mesa_id')
+    producto_id = int(request.form.get('producto_id'))
+    
+    # Get current order
+    pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
+    if not pedido:
+        flash('No hay pedido activo para esta mesa', 'error')
+        return redirect(url_for('table_detail', mesa_id=mesa_id))
+    
+    # Remove product from JSON
+    productos = json.loads(pedido.productos)
+    productos = [p for p in productos if p['id'] != producto_id]
+    
+    if len(productos) == 0:
+        # If no products left, delete the order and set table as free
+        mesa = Mesa.query.get(mesa_id)
+        if mesa:
+            mesa.estado = 'libre'
+        db.session.delete(pedido)
+        db.session.commit()
+        flash('Producto eliminado. Mesa liberada al no quedar productos', 'info')
+    else:
+        # Recalculate total
+        total = sum(p['precio'] * p['cantidad'] for p in productos)
+        pedido.productos = json.dumps(productos)
+        pedido.total = total
+        db.session.commit()
+        flash('Producto eliminado del pedido', 'success')
+    
+    return redirect(url_for('table_detail', mesa_id=mesa_id))
+
+@app.route('/split_bill', methods=['POST'])
+def split_bill():
+    """Calculate split bill for a table"""
+    mesa_id = request.form.get('mesa_id')
+    personas = int(request.form.get('personas', 2))
+    
+    # Get current order
+    pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
+    if not pedido:
+        return jsonify({'success': False, 'error': 'No hay pedido activo'})
+    
+    if personas <= 1:
+        return jsonify({'success': False, 'error': 'Debe ser entre 2 o más personas'})
+    
+    amount_per_person = float(pedido.total) / personas
+    
+    return jsonify({
+        'success': True,
+        'total': float(pedido.total),
+        'personas': personas,
+        'amount_per_person': round(amount_per_person, 2)
+    })
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

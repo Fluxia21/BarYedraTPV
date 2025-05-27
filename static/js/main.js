@@ -245,6 +245,58 @@ function showOfflineIndicator() {
     }, { once: true });
 }
 
+// Funcionalidades del panel de pedido mejorado
+function toggleOrderPanel() {
+    const panel = document.querySelector('.order-panel');
+    if (panel) {
+        panel.classList.toggle('minimized');
+    }
+}
+
+function removeFromOrder(mesaId, productoId) {
+    if (confirmAction('¿Estás seguro de que quieres eliminar este producto del pedido?')) {
+        fetch('/remove_from_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `mesa_id=${mesaId}&producto_id=${productoId}`
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Error al eliminar el producto');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Error de conexión');
+        });
+    }
+}
+
+function splitBill(mesaId) {
+    const personas = prompt('¿Entre cuántas personas quieres dividir la cuenta?', '2');
+    if (personas && !isNaN(personas) && personas > 1) {
+        fetch('/split_bill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `mesa_id=${mesaId}&personas=${personas}`
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Cuenta dividida entre ${personas} personas:\nCada persona debe pagar: €${data.amount_per_person}`);
+            } else {
+                alert('Error al dividir la cuenta');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Error de conexión');
+        });
+    }
+}
+
 // Initialize number inputs when DOM is ready
 document.addEventListener('DOMContentLoaded', setupNumberInputs);
 
