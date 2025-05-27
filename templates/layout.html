@@ -11,51 +11,76 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container-fluid">
-            <div class="navbar-content">
-                <a class="navbar-brand" href="{{ url_for('index') }}">
-                    <i class="fas fa-wine-glass-alt"></i>Bar Yedra
+    <div class="app-layout">
+        <!-- Sidebar exacto del PDF -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a class="sidebar-brand" href="{{ url_for('index') }}">
+                    BAR YEDRA
                 </a>
-                
-                <ul class="navbar-nav">
-                    <li><a class="nav-link" href="{{ url_for('index') }}">
-                        <i class="fas fa-table"></i>Mesas
-                    </a></li>
-                    <li><a class="nav-link" href="{{ url_for('cash_register') }}">
-                        <i class="fas fa-cash-register"></i>Caja
-                    </a></li>
-                    <li><a class="nav-link" href="{{ url_for('products') }}">
-                        <i class="fas fa-box"></i>Productos
-                    </a></li>
-                </ul>
             </div>
-        </div>
-    </nav>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home"></i>
+                            Inicio
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-table"></i>
+                            Mesas
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{{ url_for('cash_register') }}">
+                            <i class="fas fa-cash-register"></i>
+                            Caja diaria
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{{ url_for('products') }}">
+                            <i class="fas fa-box"></i>
+                            Productos
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
-    <!-- Flash Messages -->
-    <div class="container-fluid">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'success' if category == 'success' else 'info' if category == 'info' else 'danger' }} fade-in">
-                        {{ message }}
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Header del contenido -->
+            <header class="content-header">
+                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                
+                <button class="privacy-toggle" onclick="togglePrivacy()" id="privacy-btn">
+                    <i class="fas fa-eye" id="privacy-icon"></i>
+                    Ocultar cifras
+                </button>
+            </header>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="content-container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'success' if category == 'success' else 'info' if category == 'info' else 'danger' }} fade-in">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Contenido principal -->
+            <div class="content-container">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
     </div>
-
-    <!-- Main Content -->
-    <main class="container-fluid">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Privacy Toggle Button -->
-    <button class="privacy-toggle" onclick="togglePrivacy()" title="Ocultar/Mostrar cifras">
-        <i class="fas fa-eye" id="privacy-icon"></i>
-    </button>
 
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

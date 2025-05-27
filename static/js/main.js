@@ -252,23 +252,25 @@ document.addEventListener('DOMContentLoaded', setupNumberInputs);
 function togglePrivacy() {
     privacyMode = !privacyMode;
     const icon = document.getElementById('privacy-icon');
-    const sensitiveElements = document.querySelectorAll('.product-price, .table th:contains("€"), .table td:contains("€"), [class*="total"], [class*="precio"], [class*="price"]');
+    const button = document.getElementById('privacy-btn');
     
     if (privacyMode) {
         icon.className = 'fas fa-eye-slash';
-        sensitiveElements.forEach(el => {
-            if (el.textContent.includes('€') || el.textContent.includes('Total') || el.classList.contains('product-price')) {
-                el.classList.add('privacy-blur');
-            }
-        });
-        // También ocultar números en elementos que contienen precios
+        button.classList.add('active');
+        button.innerHTML = '<i class="fas fa-eye-slash"></i> Mostrar cifras';
+        
+        // Ocultar todos los elementos que contengan €, precios o totales
         document.querySelectorAll('*').forEach(el => {
-            if (el.textContent.match(/€\d/)) {
+            if (el.textContent.match(/€[\d\.,]+|[\d\.,]+\s*€|\d+[\.,]\d+/) && 
+                !el.classList.contains('privacy-toggle')) {
                 el.classList.add('privacy-blur');
             }
         });
     } else {
         icon.className = 'fas fa-eye';
+        button.classList.remove('active');
+        button.innerHTML = '<i class="fas fa-eye"></i> Ocultar cifras';
+        
         document.querySelectorAll('.privacy-blur').forEach(el => {
             el.classList.remove('privacy-blur');
         });

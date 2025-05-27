@@ -2,89 +2,62 @@
 
 {% block title %}Mesas - Bar Yedra{% endblock %}
 
+{% block page_title %}Vista de Mesas{% endblock %}
+
 {% block content %}
-<div class="container">
-    <!-- Header -->
-    <div class="mb-4">
-        <h1 class="text-center font-weight-bold">Estado de las Mesas</h1>
+<!-- Stats Cards del Dashboard como en el PDF -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-title">Ventas del día</div>
+        <div class="stat-card-value">1.250 €</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-card-title">Pedidos activos</div>
+        <div class="stat-card-value">4</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-title">Mesas libres</div>
+        <div class="stat-card-value">{{ (mesas_terraza + mesas_sala + mesas_barra)|selectattr('estado', 'equalto', 'libre')|list|length }}</div>
+    </div>
+</div>
 
-    <!-- Terraza -->
-    <div class="mb-5">
-        <h2 class="zone-title">
-            <i class="fas fa-umbrella-beach"></i> Terraza
-        </h2>
-        <div class="row">
+<!-- Grid de mesas exacto del PDF -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Estado de las Mesas</h3>
+    </div>
+    <div class="card-body">
+        <!-- Terraza -->
+        <h4 style="margin-bottom: 16px; color: var(--color-text-light); font-size: 14px; font-weight: 600;">TERRAZA</h4>
+        <div class="tables-grid" style="margin-bottom: 32px;">
             {% for mesa in mesas_terraza %}
-            <div class="col-4 col-3">
-                <div class="table-card table-{{ mesa.estado }} fade-in" onclick="goToTable({{ mesa.id }})">
-                    <div class="table-number">{{ mesa.numero }}</div>
-                    <div class="table-status">{{ mesa.estado|title }}</div>
-                    <div class="table-zone">{{ mesa.zona }}</div>
-                </div>
+            <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+                <div class="table-number">{{ mesa.numero }}</div>
+                <div class="table-status">{{ mesa.estado|title }}</div>
             </div>
             {% endfor %}
         </div>
-    </div>
 
-    <!-- Sala -->
-    <div class="mb-5">
-        <h2 class="zone-title">
-            <i class="fas fa-couch"></i> Sala
-        </h2>
-        <div class="row">
+        <!-- Sala -->
+        <h4 style="margin-bottom: 16px; color: var(--color-text-light); font-size: 14px; font-weight: 600;">SALA</h4>
+        <div class="tables-grid" style="margin-bottom: 32px;">
             {% for mesa in mesas_sala %}
-            <div class="col-4 col-3">
-                <div class="table-card table-{{ mesa.estado }} fade-in" onclick="goToTable({{ mesa.id }})">
-                    <div class="table-number">{{ mesa.numero }}</div>
-                    <div class="table-status">{{ mesa.estado|title }}</div>
-                    <div class="table-zone">{{ mesa.zona }}</div>
-                </div>
+            <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+                <div class="table-number">{{ mesa.numero }}</div>
+                <div class="table-status">{{ mesa.estado|title }}</div>
             </div>
             {% endfor %}
         </div>
-    </div>
 
-    <!-- Barra -->
-    <div class="mb-5">
-        <h2 class="zone-title">
-            <i class="fas fa-wine-glass-alt"></i> Barra
-        </h2>
-        <div class="row">
+        <!-- Barra -->
+        <h4 style="margin-bottom: 16px; color: var(--color-text-light); font-size: 14px; font-weight: 600;">BARRA</h4>
+        <div class="tables-grid">
             {% for mesa in mesas_barra %}
-            <div class="col-4 col-3">
-                <div class="table-card table-{{ mesa.estado }} fade-in" onclick="goToTable({{ mesa.id }})">
-                    <div class="table-number">{{ mesa.numero }}</div>
-                    <div class="table-status">{{ mesa.estado|title }}</div>
-                    <div class="table-zone">{{ mesa.zona }}</div>
-                </div>
+            <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+                <div class="table-number">{{ mesa.numero }}</div>
+                <div class="table-status">{{ mesa.estado|title }}</div>
             </div>
             {% endfor %}
-        </div>
-    </div>
-
-    <!-- Legend Card -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-info-circle"></i> Estados de Mesa
-            </h3>
-        </div>
-        <div class="card-body">
-            <div class="d-flex flex-wrap gap-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div style="width: 20px; height: 20px; background: var(--color-libre); border-radius: 4px;"></div>
-                    <span class="font-weight-semibold">Libre</span>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div style="width: 20px; height: 20px; background: var(--color-ocupada); border-radius: 4px;"></div>
-                    <span class="font-weight-semibold">Ocupada</span>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div style="width: 20px; height: 20px; background: var(--color-pagada); border-radius: 4px;"></div>
-                    <span class="font-weight-semibold">Lista para pagar</span>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -93,5 +66,19 @@
 function goToTable(mesaId) {
     window.location.href = '/mesa/' + mesaId;
 }
+
+// Función para obtener mesas por estado (simulada)
+{% set mesas_libre = [] %}
+{% set mesas_ocupada = [] %}
+{% set mesas_pagada = [] %}
+{% for mesa in mesas_terraza + mesas_sala + mesas_barra %}
+    {% if mesa.estado == 'libre' %}
+        {% set _ = mesas_libre.append(mesa) %}
+    {% elif mesa.estado == 'ocupada' %}
+        {% set _ = mesas_ocupada.append(mesa) %}
+    {% elif mesa.estado == 'pagada' %}
+        {% set _ = mesas_pagada.append(mesa) %}
+    {% endif %}
+{% endfor %}
 </script>
 {% endblock %}

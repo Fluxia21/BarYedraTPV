@@ -1,4 +1,4 @@
-/* Bar Yedra TPV - Diseño Limpio y Profesional */
+/* Bar Yedra TPV - Diseño exacto del PDF */
 
 /* Reset CSS y configuración base */
 * {
@@ -7,35 +7,38 @@
     box-sizing: border-box;
 }
 
-/* Variables CSS para consistencia */
+/* Variables CSS para replicar el PDF exacto */
 :root {
-    /* Colores principales */
-    --color-bg: #f8f9fa;
+    /* Colores exactos del PDF */
+    --color-sidebar: #2d5a4b;
+    --color-sidebar-hover: #3d6a5b;
+    --color-bg: #f5f5f0;
     --color-white: #ffffff;
-    --color-gray-light: #f5f6f7;
-    --color-gray-medium: #e9ecef;
+    --color-gray-light: #f8f8f8;
+    --color-gray-medium: #e5e5e5;
     --color-gray-dark: #6c757d;
-    --color-text: #212529;
-    --color-text-light: #495057;
+    --color-text: #333333;
+    --color-text-light: #666666;
+    --color-text-sidebar: #ffffff;
     
-    /* Estados de mesa */
-    --color-libre: #4CAF50;
-    --color-ocupada: #FFC107;
-    --color-pagada: #2196F3;
-    --color-danger: #f44336;
+    /* Estados de mesa del PDF */
+    --color-libre: #81c784;
+    --color-ocupada: #ffb74d;
+    --color-pagada: #64b5f6;
+    --color-danger: #e57373;
     
-    /* Sombras */
-    --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.12);
-    --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.07);
-    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Sombras suaves como en el PDF */
+    --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-sidebar: 2px 0 4px rgba(0, 0, 0, 0.1);
     
-    /* Bordes */
+    /* Bordes del PDF */
     --border-radius: 8px;
     --border-radius-large: 12px;
     
-    /* Espaciado */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
+    /* Espaciado exacto */
+    --sidebar-width: 220px;
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
@@ -44,83 +47,143 @@
 /* Tipografía */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.4;
     color: var(--color-text);
     background-color: var(--color-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
 }
 
-/* Layout principal */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-md);
+/* Layout principal con sidebar */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
 }
 
-.container-fluid {
-    width: 100%;
-    padding: 0 var(--spacing-md);
-}
-
-/* Navegación superior */
-.navbar {
-    background-color: var(--color-white);
-    border-bottom: 1px solid var(--color-gray-medium);
-    padding: var(--spacing-md) 0;
-    box-shadow: var(--shadow-light);
-    position: sticky;
+/* Sidebar exacto del PDF */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--color-sidebar);
+    color: var(--color-text-sidebar);
+    padding: 0;
+    box-shadow: var(--shadow-sidebar);
+    position: fixed;
+    height: 100vh;
+    left: 0;
     top: 0;
     z-index: 1000;
 }
 
-.navbar-content {
+.sidebar-header {
+    padding: var(--spacing-lg);
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.sidebar-brand {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-sidebar);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: var(--spacing-md) 0;
+}
+
+.sidebar-nav li {
+    margin: 0;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+}
+
+.sidebar-nav .nav-link:hover {
+    background-color: var(--color-sidebar-hover);
+    color: var(--color-text-sidebar);
+}
+
+.sidebar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-sidebar);
+    border-right: 3px solid var(--color-white);
+}
+
+.sidebar-nav .nav-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    background-color: var(--color-bg);
+    min-height: 100vh;
+}
+
+/* Header del contenido principal */
+.content-header {
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-gray-medium);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.navbar-brand {
+.page-title {
     font-size: 24px;
     font-weight: 700;
     color: var(--color-text);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-}
-
-.navbar-nav {
-    display: flex;
-    list-style: none;
-    gap: var(--spacing-sm);
     margin: 0;
 }
 
-.nav-link {
+/* Botón ocultar cifras exacto del PDF */
+.privacy-toggle {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius);
-    text-decoration: none;
-    color: var(--color-text-light);
-    font-weight: 500;
-    font-size: 15px;
-    transition: all 0.2s ease;
-    min-height: 44px;
-    min-width: 44px;
-}
-
-.nav-link:hover {
     background-color: var(--color-gray-light);
-    color: var(--color-text);
+    border: 1px solid var(--color-gray-medium);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.nav-link.active {
+.privacy-toggle:hover {
     background-color: var(--color-gray-medium);
-    color: var(--color-text);
+}
+
+.privacy-toggle.active {
+    background-color: var(--color-sidebar);
+    color: var(--color-white);
+}
+
+/* Contenedor de contenido */
+.content-container {
+    padding: var(--spacing-lg);
 }
 
 /* Botones - Diseño plano y táctil */
@@ -246,36 +309,74 @@ body {
 .col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
 .col-12 { flex: 0 0 100%; max-width: 100%; }
 
-/* Tarjetas de mesa - Diseño limpio */
+/* Tarjetas exactas del PDF */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-gray-medium);
+}
+
+.stat-card-title {
+    font-size: 14px;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+.stat-card-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+}
+
+/* Grid de mesas del PDF */
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+}
+
+/* Tarjetas de mesa exactas del PDF */
 .table-card {
     background-color: var(--color-white);
-    border-radius: var(--border-radius-large);
+    border-radius: var(--border-radius);
     padding: var(--spacing-lg);
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: var(--shadow-card);
-    margin-bottom: var(--spacing-md);
-    min-height: 120px;
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border: 2px solid transparent;
+    border: 1px solid var(--color-gray-medium);
+    position: relative;
 }
 
 .table-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .table-number {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
     margin-bottom: var(--spacing-xs);
 }
 
 .table-status {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -283,49 +384,46 @@ body {
 }
 
 .table-zone {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--color-text-light);
     font-weight: 500;
 }
 
-/* Estados de mesa */
+/* Estados de mesa exactos del PDF */
 .table-libre {
+    background-color: var(--color-libre);
+    color: var(--color-white);
     border-color: var(--color-libre);
-    background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
 }
 
-.table-libre .table-number {
-    color: var(--color-libre);
-}
-
-.table-libre .table-status {
-    color: var(--color-libre);
+.table-libre .table-number,
+.table-libre .table-status,
+.table-libre .table-zone {
+    color: var(--color-white);
 }
 
 .table-ocupada {
+    background-color: var(--color-ocupada);
+    color: var(--color-white);
     border-color: var(--color-ocupada);
-    background: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
 }
 
-.table-ocupada .table-number {
-    color: var(--color-ocupada);
-}
-
-.table-ocupada .table-status {
-    color: var(--color-ocupada);
+.table-ocupada .table-number,
+.table-ocupada .table-status,
+.table-ocupada .table-zone {
+    color: var(--color-white);
 }
 
 .table-pagada {
+    background-color: var(--color-pagada);
+    color: var(--color-white);
     border-color: var(--color-pagada);
-    background: linear-gradient(135deg, #ffffff 0%, #f3f9ff 100%);
 }
 
-.table-pagada .table-number {
-    color: var(--color-pagada);
-}
-
-.table-pagada .table-status {
-    color: var(--color-pagada);
+.table-pagada .table-number,
+.table-pagada .table-status,
+.table-pagada .table-zone {
+    color: var(--color-white);
 }
 
 /* Títulos de zona */
