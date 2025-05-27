@@ -79,6 +79,65 @@ def barra():
     mesas = Mesa.query.filter_by(zona='Barra').order_by(Mesa.numero).all()
     return render_template('barra.html', mesas=mesas)
 
+def get_menu_recommendations(mesa_id, limit=5):
+    """Generate personalized menu recommendations based on previous orders"""
+    # Obtener historial de pedidos de esta mesa (últimos 30 días)
+    from datetime import datetime, timedelta
+    fecha_limite = datetime.utcnow() - timedelta(days=30)
+    
+    # Contar productos más pedidos en esta mesa
+    pedidos_mesa = db.session.query(Pedido).filter(
+        Pedido.mesa_id == mesa_id,
+        Pedido.fecha_creacion >= fecha_limite,
+        Pedido.estado == 'pagado'
+    ).all()
+    
+    producto_frecuencia = {}
+    for pedido in pedidos_mesa:
+        if pedido.productos:
+            try:
+                productos_pedido = json.loads(pedido.productos)
+                for producto_id, cantidad in productos_pedido.items():
+                    producto_id = int(producto_id)
+                    if producto_id not in producto_frecuencia:
+                        producto_frecuencia[producto_id] = 0
+                    producto_frecuencia[producto_id] += cantidad
+            except (json.JSONDecodeError, ValueError):
+                continue
+    
+    # Si no hay historial en esta mesa, obtener productos populares generales
+    if not producto_frecuencia:
+        pedidos_generales = db.session.query(Pedido).filter(
+            Pedido.fecha_creacion >= fecha_limite,
+            Pedido.estado == 'pagado'
+        ).limit(50).all()
+        
+        for pedido in pedidos_generales:
+            if pedido.productos:
+                try:
+                    productos_pedido = json.loads(pedido.productos)
+                    for producto_id, cantidad in productos_pedido.items():
+                        producto_id = int(producto_id)
+                        if producto_id not in producto_frecuencia:
+                            producto_frecuencia[producto_id] = 0
+                        producto_frecuencia[producto_id] += cantidad
+                except (json.JSONDecodeError, ValueError):
+                    continue
+    
+    # Ordenar por frecuencia y obtener productos
+    productos_recomendados = []
+    if producto_frecuencia:
+        productos_ordenados = sorted(producto_frecuencia.items(), key=lambda x: x[1], reverse=True)[:limit]
+        for producto_id, frecuencia in productos_ordenados:
+            producto = Producto.query.get(producto_id)
+            if producto and producto.activo:
+                productos_recomendados.append({
+                    'producto': producto,
+                    'frecuencia': frecuencia
+                })
+    
+    return productos_recomendados
+
 @app.route('/mesa/<int:mesa_id>')
 def table_detail(mesa_id):
     """Table detail view for managing orders"""
@@ -101,13 +160,17 @@ def table_detail(mesa_id):
     # Get current order for this table if exists
     pedido_actual = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
     
+    # Obtener recomendaciones personalizadas
+    recomendaciones = get_menu_recommendations(mesa_id)
+    
     return render_template('table_detail.html', 
                          mesa=mesa, 
                          productos_por_categoria=productos_por_categoria,
                          productos_dict=productos_dict,
                          pedido_actual=pedido_actual,
                          es_terraza=es_terraza,
-                         suplemento_terraza=suplemento_terraza)
+                         suplemento_terraza=suplemento_terraza,
+                         recomendaciones=recomendaciones)
 
 @app.route('/add_to_order', methods=['POST'])
 def add_to_order():

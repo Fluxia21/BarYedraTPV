@@ -27,6 +27,24 @@
             <h2>Productos Disponibles</h2>
         </div>
         
+        <!-- Sección de recomendaciones personalizadas -->
+        {% if recomendaciones %}
+        <div class="recommendations-section">
+            <div class="recommendations-header">
+                <i class="fas fa-star"></i> Recomendado para esta mesa
+            </div>
+            <div class="recommendations-list">
+                {% for rec in recomendaciones %}
+                <div class="recommendation-item" onclick="addToOrder({{ mesa.id }}, {{ rec.producto.id }})">
+                    <div class="rec-name">{{ rec.producto.nombre }}</div>
+                    <div class="rec-price">€{{ "%.2f"|format(rec.producto.precio|float + (suplemento_terraza|float if es_terraza else 0)) }}</div>
+                    <div class="rec-badge">{{ rec.frecuencia }}x</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
         <!-- Cuadrícula de categorías fija -->
         <div class="categories-container">
             {% for categoria, productos in productos_por_categoria.items() %}
@@ -422,6 +440,75 @@ function closeCategoryModal() {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
+}
+
+/* Sección de recomendaciones */
+.recommendations-section {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    border-radius: 8px;
+    margin: 10px 12px;
+    padding: 10px;
+}
+
+.recommendations-header {
+    color: #e65100;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.recommendations-list {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+}
+
+.recommendation-item {
+    background: white;
+    border: 1px solid #ffb74d;
+    border-radius: 6px;
+    padding: 8px;
+    min-width: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    text-align: center;
+}
+
+.recommendation-item:hover {
+    background: #fff8e1;
+    border-color: #ff9800;
+    transform: translateY(-1px);
+}
+
+.rec-name {
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 3px;
+    line-height: 1.1;
+}
+
+.rec-price {
+    font-size: 11px;
+    color: #e65100;
+    font-weight: bold;
+}
+
+.rec-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: #ff9800;
+    color: white;
+    border-radius: 8px;
+    padding: 1px 4px;
+    font-size: 8px;
+    font-weight: bold;
 }
 
 .categories-container {
