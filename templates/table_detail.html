@@ -405,7 +405,7 @@ function closeCategoryModal() {
 /* Estilos para categorías fijas sin scroll */
 .categories-grid-fixed {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     height: calc(100vh - 300px);
     max-height: 400px;
