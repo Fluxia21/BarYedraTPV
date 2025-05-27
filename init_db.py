@@ -47,18 +47,40 @@ def init_database():
         # Add sample products with realistic bar prices
         productos_iniciales = [
             # Cafés
-            ('Café Solo', 1.20),
-            ('Café con Leche', 1.40),
+            ('Café solo', 1.60),
+            ('Café con leche', 1.80),
+            ('Café con leche sin lactosa', 1.80),
+            ('Café con leche y hielo', 1.70),
+            ('Café para llevar', 1.70),
+            ('Café bombón', 2.00),
             ('Cortado', 1.30),
-            ('Café Americano', 1.50),
-            ('Cappuccino', 1.60),
-            ('Café Bombón', 1.50),
+            ('TERRAZA CAFÉ CON LECHE', 1.50),
+            ('TERRAZA CAFÉ CON LECHE HIELO', 1.70),
+            ('TERRAZA CAFÉ CON 2CHUR', 2.50),
             
             # Tés e Infusiones
+            ('Infusión', 2.00),
+            ('ColaCao infusión', 3.30),
+            ('Taza de chocolate', 2.30),
             ('Té', 1.20),
             ('Manzanilla', 1.20),
             ('Poleo', 1.20),
             ('Té Verde', 1.30),
+            
+            # Desayunos
+            ('Café con 2 churros', 2.70),
+            ('Churro o porra', 0.80),
+            ('Churro o porra TERRAZA UN', 0.80),
+            ('DESAYUNO CLÁSICO', 3.00),
+            ('DESAYUNO ESPECIAL', 4.70),
+            ('TERRAZA DESAYUNO', 2.80),
+            ('TERRAZA DESAY. COLA CAO', 3.10),
+            ('Vaso de leche', 1.60),
+            ('Zumo de naranja', 2.80),
+            ('BOLLERÍA', 1.70),
+            ('Mantequilla o mermelada', 0.30),
+            ('Suplemento aceite o tomate', 0.30),
+            ('Suplemento leche sin lactosa', 0.20),
             
             # Bebidas Frías
             ('Agua Mineral', 1.50),
@@ -146,8 +168,9 @@ def init_database():
         
         # Definir categorías automáticas basadas en los productos
         categorias_productos = {
-            'Cafés': ['Café Solo', 'Café con Leche', 'Cortado', 'Café Bombón', 'Carajillo', 'Descafeinado'],
-            'Tés e Infusiones': ['Té', 'Manzanilla', 'Poleo', 'Tila'],
+            'Cafés': ['Café solo', 'Café con leche', 'Café con leche sin lactosa', 'Café con leche y hielo', 'Café para llevar', 'Café bombón', 'Cortado', 'Carajillo', 'Descafeinado', 'TERRAZA CAFÉ CON LECHE', 'TERRAZA CAFÉ CON LECHE HIELO', 'TERRAZA CAFÉ CON 2CHUR'],
+            'Tés e Infusiones': ['Infusión', 'ColaCao infusión', 'Taza de chocolate', 'Té', 'Manzanilla', 'Poleo', 'Tila', 'Té Verde'],
+            'Desayunos': ['Café con 2 churros', 'Churro o porra', 'Churro o porra TERRAZA UN', 'DESAYUNO CLÁSICO', 'DESAYUNO ESPECIAL', 'TERRAZA DESAYUNO', 'TERRAZA DESAY. COLA CAO', 'Vaso de leche', 'Zumo de naranja', 'BOLLERÍA', 'Mantequilla o mermelada', 'Suplemento aceite o tomate', 'Suplemento leche sin lactosa'],
             'Refrescos': ['Coca Cola', 'Coca Cola Zero', 'Fanta Naranja', 'Fanta Limón', 'Sprite', 'Aquarius', 'Nestea', 'Agua'],
             'Cervezas': ['Cerveza Caña', 'Cerveza Botellín', 'Cerveza Sin Alcohol'],
             'Vinos': ['Vino Tinto', 'Vino Blanco', 'Vino Rosado'],
