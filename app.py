@@ -726,24 +726,51 @@ with app.app_context():
         
         # Add sample products
         productos_iniciales = [
-            ('Café Solo', 1.20),
-            ('Café con Leche', 1.40),
-            ('Cortado', 1.30),
-            ('Té', 1.20),
-            ('Agua', 1.50),
-            ('Coca Cola', 2.00),
-            ('Cerveza', 2.50),
-            ('Vino Tinto', 2.00),
-            ('Vino Blanco', 2.00),
-            ('Tostada con Tomate', 2.50),
-            ('Bocadillo Jamón', 4.50),
-            ('Tortilla Española', 3.50),
-            ('Patatas Bravas', 3.00),
-            ('Aceitunas', 2.00),
+            # Cafés y bebidas calientes
+            ('Café Solo', 1.20, 'Cafés'),
+            ('Café con Leche', 1.40, 'Cafés'),
+            ('Cortado', 1.30, 'Cafés'),
+            ('Té', 1.20, 'Cafés'),
+            ('Carajillo', 4.10, 'Licores'),
+            
+            # Bebidas frías
+            ('Agua', 1.50, 'Bebidas'),
+            ('Coca Cola', 2.00, 'Bebidas'),
+            
+            # Alcoholes
+            ('Cerveza', 2.50, 'Cervezas'),
+            ('Vino Tinto', 2.00, 'Vinos'),
+            ('Vino Blanco', 2.00, 'Vinos'),
+            
+            # Licores
+            ('Baileys', 4.10, 'Licores'),
+            ('Licores sin alcohol', 2.90, 'Licores'),
+            ('Orujo, hierbas, pacharán', 2.90, 'Licores'),
+            ('Anís, brandi o ponche', 2.70, 'Licores'),
+            ('Jägermeister', 4.10, 'Licores'),
+            ('Cardhu', 8.50, 'Licores'),
+            ('Whisky (Jony, JB, Ballantines)', 4.10, 'Licores'),
+            ('Chupito nacional', 1.70, 'Licores'),
+            ('Chupito de anís, brandi, whisky', 1.00, 'Licores'),
+            ('MAGNo, DYC, Larios, Vodka', 3.10, 'Licores'),
+            
+            # Comidas
+            ('Tostada con Tomate', 2.50, 'Comidas'),
+            ('Bocadillo Jamón', 4.50, 'Comidas'),
+            ('Tortilla Española', 3.50, 'Comidas'),
+            ('Patatas Bravas', 3.00, 'Comidas'),
+            ('Aceitunas', 2.00, 'Comidas'),
         ]
         
-        for nombre, precio in productos_iniciales:
-            producto = Producto(nombre=nombre, precio=precio)
+        for nombre, precio, categoria in productos_iniciales:
+            producto = Producto(
+                nombre=nombre, 
+                precio=precio, 
+                categoria=categoria,
+                stock_actual=25,
+                stock_minimo=5,
+                unidad_medida='unidad'
+            )
             db.session.add(producto)
         
         db.session.commit()
