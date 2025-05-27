@@ -380,6 +380,58 @@ function scrollToElement(elementId) {
     }
 }
 
+// Función para mostrar/ocultar menú móvil
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const body = document.body;
+    
+    sidebar.classList.toggle('show');
+    
+    // Prevenir scroll del body cuando el menú está abierto
+    if (sidebar.classList.contains('show')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = '';
+    }
+}
+
+// Inicializar funcionalidad móvil cuando se carga el DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Cerrar menú móvil al hacer clic fuera de él
+    document.addEventListener('click', function(event) {
+        const sidebar = document.querySelector('.sidebar');
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        
+        // Si el menú está abierto y se hace clic fuera de él
+        if (sidebar && sidebar.classList.contains('show') && 
+            !sidebar.contains(event.target) && 
+            menuToggle && !menuToggle.contains(event.target)) {
+            sidebar.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Cerrar menú móvil al hacer clic en un enlace del menú
+    document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar && sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+    });
+
+    // Cerrar menú móvil al cambiar orientación o redimensionar
+    window.addEventListener('resize', function() {
+        const sidebar = document.querySelector('.sidebar');
+        if (window.innerWidth > 768 && sidebar && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    });
+});
+
 // Export functions for global use
 window.YedraTPV = {
     formatCurrency,
@@ -390,6 +442,7 @@ window.YedraTPV = {
     validateForm,
     printReceipt,
     togglePrivacy,
+    toggleMobileMenu,
     scrollToElement,
     saveToLocalStorage,
     loadFromLocalStorage

@@ -136,6 +136,11 @@
         <main class="main-content">
             <!-- Header del contenido -->
             <header class="content-header">
+                <!-- Botón hamburguesa para móviles -->
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
                 <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
                 
                 <button class="privacy-toggle" onclick="togglePrivacy()" id="privacy-btn">

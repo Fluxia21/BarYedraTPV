@@ -1980,37 +1980,345 @@ select.form-input.touch-friendly {
 .gap-2 { gap: var(--spacing-sm); }
 .gap-3 { gap: var(--spacing-md); }
 
-/* Responsive */
+/* ===========================================
+   DISEÑO RESPONSIVO COMPLETO
+   =========================================== */
+
+/* Tabletas y pantallas medianas */
+@media (max-width: 1024px) {
+    /* Ajustar sidebar para tabletas */
+    .sidebar {
+        width: 200px;
+    }
+    
+    .main-content {
+        margin-left: 200px;
+    }
+    
+    :root {
+        --sidebar-width: 200px;
+    }
+    
+    /* Tarjetas de mesa más pequeñas */
+    .table-card {
+        min-height: 100px;
+        padding: var(--spacing-sm);
+    }
+    
+    .table-number {
+        font-size: 20px;
+    }
+    
+    /* Productos en 3 columnas */
+    .col-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+/* Botón hamburguesa para móviles */
+.mobile-menu-toggle {
+    display: none;
+    background: var(--color-sidebar);
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--color-sidebar-hover);
+    transform: scale(1.05);
+}
+
+.mobile-menu-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Tablets en modo vertical y móviles grandes */
 @media (max-width: 768px) {
-    .col-2, .col-3, .col-4, .col-6, .col-8 {
+    /* Mostrar botón hamburguesa en móviles */
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    /* Sidebar colapsable en móviles */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 280px;
+        z-index: 1050;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    /* Header ajustado para incluir botón hamburguesa */
+    .content-header {
+        padding: var(--spacing-md);
+        flex-direction: row;
+        gap: var(--spacing-md);
+        text-align: left;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    /* Botón hamburguesa */
+    .sidebar::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .sidebar.show::before {
+        opacity: 1;
+        pointer-events: all;
+    }
+    
+    /* Header ajustado para móviles */
+    .content-header {
+        padding: var(--spacing-md);
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
+    
+    .page-title {
+        font-size: 22px;
+    }
+    
+    /* Botón de privacidad más accesible */
+    .privacy-toggle {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        width: auto;
+        height: auto;
+        border-radius: 20px;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    /* Columnas para tablets */
+    .col-2, .col-3, .col-4, .col-6 {
         flex: 0 0 50%;
         max-width: 50%;
     }
     
+    /* Tarjetas de mesa optimizadas */
     .table-card {
-        min-height: 100px;
+        min-height: 120px;
         padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
     }
     
     .table-number {
         font-size: 24px;
     }
     
+    .table-status {
+        font-size: 14px;
+    }
+    
+    /* Botones más grandes para touch */
     .btn {
-        min-height: 52px;
-        font-size: 18px;
+        min-height: 48px;
+        font-size: 16px;
+        padding: 12px 20px;
+    }
+    
+    .btn-sm {
+        min-height: 40px;
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+    
+    /* Formularios optimizados */
+    .form-control {
+        min-height: 48px;
+        font-size: 16px;
+        padding: 12px;
+    }
+    
+    .form-select {
+        min-height: 48px;
+        font-size: 16px;
+    }
+    
+    /* Grids de productos */
+    .products-grid {
+        gap: var(--spacing-sm);
+    }
+    
+    .product-item {
+        padding: var(--spacing-sm);
+        min-height: 80px;
+    }
+    
+    /* Panel de pedido responsivo */
+    .order-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--color-white);
+        border-top: 2px solid var(--color-gray-medium);
+        box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        max-height: 50vh;
+        overflow-y: auto;
     }
 }
 
+/* Móviles pequeños */
 @media (max-width: 480px) {
+    /* Una sola columna para móviles pequeños */
     .col-2, .col-3, .col-4, .col-6, .col-8 {
         flex: 0 0 100%;
         max-width: 100%;
     }
     
+    /* Header más compacto */
+    .content-header {
+        padding: var(--spacing-sm);
+    }
+    
+    .page-title {
+        font-size: 20px;
+    }
+    
+    /* Contenedor principal */
+    .content-container {
+        padding: var(--spacing-sm);
+    }
+    
+    /* Tarjetas de mesa stack vertical */
+    .zone-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .table-card {
+        min-height: 100px;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    /* Productos en lista vertical */
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-item {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+    
+    .product-item img {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+    }
+    
+    /* Navegación apilada */
     .navbar-nav {
         flex-direction: column;
         gap: var(--spacing-xs);
+    }
+    
+    /* Botones apilados */
+    .btn-group {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+    }
+    
+    /* Formularios en pantalla completa */
+    .modal-dialog {
+        margin: 0;
+        max-width: 100%;
+        height: 100vh;
+    }
+    
+    .modal-content {
+        border-radius: 0;
+        height: 100%;
+    }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 360px) {
+    /* Ajustes extremos para pantallas muy pequeñas */
+    body {
+        font-size: 12px;
+    }
+    
+    .page-title {
+        font-size: 18px;
+    }
+    
+    .table-number {
+        font-size: 20px;
+    }
+    
+    .btn {
+        min-height: 44px;
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+    
+    .content-container {
+        padding: var(--spacing-xs);
+    }
+}
+
+/* Landscape móvil */
+@media (max-width: 768px) and (orientation: landscape) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .content-header {
+        padding: var(--spacing-sm) var(--spacing-md);
+        flex-direction: row;
+    }
+    
+    .page-title {
+        font-size: 20px;
+    }
+    
+    /* Grids más compactos en landscape */
+    .col-4 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    
+    .col-6 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
     }
 }
 
