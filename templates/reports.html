@@ -15,22 +15,7 @@
 
     <!-- Resumen Rápido -->
     <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card stats-card bg-success text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="card-title">Hoy</h4>
-                            <h2 class="mb-0">€{{ "%.2f"|format(ventas_hoy) }}</h2>
-                            <small>{{ pedidos_hoy }} pedidos</small>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-calendar-day fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card stats-card bg-info text-white">
@@ -96,35 +81,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- Reporte Diario -->
-                        <div class="col-lg-4 mb-4">
-                            <div class="export-section">
-                                <h4 class="section-title">
-                                    <i class="fas fa-calendar-day text-success"></i>
-                                    Reporte Diario
-                                </h4>
-                                <p class="section-description">
-                                    Ventas del día {{ fecha.strftime('%d/%m/%Y') }}
-                                </p>
-                                <div class="export-buttons">
-                                    <a href="{{ url_for('export_excel', periodo='dia') }}" 
-                                       class="btn btn-success btn-export">
-                                        <i class="fas fa-file-excel"></i>
-                                        Excel
-                                    </a>
-                                    <a href="{{ url_for('export_word', periodo='dia') }}" 
-                                       class="btn btn-primary btn-export">
-                                        <i class="fas fa-file-word"></i>
-                                        Word
-                                    </a>
-                                    <a href="{{ url_for('export_pdf', periodo='dia') }}" 
-                                       class="btn btn-danger btn-export">
-                                        <i class="fas fa-file-pdf"></i>
-                                        PDF
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- Reporte Semanal -->
                         <div class="col-lg-4 mb-4">
