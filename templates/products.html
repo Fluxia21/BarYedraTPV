@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}Productos - Bar Yedra{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-box me-2"></i>Gestión de Productos
+        </h2>
+    </div>
+</div>
+
+<!-- Add Product -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>Añadir Nuevo Producto
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('add_product') }}">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio (€)</label>
+                        <input type="number" class="form-control" name="precio" id="precio" 
+                               step="0.01" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Añadir Producto
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Products List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Lista de Productos
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if productos %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos %}
+                            <tr>
+                                <td>{{ producto.id }}</td>
+                                <td>{{ producto.nombre }}</td>
+                                <td class="fw-bold">{{ "€%.2f"|format(producto.precio) }}</td>
+                                <td>
+                                    {% if producto.activo %}
+                                        <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('delete_product', producto_id=producto.id) }}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('¿Está seguro de que desea eliminar este producto?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay productos registrados</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Categories (Future Enhancement) -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-tags me-2"></i>Categorías Rápidas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <div class="category-card bg-light p-3 text-center">
+                            <i class="fas fa-coffee fa-2x mb-2 text-brown"></i>
+                            <h6>Cafés</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="category-card bg-light p-3 text-center">
+                            <i class="fas fa-beer fa-2x mb-2 text-warning"></i>
+                            <h6>Bebidas</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="category-card bg-light p-3 text-center">
+                            <i class="fas fa-hamburger fa-2x mb-2 text-danger"></i>
+                            <h6>Comida</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <div class="category-card bg-light p-3 text-center">
+                            <i class="fas fa-candy-cane fa-2x mb-2 text-success"></i>
+                            <h6>Postres</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

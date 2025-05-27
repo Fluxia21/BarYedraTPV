@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}Caja Diaria - Bar Yedra{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-cash-register me-2"></i>Caja Diaria
+            <small class="text-muted">{{ fecha.strftime('%d/%m/%Y') }}</small>
+        </h2>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h3 class="card-title">{{ "€%.2f"|format(total_efectivo) }}</h3>
+                <p class="card-text">
+                    <i class="fas fa-money-bill-wave me-2"></i>Efectivo
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h3 class="card-title">{{ "€%.2f"|format(total_tarjeta) }}</h3>
+                <p class="card-text">
+                    <i class="fas fa-credit-card me-2"></i>Tarjeta
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h3 class="card-title">{{ "€%.2f"|format(total_dia) }}</h3>
+                <p class="card-text">
+                    <i class="fas fa-calculator me-2"></i>Total Día
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body text-center">
+                <h3 class="card-title">{{ pedidos_hoy|length }}</h3>
+                <p class="card-text">
+                    <i class="fas fa-receipt me-2"></i>Pedidos
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Orders List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Pedidos del Día
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if pedidos_hoy %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ticket #</th>
+                                <th>Mesa</th>
+                                <th>Hora</th>
+                                <th>Forma de Pago</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pedido in pedidos_hoy %}
+                            <tr>
+                                <td>{{ pedido.id }}</td>
+                                <td>{{ pedido.mesa.zona }} {{ pedido.mesa.numero }}</td>
+                                <td>{{ pedido.fecha_pago.strftime('%H:%M') if pedido.fecha_pago else '-' }}</td>
+                                <td>
+                                    {% if pedido.forma_pago == 'efectivo' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-money-bill-wave me-1"></i>Efectivo
+                                        </span>
+                                    {% elif pedido.forma_pago == 'tarjeta' %}
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-credit-card me-1"></i>Tarjeta
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="fw-bold">{{ "€%.2f"|format(pedido.total) }}</td>
+                                <td>
+                                    <a href="{{ url_for('print_receipt', pedido_id=pedido.id) }}" 
+                                       class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay pedidos registrados hoy</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Close Register -->
+{% if pedidos_hoy %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lock me-2"></i>Cerrar Caja
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>Al cerrar la caja se archivará toda la información del día y se preparará el sistema para el día siguiente.</p>
+                <form method="POST" action="{{ url_for('close_cash_register') }}" 
+                      onsubmit="return confirm('¿Está seguro de que desea cerrar la caja? Esta acción no se puede deshacer.')">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fas fa-lock me-2"></i>Cerrar Caja del Día
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

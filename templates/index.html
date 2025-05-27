@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Mesas - Bar Yedra{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-table me-2"></i>Estado de las Mesas
+        </h2>
+    </div>
+</div>
+
+<!-- Terraza -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="zone-title">
+            <i class="fas fa-umbrella-beach me-2"></i>Terraza
+        </h4>
+        <div class="row">
+            {% for mesa in mesas_terraza %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+                    <div class="table-number">{{ mesa.numero }}</div>
+                    <div class="table-status">{{ mesa.estado|title }}</div>
+                    <div class="table-zone">{{ mesa.zona }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Sala -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="zone-title">
+            <i class="fas fa-couch me-2"></i>Sala
+        </h4>
+        <div class="row">
+            {% for mesa in mesas_sala %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+                    <div class="table-number">{{ mesa.numero }}</div>
+                    <div class="table-status">{{ mesa.estado|title }}</div>
+                    <div class="table-zone">{{ mesa.zona }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Barra -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="zone-title">
+            <i class="fas fa-glass-martini-alt me-2"></i>Barra
+        </h4>
+        <div class="row">
+            {% for mesa in mesas_barra %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                <div class="table-card table-{{ mesa.estado }}" onclick="goToTable({{ mesa.id }})">
+                    <div class="table-number">{{ mesa.numero }}</div>
+                    <div class="table-status">{{ mesa.estado|title }}</div>
+                    <div class="table-zone">{{ mesa.zona }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Legend -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="table-legend">
+            <h5>Leyenda:</h5>
+            <div class="d-flex flex-wrap gap-3">
+                <div class="legend-item">
+                    <div class="legend-color table-libre"></div>
+                    <span>Libre</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color table-ocupada"></div>
+                    <span>Ocupada</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color table-pagada"></div>
+                    <span>Lista para pagar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function goToTable(mesaId) {
+    window.location.href = '/mesa/' + mesaId;
+}
+</script>
+{% endblock %}
