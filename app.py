@@ -84,6 +84,10 @@ def table_detail(mesa_id):
     mesa = Mesa.query.get_or_404(mesa_id)
     productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.orden, Producto.nombre).all()
     
+    # Verificar si es mesa de terraza para aplicar suplemento
+    es_terraza = mesa.zona.lower() == 'terraza'
+    suplemento_terraza = 0.20 if es_terraza else 0.00
+    
     # Agrupar productos por categoría
     productos_por_categoria = {}
     productos_dict = {}
@@ -100,7 +104,9 @@ def table_detail(mesa_id):
                          mesa=mesa, 
                          productos_por_categoria=productos_por_categoria,
                          productos_dict=productos_dict,
-                         pedido_actual=pedido_actual)
+                         pedido_actual=pedido_actual,
+                         es_terraza=es_terraza,
+                         suplemento_terraza=suplemento_terraza)
 
 @app.route('/add_to_order', methods=['POST'])
 def add_to_order():
@@ -111,6 +117,11 @@ def add_to_order():
     
     mesa = Mesa.query.get_or_404(mesa_id)
     producto = Producto.query.get_or_404(producto_id)
+    
+    # Aplicar suplemento de terraza si corresponde
+    precio_producto = float(producto.precio)
+    if mesa.zona.lower() == 'terraza':
+        precio_producto += 0.20
     
     # Get or create current order
     pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
@@ -142,12 +153,15 @@ def add_to_order():
     # Save updated products and calculate total
     pedido.productos = json.dumps(productos_dict)
     
-    # Calculate total
+    # Calculate total with terraza supplement if applicable
     total = 0
     for pid, qty in productos_dict.items():
         prod = Producto.query.get(int(pid))
         if prod:
-            total += float(prod.precio) * qty
+            precio_unitario = float(prod.precio)
+            if mesa.zona.lower() == 'terraza':
+                precio_unitario += 0.20
+            total += precio_unitario * qty
     
     pedido.total = total
     
