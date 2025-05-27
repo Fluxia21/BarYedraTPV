@@ -185,29 +185,40 @@ def close_order(mesa_id):
     
     return redirect(url_for('index'))
 
-@app.route('/pay_order/<int:mesa_id>', methods=['POST'])
+@app.route('/pay_order/<int:mesa_id>')
 def pay_order(mesa_id):
-    """Process payment for table"""
-    forma_pago = request.form.get('forma_pago')
+    """Process payment for table with method selection"""
+    payment_method = request.args.get('payment_method', 'efectivo')
     mesa = Mesa.query.get_or_404(mesa_id)
-    pedido = Pedido.query.filter_by(mesa_id=mesa_id, estado='cerrado').first()
     
-    if pedido:
-        pedido.forma_pago = forma_pago
-        pedido.fecha_pago = datetime.now()
-        pedido.estado = 'pagado'
-        
-        # Create ticket
-        ticket = Ticket(pedido_id=pedido.id)
-        db.session.add(ticket)
-        
-        # Free the table
-        mesa.estado = 'libre'
-        
-        db.session.commit()
-        flash(f'Pago procesado ({forma_pago}). Mesa liberada.', 'success')
+    # Look for closed or open order to pay
+    pedido = Pedido.query.filter_by(mesa_id=mesa_id).filter(
+        Pedido.estado.in_(['cerrado', 'abierto'])
+    ).first()
     
-    return redirect(url_for('index'))
+    if not pedido:
+        flash('No hay pedido para pagar en esta mesa', 'error')
+        return redirect(url_for('index'))
+    
+    # Process payment
+    pedido.forma_pago = payment_method
+    pedido.fecha_pago = datetime.utcnow()
+    pedido.estado = 'pagado'
+    
+    # Create ticket for automatic printing
+    ticket = Ticket(
+        pedido_id=pedido.id
+    )
+    db.session.add(ticket)
+    
+    # Free the table
+    mesa.estado = 'libre'
+    
+    db.session.commit()
+    flash(f'Pago procesado ({payment_method}). Ticket generado automáticamente.', 'success')
+    
+    # Automatically redirect to print receipt
+    return redirect(url_for('print_receipt', pedido_id=pedido.id))
 
 @app.route('/print_receipt/<int:pedido_id>')
 def print_receipt(pedido_id):

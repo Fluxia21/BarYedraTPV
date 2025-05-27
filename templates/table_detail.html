@@ -11,11 +11,11 @@
     <div class="table-actions">
         {% if pedido_actual %}
             <button class="btn btn-success btn-lg touch-friendly" onclick="closeOrder({{ mesa.id }})">
-                <i class="icon-check"></i> Cerrar Pedido
+                <i class="fas fa-check"></i> Cerrar Pedido
             </button>
         {% endif %}
         <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg touch-friendly">
-            <i class="icon-arrow-left"></i> Volver
+            <i class="fas fa-arrow-left"></i> Volver
         </a>
     </div>
 </div>
@@ -24,14 +24,14 @@
     <!-- Panel de productos -->
     <div class="products-panel">
         <h2 class="panel-title">
-            <i class="icon-package"></i> Productos Disponibles
+            <i class="fas fa-box"></i> Productos Disponibles
         </h2>
         
         <!-- Productos por categoría -->
         {% for categoria, productos in productos_por_categoria.items() %}
         <div class="product-category">
             <h3 class="category-header">
-                <i class="icon-tag"></i> {{ categoria }}
+                <i class="fas fa-tag"></i> {{ categoria }}
             </h3>
             
             <div class="products-grid-detail">
@@ -41,7 +41,7 @@
                         {% if producto.foto_url %}
                             <img src="{{ producto.foto_url }}" alt="{{ producto.nombre }}" class="product-mini-photo">
                         {% else %}
-                            <i class="icon-package"></i>
+                            <i class="fas fa-utensils"></i>
                         {% endif %}
                     </div>
                     <div class="product-details">
@@ -49,7 +49,7 @@
                         <div class="product-price">€{{ "%.2f"|format(producto.precio) }}</div>
                     </div>
                     <div class="add-indicator">
-                        <i class="icon-plus"></i>
+                        <i class="fas fa-plus"></i>
                     </div>
                 </div>
                 {% endfor %}
@@ -61,53 +61,31 @@
     <!-- Panel de pedido actual -->
     <div class="order-panel">
         <h2 class="panel-title">
-            <i class="icon-receipt"></i> Pedido Actual
+            <i class="fas fa-receipt"></i> Pedido Actual
         </h2>
         
-        {% if pedido_actual %}
+        {% if pedido_actual and pedido_actual.total > 0 %}
             <div class="current-order">
-                <div class="order-items">
-                    {% set productos_pedido = pedido_actual.productos|from_json %}
-                    {% for producto_id, cantidad in productos_pedido.items() %}
-                        {% set producto = productos_dict[producto_id|int] %}
-                        <div class="order-item">
-                            <div class="item-info">
-                                <span class="item-name">{{ producto.nombre }}</span>
-                                <span class="item-price">€{{ "%.2f"|format(producto.precio) }}</span>
-                            </div>
-                            <div class="item-quantity">
-                                <button class="qty-btn touch-friendly" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, -1)">
-                                    <i class="icon-minus"></i>
-                                </button>
-                                <span class="qty-display">{{ cantidad }}</span>
-                                <button class="qty-btn touch-friendly" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, 1)">
-                                    <i class="icon-plus"></i>
-                                </button>
-                            </div>
-                            <div class="item-total">
-                                €{{ "%.2f"|format(producto.precio * cantidad) }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                
                 <div class="order-summary">
                     <div class="summary-row total-row">
-                        <span class="summary-label">Total:</span>
+                        <span class="summary-label">Total del Pedido:</span>
                         <span class="summary-value">€{{ "%.2f"|format(pedido_actual.total) }}</span>
+                    </div>
+                    <div class="summary-info">
+                        <small>{{ pedido_actual.fecha_creacion.strftime('%H:%M') if pedido_actual.fecha_creacion else 'Ahora' }}</small>
                     </div>
                 </div>
                 
                 <div class="order-actions">
                     <button class="btn btn-warning btn-lg touch-friendly full-width" onclick="closeOrder({{ mesa.id }})">
-                        <i class="icon-check"></i> Cerrar Pedido (Mesa Lista para Pagar)
+                        <i class="fas fa-check"></i> Cerrar Pedido (Mesa Lista para Pagar)
                     </button>
                 </div>
             </div>
         {% else %}
             <div class="empty-order">
                 <div class="empty-icon">
-                    <i class="icon-shopping-cart"></i>
+                    <i class="fas fa-shopping-cart"></i>
                 </div>
                 <h3>Sin pedidos</h3>
                 <p>Selecciona productos para comenzar un nuevo pedido</p>
@@ -116,9 +94,19 @@
         
         {% if mesa.estado == 'pagada' %}
             <div class="payment-actions">
-                <button class="btn btn-success btn-lg touch-friendly full-width" onclick="payOrder({{ mesa.id }})">
-                    <i class="icon-credit-card"></i> Procesar Pago
-                </button>
+                <h3 class="payment-title">
+                    <i class="fas fa-credit-card"></i> Procesar Pago
+                </h3>
+                <div class="payment-methods">
+                    <button class="btn btn-success btn-lg touch-friendly payment-method-btn" onclick="payOrder({{ mesa.id }}, 'efectivo')">
+                        <i class="fas fa-money-bills"></i> 
+                        <span>Efectivo</span>
+                    </button>
+                    <button class="btn btn-primary btn-lg touch-friendly payment-method-btn" onclick="payOrder({{ mesa.id }}, 'tarjeta')">
+                        <i class="fas fa-credit-card"></i> 
+                        <span>Tarjeta</span>
+                    </button>
+                </div>
             </div>
         {% endif %}
     </div>
@@ -127,15 +115,18 @@
 <script>
 // Añadir producto al pedido
 function addToOrder(mesaId, productoId) {
+    // Crear formulario dinámico
+    const form = new FormData();
+    form.append('mesa_id', mesaId);
+    form.append('producto_id', productoId);
+    
     fetch('/add_to_order', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `mesa_id=${mesaId}&producto_id=${productoId}`
+        body: form
     })
     .then(response => {
         if (response.ok) {
+            // Recargar la página para mostrar el producto añadido
             location.reload();
         } else {
             alert('Error al añadir producto');
@@ -147,28 +138,6 @@ function addToOrder(mesaId, productoId) {
     });
 }
 
-// Actualizar cantidad de producto
-function updateQuantity(mesaId, productoId, change) {
-    fetch('/update_quantity', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `mesa_id=${mesaId}&producto_id=${productoId}&change=${change}`
-    })
-    .then(response => {
-        if (response.ok) {
-            location.reload();
-        } else {
-            alert('Error al actualizar cantidad');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al actualizar cantidad');
-    });
-}
-
 // Cerrar pedido
 function closeOrder(mesaId) {
     if (confirm('¿Cerrar pedido y marcar mesa como lista para pagar?')) {
@@ -176,10 +145,9 @@ function closeOrder(mesaId) {
     }
 }
 
-// Procesar pago
-function payOrder(mesaId) {
-    const paymentMethod = prompt('Método de pago (efectivo/tarjeta):');
-    if (paymentMethod && (paymentMethod.toLowerCase() === 'efectivo' || paymentMethod.toLowerCase() === 'tarjeta')) {
+// Procesar pago con método seleccionado
+function payOrder(mesaId, paymentMethod) {
+    if (confirm(`¿Procesar pago con ${paymentMethod}? Se generará el ticket automáticamente.`)) {
         window.location.href = `/pay_order/${mesaId}?payment_method=${paymentMethod}`;
     }
 }
