@@ -236,6 +236,57 @@ def delete_product(producto_id):
     
     return redirect(url_for('products'))
 
+@app.route('/mesa/<int:mesa_id>')
+def mesa_pedido(mesa_id):
+    """Página para tomar pedidos en una mesa específica con suplemento de terraza"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Obtener información de la mesa
+    cursor.execute('SELECT * FROM mesas WHERE id = ?', (mesa_id,))
+    mesa = cursor.fetchone()
+    if not mesa:
+        conn.close()
+        return redirect(url_for('index'))
+    
+    mesa_info = {
+        'id': mesa[0],
+        'numero': mesa[1], 
+        'zona': mesa[2],
+        'estado': mesa[3]
+    }
+    
+    # Obtener productos con precios ajustados para terraza
+    cursor.execute('SELECT * FROM productos WHERE activo = 1 ORDER BY categoria, nombre')
+    productos_raw = cursor.fetchall()
+    conn.close()
+    
+    productos_por_categoria = {}
+    es_terraza = mesa_info['zona'].lower() == 'terraza'
+    
+    for producto in productos_raw:
+        categoria = producto[3]
+        if categoria not in productos_por_categoria:
+            productos_por_categoria[categoria] = []
+        
+        precio_base = float(producto[2])
+        precio_final = calcular_precio_con_suplemento(precio_base, mesa_info['zona'])
+        
+        productos_por_categoria[categoria].append({
+            'id': producto[0],
+            'nombre': producto[1],
+            'precio_base': precio_base,
+            'precio_final': precio_final,
+            'categoria': producto[3],
+            'descripcion': producto[4] or '',
+            'foto_url': producto[5] or ''
+        })
+    
+    return render_template('mesa_pedido.html', 
+                         mesa=mesa_info, 
+                         productos_por_categoria=productos_por_categoria,
+                         es_terraza=es_terraza)
+
 def abrir_navegador():
     """Abrir navegador automáticamente"""
     time.sleep(2)

@@ -112,7 +112,7 @@
         </h3>
         <div class="mesas-grid">
             {% for mesa in mesas %}
-                <div class="mesa-card {{ mesa.estado }}" onclick="gestionarMesa({{ mesa.id }}, {{ mesa.numero }}, '{{ mesa.estado }}', '{{ zona }}')">
+                <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">
                     <div class="mesa-numero">Mesa {{ mesa.numero }}</div>
                     <div class="mesa-estado estado-{{ mesa.estado }}">
                         {% if mesa.estado == 'libre' %}

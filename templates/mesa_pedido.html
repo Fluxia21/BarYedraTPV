@@ -1,0 +1,174 @@
+{% extends "base_tpv.html" %}
+
+{% block title %}Mesa {{ mesa.numero }} - Bar Yedra TPV{% endblock %}
+
+{% block content %}
+<style>
+    .mesa-info {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .mesa-titulo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 10px;
+    }
+
+    .mesa-zona {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .suplemento-terraza-aviso {
+        background: #ff9800;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .categoria-section {
+        margin: 15px 0;
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .categoria-title {
+        color: #2e7d32;
+        font-size: 18px;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 8px;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+    }
+
+    .product-card {
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 90px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        background: #e8f5e8;
+    }
+
+    .product-name {
+        font-size: 12px;
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 5px;
+        line-height: 1.2;
+    }
+
+    .product-price {
+        font-size: 14px;
+        font-weight: bold;
+        color: #ff6f00;
+        margin-bottom: 5px;
+    }
+
+    .price-base {
+        font-size: 10px;
+        color: #999;
+        text-decoration: line-through;
+    }
+
+    .price-terraza {
+        color: #ff9800;
+        font-weight: bold;
+    }
+
+    .pedido-panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 300px;
+        height: 100vh;
+        background: white;
+        border-left: 3px solid #4caf50;
+        padding: 20px;
+        overflow-y: auto;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-volver {
+        background: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .btn-volver:hover {
+        background: #5a6268;
+    }
+</style>
+
+<div class="mesa-info">
+    <div class="mesa-titulo">Mesa {{ mesa.numero }}</div>
+    <div class="mesa-zona">{{ mesa.zona }}</div>
+    {% if es_terraza %}
+        <div class="suplemento-terraza-aviso">
+            🌞 TERRAZA: +0,20€ por producto
+        </div>
+    {% endif %}
+</div>
+
+<button class="btn-volver" onclick="window.location.href='/'">← Volver a Mesas</button>
+
+{% for categoria, productos in productos_por_categoria.items() %}
+    <div class="categoria-section">
+        <h3 class="categoria-title">{{ categoria }}</h3>
+        <div class="products-grid">
+            {% for producto in productos %}
+                <div class="product-card" onclick="agregarProducto({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio_final }})">
+                    <div class="product-name">{{ producto.nombre }}</div>
+                    {% if es_terraza and producto.precio_base != producto.precio_final %}
+                        <div class="price-base">€{{ "%.2f"|format(producto.precio_base) }}</div>
+                        <div class="product-price price-terraza">€{{ "%.2f"|format(producto.precio_final) }}</div>
+                    {% else %}
+                        <div class="product-price">€{{ "%.2f"|format(producto.precio_final) }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+function agregarProducto(id, nombre, precio) {
+    // Aquí iría la lógica para agregar el producto al pedido
+    alert('Producto añadido: ' + nombre + ' - €' + precio.toFixed(2));
+}
+</script>
+
+{% endblock %}
