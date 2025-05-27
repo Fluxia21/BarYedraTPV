@@ -7,22 +7,37 @@
     .zona-header {
         background: #ff9800;
         color: white;
-        padding: 15px;
-        border-radius: 8px;
+        padding: 12px;
+        border-radius: 6px;
         text-align: center;
-        margin-bottom: 15px;
-        font-size: 20px;
+        margin-bottom: 10px;
+        font-size: 18px;
         font-weight: bold;
+        max-width: 1200px;
+        margin: 0 auto 10px auto;
     }
 
     .suplemento-aviso {
         background: #fff3cd;
         color: #856404;
-        padding: 10px;
+        padding: 8px;
         border-radius: 6px;
         text-align: center;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         font-weight: bold;
+        max-width: 1200px;
+        margin: 0 auto 10px auto;
+        font-size: 14px;
+    }
+
+    .zona-section {
+        margin: 8px 0;
+        background: white;
+        border-radius: 6px;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .mesas-grid {
@@ -88,6 +103,14 @@
     .estado-libre { background: #4caf50; }
     .estado-ocupada { background: #ffc107; color: #333; }
     .estado-pagada { background: #dc3545; }
+    
+    .terraza-info {
+        font-size: 5px;
+        color: #ff9800;
+        font-weight: bold;
+        margin-top: 1px;
+        line-height: 1;
+    }
 </style>
 
 <div class="zona-header">
@@ -98,21 +121,24 @@
     ⚠️ ATENCIÓN: Todos los productos en terraza tienen suplemento de +0,20€
 </div>
 
-<div class="mesas-grid">
-    {% for mesa in mesas %}
-        <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">
-            <div class="mesa-numero">{{ mesa.numero }}</div>
-            <div class="mesa-estado estado-{{ mesa.estado }}">
-                {% if mesa.estado == 'libre' %}
-                    ✅
-                {% elif mesa.estado == 'ocupada' %}
-                    ⏰
-                {% else %}
-                    💰
-                {% endif %}
+<div class="zona-section">
+    <div class="mesas-grid">
+        {% for mesa in mesas %}
+            <div class="mesa-card {{ mesa.estado }}" onclick="window.location.href='/mesa/{{ mesa.id }}'">
+                <div class="mesa-numero">Mesa {{ mesa.numero }}</div>
+                <div class="mesa-estado estado-{{ mesa.estado }}">
+                    {% if mesa.estado == 'libre' %}
+                        ✅ Libre
+                    {% elif mesa.estado == 'ocupada' %}
+                        ⏰ Ocupada
+                    {% else %}
+                        💰 Por Pagar
+                    {% endif %}
+                </div>
+                <div class="terraza-info">🌞 +0,20€</div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
