@@ -33,8 +33,12 @@ function seleccionarEfectivo() {
     
     // Mostrar calculadora inmediatamente
     const calculadora = document.getElementById('cashCalculator');
+    console.log('Elemento calculadora encontrado:', calculadora);
+    
     if (calculadora) {
+        console.log('Mostrando calculadora...');
         calculadora.style.display = 'block';
+        calculadora.style.visibility = 'visible';
         
         // Limpiar campos y resetear valor actual
         valorActual = '';
@@ -42,9 +46,15 @@ function seleccionarEfectivo() {
         const displayCambio = document.getElementById('changeAmount');
         const botonConfirmar = document.getElementById('confirmCashBtn');
         
+        console.log('Elementos encontrados:', {inputDinero, displayCambio, botonConfirmar});
+        
         if (inputDinero) inputDinero.value = '0.00';
         if (displayCambio) displayCambio.textContent = '€0.00';
         if (botonConfirmar) botonConfirmar.disabled = true;
+        
+        console.log('Calculadora configurada');
+    } else {
+        console.error('No se encontró el elemento cashCalculator');
     }
 }
 
