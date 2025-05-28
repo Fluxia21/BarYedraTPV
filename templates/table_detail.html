@@ -138,8 +138,33 @@
                 
                 <div style="margin: 15px 0;">
                     <label style="display: block; margin-bottom: 8px; font-weight: bold;">Dinero Recibido (€):</label>
-                    <input type="number" id="cashReceived" placeholder="0.00" step="0.01" 
-                           oninput="calcularCambio()" style="width: 100%; font-size: 20px; padding: 10px; border: 2px solid #ddd; border-radius: 5px; text-align: center;">
+                    <input type="text" id="cashReceived" readonly placeholder="0.00" 
+                           style="width: 100%; font-size: 24px; padding: 15px; border: 2px solid #ddd; border-radius: 5px; text-align: center; background: white;">
+                </div>
+                
+                <!-- Teclado numérico -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; max-width: 300px; margin-left: auto; margin-right: auto;">
+                    <button onclick="agregarNumero('7')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">7</button>
+                    <button onclick="agregarNumero('8')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">8</button>
+                    <button onclick="agregarNumero('9')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">9</button>
+                    <button onclick="agregarNumero('4')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">4</button>
+                    <button onclick="agregarNumero('5')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">5</button>
+                    <button onclick="agregarNumero('6')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">6</button>
+                    <button onclick="agregarNumero('1')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">1</button>
+                    <button onclick="agregarNumero('2')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">2</button>
+                    <button onclick="agregarNumero('3')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">3</button>
+                    <button onclick="borrarUltimo()" style="padding: 15px; font-size: 16px; background: #dc3545; color: white; border: 2px solid #dc3545; border-radius: 8px; cursor: pointer;">⌫</button>
+                    <button onclick="agregarNumero('0')" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">0</button>
+                    <button onclick="agregarDecimal()" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer;">.</button>
+                </div>
+                
+                <!-- Botones de cantidades rápidas -->
+                <div style="display: flex; gap: 5px; margin: 15px 0; flex-wrap: wrap; justify-content: center;">
+                    <button onclick="establecerCantidad('5')" style="padding: 8px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">5€</button>
+                    <button onclick="establecerCantidad('10')" style="padding: 8px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">10€</button>
+                    <button onclick="establecerCantidad('20')" style="padding: 8px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">20€</button>
+                    <button onclick="establecerCantidad('50')" style="padding: 8px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">50€</button>
+                    <button onclick="limpiarCantidad()" style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">Limpiar</button>
                 </div>
                 
                 <div style="margin: 15px 0; padding: 15px; background: #fff3e0; border-radius: 8px; text-align: center;">
@@ -192,6 +217,7 @@
                     {% set productos_pedido = pedido_actual.productos|from_json if pedido_actual.productos else {} %}
                     {% for producto_id, cantidad in productos_pedido.items() %}
                         {% set producto = productos_dict[producto_id|int] %}
+                        {% set producto_con_precio = productos_dict_con_precios[producto_id|int] %}
                         <div class="order-item">
                             <div class="item-details">
                                 <div class="item-name">
@@ -202,10 +228,10 @@
                                 </div>
                                 <div class="item-price">
                                     {% if mesa.zona.lower() == 'terraza' %}
-                                        <span class="precio-base">€{{ "%.2f"|format(producto.precio) }}</span>
-                                        <span class="precio-terraza">€{{ "%.2f"|format(producto.precio + 0.2) }}</span>
+                                        <span class="precio-base">€{{ "%.2f"|format(producto_con_precio.precio_base) }}</span>
+                                        <span class="precio-terraza">€{{ "%.2f"|format(producto_con_precio.precio_final) }}</span>
                                     {% else %}
-                                        €{{ "%.2f"|format(producto.precio) }}
+                                        €{{ "%.2f"|format(producto_con_precio.precio_final) }}
                                     {% endif %}
                                 </div>
                             </div>
@@ -215,11 +241,7 @@
                                 <button class="btn-quantity" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, {{ cantidad + 1 }})">+</button>
                             </div>
                             <div class="item-subtotal">
-                                {% if mesa.zona.lower() == 'terraza' %}
-                                    €{{ "%.2f"|format((producto.precio + 0.2) * cantidad) }}
-                                {% else %}
-                                    €{{ "%.2f"|format(producto.precio * cantidad) }}
-                                {% endif %}
+                                €{{ "%.2f"|format(producto_con_precio.precio_final * cantidad) }}
                             </div>
                             <button class="btn-remove" onclick="removeFromOrder({{ mesa.id }}, {{ producto.id }})" title="Eliminar">
                                 <i class="fas fa-trash"></i>

@@ -148,14 +148,30 @@ def table_detail(mesa_id):
     es_terraza = mesa.zona.lower() == 'terraza'
     suplemento_terraza = Decimal('0.20') if es_terraza else Decimal('0.00')
     
-    # Agrupar productos por categoría
+    # Agrupar productos por categoría y preparar precios con suplemento
     productos_por_categoria = {}
     productos_dict = {}
+    productos_dict_con_precios = {}
+    
     for producto in productos:
         if producto.categoria not in productos_por_categoria:
             productos_por_categoria[producto.categoria] = []
         productos_por_categoria[producto.categoria].append(producto)
         productos_dict[producto.id] = producto
+        
+        # Crear una versión del producto con precios calculados para terraza
+        precio_base = float(producto.precio)
+        precio_final = precio_base + 0.20 if es_terraza else precio_base
+        
+        productos_dict_con_precios[producto.id] = {
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'precio_base': precio_base,
+            'precio_final': precio_final,
+            'categoria': producto.categoria,
+            'descripcion': producto.descripcion,
+            'activo': producto.activo
+        }
     
     # Get current order for this table if exists
     pedido_actual = Pedido.query.filter_by(mesa_id=mesa_id, estado='abierto').first()
@@ -167,6 +183,7 @@ def table_detail(mesa_id):
                          mesa=mesa, 
                          productos_por_categoria=productos_por_categoria,
                          productos_dict=productos_dict,
+                         productos_dict_con_precios=productos_dict_con_precios,
                          pedido_actual=pedido_actual,
                          es_terraza=es_terraza,
                          suplemento_terraza=suplemento_terraza,

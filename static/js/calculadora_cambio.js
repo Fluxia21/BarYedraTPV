@@ -1,5 +1,6 @@
 // Calculadora de cambio - Sistema limpio y funcional
 let totalAPagar = 0;
+let valorActual = '';
 
 function abrirModalPago() {
     console.log('Abriendo modal de pago');
@@ -35,19 +36,15 @@ function seleccionarEfectivo() {
     if (calculadora) {
         calculadora.style.display = 'block';
         
-        // Limpiar campos
+        // Limpiar campos y resetear valor actual
+        valorActual = '';
         const inputDinero = document.getElementById('cashReceived');
         const displayCambio = document.getElementById('changeAmount');
         const botonConfirmar = document.getElementById('confirmCashBtn');
         
-        if (inputDinero) inputDinero.value = '';
+        if (inputDinero) inputDinero.value = '0.00';
         if (displayCambio) displayCambio.textContent = '€0.00';
         if (botonConfirmar) botonConfirmar.disabled = true;
-        
-        // Enfocar campo
-        setTimeout(() => {
-            if (inputDinero) inputDinero.focus();
-        }, 100);
     }
 }
 
