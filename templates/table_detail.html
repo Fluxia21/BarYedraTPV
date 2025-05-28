@@ -548,20 +548,35 @@ function hideCashCalculator() {
 
 function calcularTotalPedido() {
     let total = 0;
-    const items = document.querySelectorAll('.order-item');
     
-    items.forEach(item => {
+    // Buscar el total desde el resumen del pedido (más confiable)
+    const totalElement = document.querySelector('.summary-value');
+    if (totalElement) {
+        const totalText = totalElement.textContent.replace('€', '').replace(',', '.');
+        total = parseFloat(totalText) || 0;
+        console.log('Total encontrado en resumen:', total);
+        return total;
+    }
+    
+    // Si no hay resumen, calcular desde los items individuales
+    const orderItems = document.querySelectorAll('.order-item');
+    console.log('Elementos de pedido encontrados:', orderItems.length);
+    
+    orderItems.forEach(item => {
         const priceEl = item.querySelector('.item-price');
-        const quantityEl = item.querySelector('.item-quantity');
+        const quantityEl = item.querySelector('.quantity');
         
         if (priceEl && quantityEl) {
-            const price = parseFloat(priceEl.textContent.replace('€', '')) || 0;
+            const price = parseFloat(priceEl.textContent.replace('€', '').replace(',', '.')) || 0;
             const quantity = parseInt(quantityEl.textContent) || 0;
+            
+            console.log('Item:', {price, quantity, subtotal: price * quantity});
             total += price * quantity;
         }
     });
     
-    return total;
+    console.log('Total calculado:', total);
+    return total || 0;
 }
 
 
