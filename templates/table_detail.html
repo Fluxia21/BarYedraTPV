@@ -504,24 +504,33 @@ function openCloseOrderModal() {
 
 function resetPaymentSelection() {
     // Limpiar selecciones anteriores
-    document.querySelectorAll('.btn-payment-method').forEach(btn => {
-        btn.classList.remove('selected', 'clicked');
+    const buttons = document.querySelectorAll('.btn-payment-method');
+    buttons.forEach(btn => {
+        if (btn) {
+            btn.classList.remove('selected', 'clicked');
+        }
     });
     selectedPaymentMethod = '';
 }
 
 function selectPaymentMethod(method) {
+    console.log('Seleccionando método:', method);
+    
     // Efecto ripple al hacer clic
     const button = document.getElementById('btn-' + method);
-    button.classList.add('clicked');
-    setTimeout(() => button.classList.remove('clicked'), 600);
+    if (button) {
+        button.classList.add('clicked');
+        setTimeout(() => button.classList.remove('clicked'), 600);
+    }
     
     // Resetear selección anterior
     resetPaymentSelection();
     
     // Seleccionar nuevo método
     selectedPaymentMethod = method;
-    button.classList.add('selected');
+    if (button) {
+        button.classList.add('selected');
+    }
     
     // Mostrar estado de selección con animación
     showPaymentStatus(method);
@@ -539,6 +548,11 @@ function selectPaymentMethod(method) {
 function showPaymentStatus(method) {
     const statusDiv = document.getElementById('paymentStatus');
     const statusText = document.getElementById('statusText');
+    
+    if (!statusDiv || !statusText) {
+        console.log('Elementos de estado no encontrados');
+        return;
+    }
     
     // Configurar mensaje según el método
     if (method === 'efectivo') {
@@ -559,8 +573,15 @@ function showCashCalculatorWithAnimation() {
     const calculator = document.getElementById('cashCalculator');
     const statusText = document.getElementById('statusText');
     
+    if (!calculator) {
+        console.log('Calculadora no encontrada');
+        return;
+    }
+    
     // Actualizar mensaje
-    statusText.textContent = 'Calculadora de cambio lista';
+    if (statusText) {
+        statusText.textContent = 'Calculadora de cambio lista';
+    }
     
     // Mostrar calculadora con animación suave
     calculator.style.display = 'block';
@@ -574,7 +595,10 @@ function showCashCalculatorWithAnimation() {
         
         // Enfocar campo de entrada
         setTimeout(() => {
-            document.getElementById('cashReceived').focus();
+            const cashField = document.getElementById('cashReceived');
+            if (cashField) {
+                cashField.focus();
+            }
         }, 300);
     }, 100);
 }
