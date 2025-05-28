@@ -45,9 +45,9 @@
                 <table style="width: 100%; margin: 10px 0;">
                     <tr>
                         <td style="width: 50%; padding: 5px;">
-                            <a href="/edit_product/{{ producto.id }}" style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold; text-decoration: none; display: block; text-align: center; border-radius: 5px;">
+                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold; border-radius: 5px;" onclick="abrirModalEdicion({{ producto.id }}, '{{ producto.nombre|e }}', {{ producto.precio }}, '{{ producto.categoria|e }}', '{{ producto.foto_url or "" }}', '{{ (producto.descripcion or "")|e }}')">
                                 ✏️ EDITAR
-                            </a>
+                            </button>
                         </td>
                         <td style="width: 50%; padding: 5px;">
                             <button style="width: 100%; padding: 15px; background: red; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
@@ -78,8 +78,8 @@
 </div>
 
 <!-- Modal para editar producto -->
-<div id="editProductModal" class="modal" style="display: none;">
-    <div class="modal-content touch-optimized">
+<div id="editProductModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="modal-content touch-optimized" style="background: white; border-radius: 10px; padding: 30px; max-width: 600px; width: 90%; max-height: 80%; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
         <div class="modal-header">
             <h2><i class="fas fa-edit"></i> Editar Producto</h2>
             <button class="modal-close touch-friendly" onclick="hideEditProductModal()">
@@ -383,6 +383,21 @@ function cambiarImagenAñadir(urlImagen) {
     setTimeout(() => {
         document.body.removeChild(mensaje);
     }, 2000);
+}
+
+function abrirModalEdicion(id, nombre, precio, categoria, foto, descripcion) {
+    // Llenar el formulario con los datos del producto
+    document.getElementById('edit_nombre').value = nombre;
+    document.getElementById('edit_precio').value = precio;
+    document.getElementById('edit_categoria').value = categoria;
+    document.getElementById('edit_foto_url').value = foto;
+    document.getElementById('edit_descripcion').value = descripcion;
+    
+    // Configurar la acción del formulario para conectar a la base de datos
+    document.getElementById('editProductForm').action = '/update_product/' + id;
+    
+    // Mostrar el modal flotante
+    document.getElementById('editProductModal').style.display = 'flex';
 }
 </script>
 
