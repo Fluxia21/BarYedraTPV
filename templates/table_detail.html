@@ -201,7 +201,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="item-price">
-                                    {% set precio_final = producto.precio + 0.20 if mesa.zona.lower() == 'terraza' else producto.precio %}
+                                    {% set precio_final = (producto.precio|float + 0.20) if mesa.zona.lower() == 'terraza' else producto.precio|float %}
                                     {% if mesa.zona.lower() == 'terraza' %}
                                         <span class="precio-base">€{{ "%.2f"|format(producto.precio) }}</span>
                                         <span class="precio-terraza">€{{ "%.2f"|format(precio_final) }}</span>
