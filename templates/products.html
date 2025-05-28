@@ -45,7 +45,7 @@
                 <table style="width: 100%; margin: 10px 0;">
                     <tr>
                         <td style="width: 50%; padding: 5px;">
-                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')">
+                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre|replace("'", "\\'") }}', {{ producto.precio }}, '{{ producto.categoria|replace("'", "\\'") }}', '{{ (producto.foto_url or "")|replace("'", "\\'") }}', '{{ (producto.descripcion or "")|replace("'", "\\'") }}')">
                                 ✏️ EDITAR
                             </button>
                         </td>
@@ -101,13 +101,13 @@
                 <div class="form-group">
                     <label for="edit_categoria" class="form-label">Categoría</label>
                     <select id="edit_categoria" name="categoria" required class="form-input touch-friendly">
-                        <option value="Cafés">Cafés</option>
-                        <option value="Desayunos">Desayunos</option>
-                        <option value="Montados">Montados</option>
-                        <option value="Platos Calientes">Platos Calientes</option>
-                        <option value="Helados">Helados</option>
-                        <option value="Bebidas">Bebidas</option>
-                        <option value="Otros">Otros</option>
+                        <option value="Bebidas Calientes">☕ Bebidas Calientes</option>
+                        <option value="Bebidas Frías">🥤 Bebidas Frías</option>
+                        <option value="Alcoholicas">🍺 Bebidas Alcohólicas</option>
+                        <option value="Comida">🍽️ Comida</option>
+                        <option value="Tapas">🍤 Tapas</option>
+                        <option value="Postres">🍰 Postres</option>
+                        <option value="General">📦 General</option>
                     </select>
                 </div>
                 
@@ -206,18 +206,22 @@ function hideAddProductModal() {
 }
 
 function openEditModal(id, nombre, precio, categoria, foto_url, descripcion) {
+    console.log('Abriendo modal de edición para:', {id, nombre, precio, categoria, foto_url, descripcion});
+    
     // Llenar el formulario con los datos del producto
-    document.getElementById('edit_nombre').value = nombre;
-    document.getElementById('edit_precio').value = precio;
-    document.getElementById('edit_categoria').value = categoria;
-    document.getElementById('edit_foto_url').value = foto_url;
-    document.getElementById('edit_descripcion').value = descripcion;
+    document.getElementById('edit_nombre').value = nombre || '';
+    document.getElementById('edit_precio').value = precio || '';
+    document.getElementById('edit_categoria').value = categoria || '';
+    document.getElementById('edit_foto_url').value = foto_url || '';
+    document.getElementById('edit_descripcion').value = descripcion || '';
     
     // Configurar la acción del formulario
     document.getElementById('editProductForm').action = `/update_product/${id}`;
     
     // Mostrar el modal
     document.getElementById('editProductModal').style.display = 'flex';
+    
+    console.log('Modal de edición abierto correctamente');
 }
 
 function hideEditProductModal() {
