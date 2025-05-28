@@ -72,19 +72,17 @@
             
             <!-- Botones de método de pago con toggle interactivo -->
             <div class="payment-buttons">
-                <button class="btn-payment-method" id="btn-efectivo" onclick="selectPaymentMethod('efectivo')">
+                <button class="btn-payment-method" onclick="selectCash()">
                     <div class="payment-icon">
                         <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div class="payment-text">EFECTIVO</div>
-                    <div class="selection-indicator"></div>
                 </button>
-                <button class="btn-payment-method" id="btn-tarjeta" onclick="selectPaymentMethod('tarjeta')">
+                <button class="btn-payment-method" onclick="selectCard()">
                     <div class="payment-icon">
                         <i class="fas fa-credit-card"></i>
                     </div>
                     <div class="payment-text">TARJETA</div>
-                    <div class="selection-indicator"></div>
                 </button>
             </div>
             
@@ -481,9 +479,8 @@ function closeCategoryModal() {
     modal.style.display = 'none';
 }
 
-// Funciones avanzadas para el modal de cierre de pedido con toggle interactivo
+// Funciones simples para el modal de pago
 let currentOrderTotal = 0;
-let selectedPaymentMethod = '';
 
 function openCloseOrderModal() {
     // Calcular el total del pedido actual
@@ -492,59 +489,43 @@ function openCloseOrderModal() {
     // Mostrar el total
     document.getElementById('totalAmount').textContent = '€' + currentOrderTotal.toFixed(2);
     
-    // Resetear estado
-    resetPaymentSelection();
+    // Ocultar calculadora
     document.getElementById('cashCalculator').style.display = 'none';
-    document.getElementById('paymentStatus').style.display = 'none';
     
     // Mostrar modal
     const modal = document.getElementById('closeOrderModal');
     modal.style.display = 'flex';
 }
 
-function resetPaymentSelection() {
-    // Limpiar selecciones anteriores
-    const buttons = document.querySelectorAll('.btn-payment-method');
-    buttons.forEach(btn => {
-        if (btn) {
-            btn.classList.remove('selected', 'clicked');
-        }
-    });
-    selectedPaymentMethod = '';
+function selectCash() {
+    console.log('Efectivo seleccionado');
+    
+    // Mostrar calculadora inmediatamente
+    const calculator = document.getElementById('cashCalculator');
+    calculator.style.display = 'block';
+    
+    // Limpiar campos
+    document.getElementById('cashReceived').value = '';
+    document.getElementById('changeAmount').textContent = '€0.00';
+    document.getElementById('confirmCashBtn').disabled = true;
+    
+    // Enfocar campo
+    setTimeout(() => {
+        document.getElementById('cashReceived').focus();
+    }, 100);
 }
 
-function selectPaymentMethod(method) {
-    console.log('Seleccionando método:', method);
+function selectCard() {
+    console.log('Tarjeta seleccionada');
     
-    // Efecto ripple al hacer clic
-    const button = document.getElementById('btn-' + method);
-    if (button) {
-        button.classList.add('clicked');
-        setTimeout(() => button.classList.remove('clicked'), 600);
+    // Confirmar directamente para tarjeta
+    if (confirm('¿Confirmar pago con tarjeta por €' + currentOrderTotal.toFixed(2) + '?')) {
+        confirmPayment('tarjeta');
     }
-    
-    // Resetear selección anterior
-    resetPaymentSelection();
-    
-    // Seleccionar nuevo método
-    selectedPaymentMethod = method;
-    if (button) {
-        button.classList.add('selected');
-    }
-    
-    // Mostrar estado de selección con animación
-    showPaymentStatus(method);
-    
-    // ACCIÓN INMEDIATA: Mostrar calculadora automáticamente al seleccionar EFECTIVO
-    if (method === 'efectivo') {
-        setTimeout(() => {
-            showCashCalculatorWithAnimation();
-        }, 500); // Reducido el tiempo para que sea más inmediato
-    } else if (method === 'tarjeta') {
-        setTimeout(() => {
-            showCardConfirmation();
-        }, 800);
-    }
+}
+
+function hideCashCalculator() {
+    document.getElementById('cashCalculator').style.display = 'none';
 }
 
 function showPaymentStatus(method) {
