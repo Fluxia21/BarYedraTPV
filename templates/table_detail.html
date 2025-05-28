@@ -803,8 +803,10 @@ function ocultarCalculadora() {
     padding: 30px;
     width: 500px;
     max-width: 90vw;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     text-align: center;
+    position: relative;
+    z-index: 10;
 }
 
 .modal-header-simple {
@@ -855,48 +857,32 @@ function ocultarCalculadora() {
 
 .btn-payment-method {
     flex: 1;
-    padding: 0;
+    padding: 20px;
     border: 3px solid #e0e0e0;
     border-radius: 15px;
     background: white;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    min-height: 120px;
+    transition: all 0.3s ease;
+    position: static;
+    overflow: visible;
+    min-height: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
 }
 
 .btn-payment-method:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     border-color: #bbb;
 }
 
-.btn-payment-method.selected {
-    border-color: #4caf50;
-    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
-    transform: scale(1.02);
-    box-shadow: 0 8px 30px rgba(76, 175, 80, 0.3);
-}
-
-.btn-payment-method.selected .payment-icon {
-    color: #4caf50;
-    transform: scale(1.1);
-}
-
-.btn-payment-method.selected .payment-text {
-    color: #2e7d32;
-    font-weight: bold;
-}
-
-.btn-payment-method.selected .selection-indicator {
-    opacity: 1;
-    transform: scale(1);
+.btn-payment-method:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .payment-icon {
