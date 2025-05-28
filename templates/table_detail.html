@@ -161,7 +161,31 @@
                     <button onclick="teclado_decimal()" style="padding: 15px; font-size: 18px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer; transition: all 0.2s;">.</button>
                 </div>
                 
-                <!-- Botones de cantidades rápidas -->
+                <!-- Botones de pago rápido -->
+                <div style="margin: 20px 0;">
+                    <h4 style="text-align: center; margin-bottom: 15px; color: #28a745;">💸 Pago Rápido</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <button onclick="pagoRapido(5)" style="padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+                            💵 5€
+                        </button>
+                        <button onclick="pagoRapido(10)" style="padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+                            💵 10€
+                        </button>
+                        <button onclick="pagoRapido(20)" style="padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+                            💵 20€
+                        </button>
+                        <button onclick="pagoRapido(50)" style="padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+                            💵 50€
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Separador -->
+                <div style="border-top: 2px solid #eee; margin: 20px 0; padding-top: 15px;">
+                    <h4 style="text-align: center; margin-bottom: 15px; color: #007bff;">🔢 Cantidad Personalizada</h4>
+                </div>
+                
+                <!-- Botones de cantidades para teclado -->
                 <div style="display: flex; gap: 5px; margin: 15px 0; flex-wrap: wrap; justify-content: center;">
                     <button onclick="teclado_rapido('5')" style="padding: 8px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">5€</button>
                     <button onclick="teclado_rapido('10')" style="padding: 8px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">10€</button>
