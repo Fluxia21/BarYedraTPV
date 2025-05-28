@@ -45,9 +45,25 @@
                 <table style="width: 100%; margin: 10px 0;">
                     <tr>
                         <td style="width: 50%; padding: 5px;">
-                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="editarProductoSimple{{ producto.id }}()">
+                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="abrirEdicion{{ producto.id }}()">
                                 ✏️ EDITAR
                             </button>
+                            <script>
+                            window.abrirEdicion{{ producto.id }} = function() {
+                                // Rellenar formulario
+                                document.getElementById('edit_nombre').value = '{{ producto.nombre|replace("'", "\\'") }}';
+                                document.getElementById('edit_precio').value = '{{ producto.precio }}';
+                                document.getElementById('edit_categoria').value = '{{ producto.categoria }}';
+                                document.getElementById('edit_foto_url').value = '{{ producto.foto_url or "" }}';
+                                document.getElementById('edit_descripcion').value = '{{ (producto.descripcion or "")|replace("'", "\\'") }}';
+                                
+                                // Configurar formulario
+                                document.getElementById('editProductForm').action = '/update_product/{{ producto.id }}';
+                                
+                                // Mostrar modal
+                                document.getElementById('editProductModal').style.display = 'flex';
+                            };
+                            </script>
                         </td>
                         <td style="width: 50%; padding: 5px;">
                             <button style="width: 100%; padding: 15px; background: red; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
@@ -57,24 +73,7 @@
                     </tr>
                 </table>
             </div>
-            
-            <!-- Script individual para este producto -->
-            <script>
-            function editarProductoSimple{{ producto.id }}() {
-                // Llenar formulario de edición
-                document.getElementById('edit_nombre').value = "{{ producto.nombre|replace('"', '\\"') }}";
-                document.getElementById('edit_precio').value = "{{ producto.precio }}";
-                document.getElementById('edit_categoria').value = "{{ producto.categoria }}";
-                document.getElementById('edit_foto_url').value = "{{ producto.foto_url or '' }}";
-                document.getElementById('edit_descripcion').value = "{{ (producto.descripcion or '')|replace('"', '\\"') }}";
-                
-                // Configurar acción del formulario
-                document.getElementById('editProductForm').action = "/update_product/{{ producto.id }}";
-                
-                // Mostrar modal
-                document.getElementById('editProductModal').style.display = 'flex';
-            }
-            </script>
+
             {% endfor %}
         </div>
     </div>
