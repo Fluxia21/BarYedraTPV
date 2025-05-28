@@ -479,55 +479,90 @@ function closeCategoryModal() {
     modal.style.display = 'none';
 }
 
-// Funciones simples para el modal de pago
-let currentOrderTotal = 0;
+// Sistema de calculadora de cambio completamente nuevo
+let totalPedido = 0;
 
 function openCloseOrderModal() {
-    // Calcular el total del pedido actual
-    currentOrderTotal = calculateOrderTotal();
+    console.log('Abriendo modal de pago');
     
-    // Mostrar el total
-    document.getElementById('totalAmount').textContent = '€' + currentOrderTotal.toFixed(2);
+    // Calcular total
+    totalPedido = calcularTotalPedido();
+    console.log('Total calculado:', totalPedido);
     
-    // Ocultar calculadora
-    document.getElementById('cashCalculator').style.display = 'none';
+    // Mostrar total en el modal
+    const totalElement = document.getElementById('totalAmount');
+    if (totalElement) {
+        totalElement.textContent = '€' + totalPedido.toFixed(2);
+    }
+    
+    // Asegurar que la calculadora esté oculta
+    const calculator = document.getElementById('cashCalculator');
+    if (calculator) {
+        calculator.style.display = 'none';
+    }
     
     // Mostrar modal
     const modal = document.getElementById('closeOrderModal');
-    modal.style.display = 'flex';
+    if (modal) {
+        modal.style.display = 'flex';
+    }
 }
 
 function selectCash() {
-    console.log('Efectivo seleccionado');
+    console.log('EFECTIVO seleccionado - mostrando calculadora');
     
-    // Mostrar calculadora inmediatamente
     const calculator = document.getElementById('cashCalculator');
-    calculator.style.display = 'block';
-    
-    // Limpiar campos
-    document.getElementById('cashReceived').value = '';
-    document.getElementById('changeAmount').textContent = '€0.00';
-    document.getElementById('confirmCashBtn').disabled = true;
-    
-    // Enfocar campo
-    setTimeout(() => {
-        document.getElementById('cashReceived').focus();
-    }, 100);
+    if (calculator) {
+        calculator.style.display = 'block';
+        
+        // Limpiar campos
+        const cashInput = document.getElementById('cashReceived');
+        const changeDisplay = document.getElementById('changeAmount');
+        const confirmBtn = document.getElementById('confirmCashBtn');
+        
+        if (cashInput) cashInput.value = '';
+        if (changeDisplay) changeDisplay.textContent = '€0.00';
+        if (confirmBtn) confirmBtn.disabled = true;
+        
+        // Enfocar campo después de un momento
+        setTimeout(() => {
+            if (cashInput) cashInput.focus();
+        }, 100);
+    }
 }
 
 function selectCard() {
-    console.log('Tarjeta seleccionada');
+    console.log('TARJETA seleccionada');
     
-    // Confirmar directamente para tarjeta
-    if (confirm('¿Confirmar pago con tarjeta por €' + currentOrderTotal.toFixed(2) + '?')) {
-        confirmPayment('tarjeta');
+    if (confirm('¿Confirmar pago con tarjeta por €' + totalPedido.toFixed(2) + '?')) {
+        procesarPago('tarjeta');
     }
 }
 
 function hideCashCalculator() {
-    document.getElementById('cashCalculator').style.display = 'none';
+    const calculator = document.getElementById('cashCalculator');
+    if (calculator) {
+        calculator.style.display = 'none';
+    }
 }
 
+function calcularTotalPedido() {
+    let total = 0;
+    const items = document.querySelectorAll('.order-item');
+    
+    items.forEach(item => {
+        const priceEl = item.querySelector('.item-price');
+        const quantityEl = item.querySelector('.item-quantity');
+        
+        if (priceEl && quantityEl) {
+            const price = parseFloat(priceEl.textContent.replace('€', '')) || 0;
+            const quantity = parseInt(quantityEl.textContent) || 0;
+            total += price * quantity;
+        }
+    });
+    
+    return total;
+}
 
 
 function calculateChangeSimple() {
@@ -535,15 +570,12 @@ function calculateChangeSimple() {
     const changeDisplay = document.getElementById('changeAmount');
     const confirmBtn = document.getElementById('confirmCashBtn');
     
-    if (!cashInput || !changeDisplay || !confirmBtn) {
-        console.log('Elementos de calculadora no encontrados');
-        return;
-    }
+    if (!cashInput || !changeDisplay || !confirmBtn) return;
     
     const received = parseFloat(cashInput.value) || 0;
-    const change = received - currentOrderTotal;
+    const change = received - totalPedido;
     
-    console.log('Calculando:', {received, currentOrderTotal, change});
+    console.log('Calculando cambio:', {received, totalPedido, change});
     
     if (change < 0) {
         changeDisplay.textContent = '€' + Math.abs(change).toFixed(2) + ' (Falta)';
@@ -556,44 +588,43 @@ function calculateChangeSimple() {
     }
 }
 
-function payWithCard() {
-    confirmPayment('tarjeta');
-}
-
 function confirmCashPayment() {
     const cashInput = document.getElementById('cashReceived');
     if (!cashInput) return;
     
     const received = parseFloat(cashInput.value) || 0;
-    if (received >= currentOrderTotal) {
-        confirmPayment('efectivo');
+    if (received >= totalPedido) {
+        procesarPago('efectivo', received);
     }
 }
 
-function confirmPayment(method) {
+function procesarPago(metodo, dineroRecibido = null) {
+    console.log('Procesando pago:', metodo, dineroRecibido);
+    
     // Crear formulario para enviar datos
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = `/pay_order/{{ mesa.id }}`;
     
-    const paymentMethodInput = document.createElement('input');
-    paymentMethodInput.type = 'hidden';
-    paymentMethodInput.name = 'forma_pago';
-    paymentMethodInput.value = method;
-    form.appendChild(paymentMethodInput);
+    // Método de pago
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = 'forma_pago';
+    methodInput.value = metodo;
+    form.appendChild(methodInput);
     
-    if (method === 'efectivo') {
-        const received = parseFloat(document.getElementById('cashReceived').value) || 0;
+    // Para efectivo, agregar datos adicionales
+    if (metodo === 'efectivo' && dineroRecibido) {
         const receivedInput = document.createElement('input');
         receivedInput.type = 'hidden';
         receivedInput.name = 'dinero_recibido';
-        receivedInput.value = received.toFixed(2);
+        receivedInput.value = dineroRecibido.toFixed(2);
         form.appendChild(receivedInput);
         
         const changeInput = document.createElement('input');
         changeInput.type = 'hidden';
         changeInput.name = 'cambio';
-        changeInput.value = (received - currentOrderTotal).toFixed(2);
+        changeInput.value = (dineroRecibido - totalPedido).toFixed(2);
         form.appendChild(changeInput);
     }
     
