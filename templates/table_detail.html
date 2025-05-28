@@ -234,6 +234,40 @@
                     }
                 }
 
+                function pagoRapido(cantidad) {
+                    if (cantidad >= totalPedido) {
+                        const cambio = cantidad - totalPedido;
+                        if (confirm('Pago con ' + cantidad + '€\nCambio a devolver: €' + cambio.toFixed(2))) {
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = '/pay_order/{{ mesa.id }}';
+                            
+                            const metodo = document.createElement('input');
+                            metodo.type = 'hidden';
+                            metodo.name = 'forma_pago';
+                            metodo.value = 'efectivo';
+                            form.appendChild(metodo);
+                            
+                            const recibido = document.createElement('input');
+                            recibido.type = 'hidden';
+                            recibido.name = 'dinero_recibido';
+                            recibido.value = cantidad.toFixed(2);
+                            form.appendChild(recibido);
+                            
+                            const cambioVal = document.createElement('input');
+                            cambioVal.type = 'hidden';
+                            cambioVal.name = 'cambio';
+                            cambioVal.value = cambio.toFixed(2);
+                            form.appendChild(cambioVal);
+                            
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    } else {
+                        alert('Cantidad insuficiente. Total a pagar: €' + totalPedido.toFixed(2));
+                    }
+                }
+
                 function teclado_agregar(num) {
                     valorTeclado += num;
                     teclado_actualizar();
