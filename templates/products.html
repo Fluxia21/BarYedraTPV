@@ -45,9 +45,9 @@
                 <table style="width: 100%; margin: 10px 0;">
                     <tr>
                         <td style="width: 50%; padding: 5px;">
-                            <a href="/edit_product/{{ producto.id }}" style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold; text-decoration: none; display: block; text-align: center;">
+                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="mostrarModalEditar({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }}, '{{ producto.categoria }}', '{{ producto.foto_url or '' }}', '{{ producto.descripcion or '' }}')">
                                 ✏️ EDITAR
-                            </a>
+                            </button>
                         </td>
                         <td style="width: 50%; padding: 5px;">
                             <button style="width: 100%; padding: 15px; background: red; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="deleteProduct({{ producto.id }}, '{{ producto.nombre }}')">
@@ -205,31 +205,19 @@ function hideAddProductModal() {
     document.getElementById('addProductModal').style.display = 'none';
 }
 
-function editarProducto(button) {
-    // Obtener datos del botón
-    const id = button.getAttribute('data-id');
-    const nombre = button.getAttribute('data-nombre');
-    const precio = button.getAttribute('data-precio');
-    const categoria = button.getAttribute('data-categoria');
-    const foto = button.getAttribute('data-foto');
-    const descripcion = button.getAttribute('data-descripcion');
-    
-    console.log('Editando producto:', {id, nombre, precio, categoria, foto, descripcion});
-    
-    // Llenar el formulario
+function mostrarModalEditar(id, nombre, precio, categoria, foto, descripcion) {
+    // Llenar el formulario de edición con los datos del producto
     document.getElementById('edit_nombre').value = nombre;
     document.getElementById('edit_precio').value = precio;
     document.getElementById('edit_categoria').value = categoria;
     document.getElementById('edit_foto_url').value = foto;
     document.getElementById('edit_descripcion').value = descripcion;
     
-    // Configurar acción del formulario
+    // Configurar la acción del formulario para enviar a la URL correcta
     document.getElementById('editProductForm').action = `/update_product/${id}`;
     
-    // Mostrar modal
+    // Mostrar el modal de edición (igual que el de añadir)
     document.getElementById('editProductModal').style.display = 'flex';
-    
-    console.log('Modal abierto para edición');
 }
 
 function openEditModal(id, nombre, precio, categoria, foto_url, descripcion) {
