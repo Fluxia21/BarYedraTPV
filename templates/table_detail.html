@@ -201,12 +201,11 @@
                                     {% endif %}
                                 </div>
                                 <div class="item-price">
-                                    {% set precio_final = (producto.precio|float + 0.20) if mesa.zona.lower() == 'terraza' else producto.precio|float %}
                                     {% if mesa.zona.lower() == 'terraza' %}
                                         <span class="precio-base">€{{ "%.2f"|format(producto.precio) }}</span>
-                                        <span class="precio-terraza">€{{ "%.2f"|format(precio_final) }}</span>
+                                        <span class="precio-terraza">€{{ "%.2f"|format(producto.precio + 0.2) }}</span>
                                     {% else %}
-                                        €{{ "%.2f"|format(precio_final) }}
+                                        €{{ "%.2f"|format(producto.precio) }}
                                     {% endif %}
                                 </div>
                             </div>
@@ -215,7 +214,13 @@
                                 <span class="quantity">{{ cantidad }}</span>
                                 <button class="btn-quantity" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, {{ cantidad + 1 }})">+</button>
                             </div>
-                            <div class="item-subtotal">€{{ "%.2f"|format(precio_final * cantidad) }}</div>
+                            <div class="item-subtotal">
+                                {% if mesa.zona.lower() == 'terraza' %}
+                                    €{{ "%.2f"|format((producto.precio + 0.2) * cantidad) }}
+                                {% else %}
+                                    €{{ "%.2f"|format(producto.precio * cantidad) }}
+                                {% endif %}
+                            </div>
                             <button class="btn-remove" onclick="removeFromOrder({{ mesa.id }}, {{ producto.id }})" title="Eliminar">
                                 <i class="fas fa-trash"></i>
                             </button>
