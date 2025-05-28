@@ -124,16 +124,19 @@
                 <h3>Total a Pagar: <span id="totalAmount">€0.00</span></h3>
             </div>
             
-            <div style="display: flex; gap: 15px; margin: 20px 0;">
-                <button onclick="seleccionarEfectivo()" style="flex: 1; padding: 20px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                    💵 EFECTIVO
-                </button>
-                <button onclick="seleccionarTarjeta()" style="flex: 1; padding: 20px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-                    💳 TARJETA
-                </button>
+            <div style="margin: 20px 0;">
+                <h3 style="text-align: center; margin-bottom: 15px;">Selecciona Método de Pago:</h3>
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="mostrarEfectivo()" style="flex: 1; padding: 20px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                        💵 EFECTIVO
+                    </button>
+                    <button onclick="pagarTarjeta()" style="flex: 1; padding: 20px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                        💳 TARJETA
+                    </button>
+                </div>
             </div>
             
-            <div id="cashCalculator" style="border-top: 2px solid #eee; padding-top: 20px;">
+            <div id="cashCalculator" style="display: none; border-top: 2px solid #eee; padding-top: 20px;">
                 <h3 style="text-align: center; margin-bottom: 15px;">💰 Calculadora de Cambio</h3>
                 
                 <div style="margin: 15px 0;">
@@ -183,6 +186,29 @@
                 <script>
                 let valorTeclado = '';
                 let totalPedido = {{ pedido_actual.total|default(0) }};
+
+                function mostrarEfectivo() {
+                    document.getElementById('cashCalculator').style.display = 'block';
+                    valorTeclado = '';
+                    teclado_actualizar();
+                }
+
+                function pagarTarjeta() {
+                    if (confirm('¿Confirmar pago con tarjeta por €' + totalPedido.toFixed(2) + '?')) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/pay_order/{{ mesa.id }}';
+                        
+                        const metodo = document.createElement('input');
+                        metodo.type = 'hidden';
+                        metodo.name = 'forma_pago';
+                        metodo.value = 'tarjeta';
+                        form.appendChild(metodo);
+                        
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                }
 
                 function teclado_agregar(num) {
                     valorTeclado += num;
