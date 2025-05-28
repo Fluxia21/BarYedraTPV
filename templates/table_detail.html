@@ -618,29 +618,15 @@ function showCardConfirmation() {
     }, 1000);
 }
 
-function showCashCalculator() {
-    console.log('Mostrando calculadora de efectivo');
-    document.getElementById('cashCalculator').style.display = 'block';
-    
-    // Limpiar campo
-    document.getElementById('cashReceived').value = '';
-    document.getElementById('changeAmount').textContent = '€0.00';
-    document.getElementById('confirmCashBtn').disabled = true;
-    
-    // Enfocar campo
-    setTimeout(() => {
-        document.getElementById('cashReceived').focus();
-    }, 100);
-}
-
-function hideCashCalculator() {
-    document.getElementById('cashCalculator').style.display = 'none';
-}
-
 function calculateChangeSimple() {
     const cashInput = document.getElementById('cashReceived');
     const changeDisplay = document.getElementById('changeAmount');
     const confirmBtn = document.getElementById('confirmCashBtn');
+    
+    if (!cashInput || !changeDisplay || !confirmBtn) {
+        console.log('Elementos de calculadora no encontrados');
+        return;
+    }
     
     const received = parseFloat(cashInput.value) || 0;
     const change = received - currentOrderTotal;
@@ -659,12 +645,14 @@ function calculateChangeSimple() {
 }
 
 function payWithCard() {
-    // Para tarjeta, confirmar directamente
     confirmPayment('tarjeta');
 }
 
 function confirmCashPayment() {
-    const received = parseFloat(document.getElementById('cashReceived').value) || 0;
+    const cashInput = document.getElementById('cashReceived');
+    if (!cashInput) return;
+    
+    const received = parseFloat(cashInput.value) || 0;
     if (received >= currentOrderTotal) {
         confirmPayment('efectivo');
     }
@@ -755,47 +743,7 @@ function calculateChange() {
     validatePayment();
 }
 
-// Función para seleccionar método de pago en la primera pantalla
-function selectMainPaymentMethod(method) {
-    selectedPaymentMethod = method;
-    
-    // Actualizar botones
-    document.querySelectorAll('.payment-btn-main').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    document.getElementById(method + '-main-btn').classList.add('selected');
-    
-    if (method === 'efectivo') {
-        console.log('Efectivo seleccionado, cambiando a calculadora');
-        // Ir inmediatamente a la pantalla de cálculo de cambio
-        const paymentScreen = document.getElementById('paymentMethodScreen');
-        const cashScreen = document.getElementById('cashCalculationScreen');
-        
-        if (paymentScreen && cashScreen) {
-            paymentScreen.style.display = 'none';
-            cashScreen.style.display = 'block';
-            console.log('Pantallas cambiadas');
-            
-            // Enfocar el campo de dinero recibido después de un momento
-            setTimeout(() => {
-                const moneyInput = document.getElementById('moneyReceived');
-                if (moneyInput) {
-                    moneyInput.focus();
-                    console.log('Campo enfocado');
-                }
-            }, 200);
-        } else {
-            console.error('Elementos de pantalla no encontrados');
-        }
-    } else if (method === 'tarjeta') {
-        // Para tarjeta, confirmar directamente
-        const confirmBtn = document.getElementById('confirmPaymentBtn');
-        if (confirmBtn) {
-            confirmBtn.disabled = false;
-        }
-    }
-}
+
 
 // Función para volver a la pantalla de método de pago
 function goBackToPaymentMethod() {
