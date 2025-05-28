@@ -859,180 +859,43 @@ function ocultarCalculadora() {
     color: #2e7d32;
 }
 
-/* Botones de método de pago interactivos */
+/* Botones de pago simples y sin superposición */
 .payment-buttons {
     display: flex;
     gap: 20px;
-    margin: 30px 0;
+    margin: 20px 0;
 }
 
 .btn-payment-method {
     flex: 1;
-    padding: 20px;
-    border: 3px solid #e0e0e0;
-    border-radius: 15px;
-    background: white;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #f8f9fa;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: static;
-    overflow: visible;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 1;
+    transition: background 0.2s ease;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
 }
 
 .btn-payment-method:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    border-color: #bbb;
-}
-
-.btn-payment-method:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: #e9ecef;
+    border-color: #adb5bd;
 }
 
 .payment-icon {
-    font-size: 32px;
-    color: #666;
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
 }
 
 .payment-text {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    transition: all 0.3s ease;
-}
-
-.selection-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 24px;
-    height: 24px;
-    background: #4caf50;
-    border-radius: 50%;
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.selection-indicator::after {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
     font-size: 14px;
     font-weight: bold;
 }
 
-/* Estados específicos por tipo de pago */
-.btn-payment-method#btn-efectivo.selected {
-    border-color: #4caf50;
-    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
-}
-
-.btn-payment-method#btn-tarjeta.selected {
-    border-color: #2196f3;
-    background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
-}
-
-.btn-payment-method#btn-tarjeta.selected .payment-icon {
-    color: #2196f3;
-}
-
-.btn-payment-method#btn-tarjeta.selected .payment-text {
-    color: #1565c0;
-}
-
-.btn-payment-method#btn-tarjeta.selected .selection-indicator {
-    background: #2196f3;
-}
-
-/* Estado de selección de pago */
-.payment-status {
-    margin: 20px 0;
-    padding: 15px;
-    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
-    border: 2px solid #4caf50;
-    border-radius: 10px;
-    text-align: center;
-    animation: slideInUp 0.5s ease-out;
-}
-
-.status-message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: #2e7d32;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.status-message i {
-    font-size: 20px;
-    animation: pulse 1.5s infinite;
-}
-
-/* Animaciones */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-@keyframes ripple {
-    0% {
-        transform: scale(0);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(4);
-        opacity: 0;
-    }
-}
-
-/* Efecto ripple al hacer clic */
-.btn-payment-method::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(76, 175, 80, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.btn-payment-method.clicked::before {
-    width: 300px;
-    height: 300px;
-}
+/* Estilos simples para la calculadora */
 
 .calculator-section {
     border-top: 2px solid #eee;
