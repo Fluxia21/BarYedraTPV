@@ -535,23 +535,34 @@ function seleccionarTarjeta() {
 }
 
 function calcularCambio() {
+    console.log('Función calcularCambio ejecutada');
+    
     const input = document.getElementById('cashReceived');
     const cambio = document.getElementById('changeAmount');
     const btn = document.getElementById('confirmCashBtn');
     
-    if (!input || !cambio || !btn) return;
+    console.log('Elementos encontrados:', {input, cambio, btn});
+    
+    if (!input || !cambio || !btn) {
+        console.log('ERROR: No se encontraron todos los elementos');
+        return;
+    }
     
     const recibido = parseFloat(input.value) || 0;
     const diferencia = recibido - totalDelPedido;
+    
+    console.log('Cálculo:', {recibido, totalDelPedido, diferencia});
     
     if (diferencia < 0) {
         cambio.textContent = '€' + Math.abs(diferencia).toFixed(2) + ' (Falta)';
         cambio.style.color = 'red';
         btn.disabled = true;
+        console.log('Dinero insuficiente - botón deshabilitado');
     } else {
         cambio.textContent = '€' + diferencia.toFixed(2);
         cambio.style.color = 'green';
         btn.disabled = false;
+        console.log('Dinero suficiente - botón habilitado');
     }
 }
 
