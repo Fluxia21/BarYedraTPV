@@ -63,19 +63,21 @@ function calcularCambio() {
     
     if (!inputDinero || !displayCambio || !botonConfirmar) return;
     
-    const dineroRecibido = parseFloat(inputDinero.value) || 0;
+    const dineroRecibido = parseFloat(valorActual) || 0;
     const cambio = dineroRecibido - totalAPagar;
     
-    console.log('Calculando:', {dineroRecibido, totalAPagar, cambio});
+    console.log('Calculando:', {dineroRecibido, totalAPagar, cambio, valorActual});
     
     if (cambio < 0) {
         displayCambio.textContent = '€' + Math.abs(cambio).toFixed(2) + ' (Falta)';
         displayCambio.style.color = 'red';
         botonConfirmar.disabled = true;
+        botonConfirmar.style.background = '#6c757d';
     } else {
         displayCambio.textContent = '€' + cambio.toFixed(2);
         displayCambio.style.color = 'green';
         botonConfirmar.disabled = false;
+        botonConfirmar.style.background = '#28a745';
     }
 }
 
@@ -162,5 +164,49 @@ function ocultarCalculadora() {
     const calculadora = document.getElementById('cashCalculator');
     if (calculadora) {
         calculadora.style.display = 'none';
+    }
+}
+
+// Funciones del teclado numérico
+function agregarNumero(numero) {
+    valorActual += numero;
+    actualizarDisplay();
+    calcularCambio();
+}
+
+function agregarDecimal() {
+    if (!valorActual.includes('.')) {
+        if (valorActual === '') {
+            valorActual = '0.';
+        } else {
+            valorActual += '.';
+        }
+        actualizarDisplay();
+        calcularCambio();
+    }
+}
+
+function borrarUltimo() {
+    valorActual = valorActual.slice(0, -1);
+    actualizarDisplay();
+    calcularCambio();
+}
+
+function establecerCantidad(cantidad) {
+    valorActual = cantidad;
+    actualizarDisplay();
+    calcularCambio();
+}
+
+function limpiarCantidad() {
+    valorActual = '';
+    actualizarDisplay();
+    calcularCambio();
+}
+
+function actualizarDisplay() {
+    const input = document.getElementById('cashReceived');
+    if (input) {
+        input.value = valorActual || '0.00';
     }
 }
