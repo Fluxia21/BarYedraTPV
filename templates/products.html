@@ -45,7 +45,14 @@
                 <table style="width: 100%; margin: 10px 0;">
                     <tr>
                         <td style="width: 50%; padding: 5px;">
-                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" onclick="openEditModal({{ producto.id }}, '{{ producto.nombre|replace("'", "\\'") }}', {{ producto.precio }}, '{{ producto.categoria|replace("'", "\\'") }}', '{{ (producto.foto_url or "")|replace("'", "\\'") }}', '{{ (producto.descripcion or "")|replace("'", "\\'") }}')">
+                            <button style="width: 100%; padding: 15px; background: #ff8c00; color: white; border: 3px solid black; font-size: 16px; font-weight: bold;" 
+                                    data-id="{{ producto.id }}"
+                                    data-nombre="{{ producto.nombre }}"
+                                    data-precio="{{ producto.precio }}"
+                                    data-categoria="{{ producto.categoria }}"
+                                    data-foto="{{ producto.foto_url or '' }}"
+                                    data-descripcion="{{ producto.descripcion or '' }}"
+                                    onclick="editarProducto(this)">
                                 ✏️ EDITAR
                             </button>
                         </td>
@@ -203,6 +210,33 @@ function showAddProductModal() {
 
 function hideAddProductModal() {
     document.getElementById('addProductModal').style.display = 'none';
+}
+
+function editarProducto(button) {
+    // Obtener datos del botón
+    const id = button.getAttribute('data-id');
+    const nombre = button.getAttribute('data-nombre');
+    const precio = button.getAttribute('data-precio');
+    const categoria = button.getAttribute('data-categoria');
+    const foto = button.getAttribute('data-foto');
+    const descripcion = button.getAttribute('data-descripcion');
+    
+    console.log('Editando producto:', {id, nombre, precio, categoria, foto, descripcion});
+    
+    // Llenar el formulario
+    document.getElementById('edit_nombre').value = nombre;
+    document.getElementById('edit_precio').value = precio;
+    document.getElementById('edit_categoria').value = categoria;
+    document.getElementById('edit_foto_url').value = foto;
+    document.getElementById('edit_descripcion').value = descripcion;
+    
+    // Configurar acción del formulario
+    document.getElementById('editProductForm').action = `/update_product/${id}`;
+    
+    // Mostrar modal
+    document.getElementById('editProductModal').style.display = 'flex';
+    
+    console.log('Modal abierto para edición');
 }
 
 function openEditModal(id, nombre, precio, categoria, foto_url, descripcion) {
