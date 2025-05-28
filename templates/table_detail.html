@@ -56,65 +56,48 @@
         </div>
     </div>
 
-    <!-- Modal simple para cerrar pedido -->
-    <div id="closeOrderModal" class="close-order-modal" style="display: none;">
-        <div class="modal-overlay" onclick="cerrarModal()"></div>
-        <div class="modal-content-simple">
-            <div class="modal-header-simple">
+    <!-- Modal básico para cerrar pedido -->
+    <div id="closeOrderModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; width: 500px; max-width: 90%;">
+            
+            <div style="text-align: center; margin-bottom: 20px;">
                 <h2>Cerrar Pedido - Mesa {{ mesa.numero }}</h2>
-                <button class="close-btn-simple" onclick="cerrarModal()">&times;</button>
+                <button onclick="cerrarModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 30px; cursor: pointer;">&times;</button>
             </div>
             
-            <!-- Mostrar total -->
-            <div class="total-section">
+            <div style="text-align: center; margin: 20px 0; padding: 15px; background: #e8f5e8; border-radius: 8px;">
                 <h3>Total a Pagar: <span id="totalAmount">€0.00</span></h3>
             </div>
             
-            <!-- Botones de método de pago con toggle interactivo -->
-            <div class="payment-buttons">
-                <button class="btn-payment-method" onclick="seleccionarEfectivo()">
-                    <div class="payment-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <div class="payment-text">EFECTIVO</div>
+            <div style="display: flex; gap: 15px; margin: 20px 0;">
+                <button onclick="seleccionarEfectivo()" style="flex: 1; padding: 20px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                    💵 EFECTIVO
                 </button>
-                <button class="btn-payment-method" onclick="seleccionarTarjeta()">
-                    <div class="payment-icon">
-                        <i class="fas fa-credit-card"></i>
-                    </div>
-                    <div class="payment-text">TARJETA</div>
+                <button onclick="seleccionarTarjeta()" style="flex: 1; padding: 20px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                    💳 TARJETA
                 </button>
             </div>
             
-            <!-- Estado de selección -->
-            <div class="payment-status" id="paymentStatus" style="display: none;">
-                <div class="status-message">
-                    <i class="fas fa-check-circle"></i>
-                    <span id="statusText">Método seleccionado</span>
+            <div id="cashCalculator" style="display: none; border-top: 2px solid #eee; padding-top: 20px;">
+                <h3 style="text-align: center; margin-bottom: 15px;">Calculadora de Cambio</h3>
+                
+                <div style="margin: 15px 0;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: bold;">Dinero Recibido (€):</label>
+                    <input type="number" id="cashReceived" placeholder="0.00" step="0.01" 
+                           oninput="calcularCambio()" style="width: 100%; font-size: 20px; padding: 10px; border: 2px solid #ddd; border-radius: 5px; text-align: center;">
                 </div>
-            </div>
-            
-            <!-- Calculadora de cambio (oculta inicialmente) -->
-            <div id="cashCalculator" style="display: none;">
-                <div class="calculator-section">
-                    <h3>Calculadora de Cambio</h3>
-                    
-                    <div class="input-group">
-                        <label>Dinero Recibido:</label>
-                        <input type="number" id="cashReceived" placeholder="0.00" step="0.01" 
-                               oninput="calcularCambio()" style="font-size: 20px; padding: 10px;">
-                    </div>
-                    
-                    <div class="change-result">
-                        <h3>Cambio a Devolver: <span id="changeAmount">€0.00</span></h3>
-                    </div>
-                    
-                    <div class="calculator-buttons">
-                        <button class="btn-back-calc" onclick="ocultarCalculadora()">← Volver</button>
-                        <button class="btn-confirm-cash" onclick="confirmarPagoEfectivo()" id="confirmCashBtn" disabled>
-                            Confirmar Pago
-                        </button>
-                    </div>
+                
+                <div style="margin: 15px 0; padding: 15px; background: #fff3e0; border-radius: 8px; text-align: center;">
+                    <h3>Cambio a Devolver: <span id="changeAmount">€0.00</span></h3>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="ocultarCalculadora()" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        ← Volver
+                    </button>
+                    <button onclick="confirmarPagoEfectivo()" id="confirmCashBtn" disabled style="flex: 2; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Confirmar Pago
+                    </button>
                 </div>
             </div>
         </div>
