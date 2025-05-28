@@ -132,6 +132,45 @@
                 <div class="form-group">
                     <label for="edit_foto_url" class="form-label">URL de la Imagen</label>
                     <input type="url" id="edit_foto_url" name="foto_url" class="form-input touch-friendly" placeholder="https://ejemplo.com/imagen.jpg">
+                    
+                    <!-- Galería de imágenes de un clic -->
+                    <div style="margin-top: 15px;">
+                        <label class="form-label" style="font-size: 14px; color: #666;">📸 Selección Rápida de Imágenes:</label>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">☕ Café</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🍞 Pan</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🍽️ Comida</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🥤 Bebida</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🍺 Cerveza</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🍰 Postre</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🍤 Tapas</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 12px; margin-top: 4px;">🍷 Vino</div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-group form-group-full">
@@ -193,6 +232,45 @@
                     <label for="foto_url" class="form-label">URL de la Foto (opcional)</label>
                     <input type="url" class="form-input touch-friendly" id="foto_url" name="foto_url" 
                            placeholder="https://ejemplo.com/imagen.jpg">
+                    
+                    <!-- Galería de imágenes de un clic para añadir -->
+                    <div style="margin-top: 15px;">
+                        <label class="form-label" style="font-size: 14px; color: #666;">📸 Selección Rápida de Imágenes:</label>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px;">
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">☕ Café</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🍞 Pan</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🍽️ Comida</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🥤 Bebida</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🍺 Cerveza</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🍰 Postre</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🍤 Tapas</div>
+                            </button>
+                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
+                                <img src="https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
+                                <div style="font-size: 11px; margin-top: 2px;">🍷 Vino</div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-group full-width">
@@ -265,6 +343,63 @@ function deleteProduct(id, nombre) {
     if (confirm(`¿Estás seguro de eliminar "${nombre}"?`)) {
         window.location.href = `/delete_product/${id}`;
     }
+}
+
+function cambiarImagen(button, urlImagen) {
+    // Cambiar el valor del campo de URL de imagen
+    document.getElementById('edit_foto_url').value = urlImagen;
+    
+    // Resaltar el botón seleccionado
+    const todosBotones = document.querySelectorAll('button[onclick*="cambiarImagen"]');
+    todosBotones.forEach(btn => {
+        btn.style.border = '2px solid #ddd';
+        btn.style.transform = 'scale(1)';
+    });
+    
+    // Destacar el botón seleccionado
+    button.style.border = '3px solid #28a745';
+    button.style.transform = 'scale(1.05)';
+    
+    // Mostrar confirmación visual
+    const mensaje = document.createElement('div');
+    mensaje.innerHTML = '✅ Imagen seleccionada';
+    mensaje.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; z-index: 9999; font-weight: bold;';
+    document.body.appendChild(mensaje);
+    
+    // Remover el mensaje después de 2 segundos
+    setTimeout(() => {
+        document.body.removeChild(mensaje);
+    }, 2000);
+}
+
+function cambiarImagenAñadir(urlImagen) {
+    // Cambiar el valor del campo de URL de imagen para añadir
+    document.getElementById('foto_url').value = urlImagen;
+    
+    // Resaltar el botón seleccionado
+    const todosBotones = document.querySelectorAll('button[onclick*="cambiarImagenAñadir"]');
+    todosBotones.forEach(btn => {
+        btn.style.border = '2px solid #ddd';
+        btn.style.transform = 'scale(1)';
+    });
+    
+    // Encontrar el botón que se hizo clic
+    const botonSeleccionado = event.target.closest('button');
+    if (botonSeleccionado) {
+        botonSeleccionado.style.border = '3px solid #007bff';
+        botonSeleccionado.style.transform = 'scale(1.05)';
+    }
+    
+    // Mostrar confirmación visual
+    const mensaje = document.createElement('div');
+    mensaje.innerHTML = '✅ Imagen seleccionada';
+    mensaje.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #007bff; color: white; padding: 10px 20px; border-radius: 5px; z-index: 9999; font-weight: bold;';
+    document.body.appendChild(mensaje);
+    
+    // Remover el mensaje después de 2 segundos
+    setTimeout(() => {
+        document.body.removeChild(mensaje);
+    }, 2000);
 }
 </script>
 
