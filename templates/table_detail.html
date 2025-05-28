@@ -535,14 +535,16 @@ function selectPaymentMethod(method) {
     // Mostrar estado de selección con animación
     showPaymentStatus(method);
     
-    // Acción específica según el método
-    setTimeout(() => {
-        if (method === 'efectivo') {
+    // ACCIÓN INMEDIATA: Mostrar calculadora automáticamente al seleccionar EFECTIVO
+    if (method === 'efectivo') {
+        setTimeout(() => {
             showCashCalculatorWithAnimation();
-        } else if (method === 'tarjeta') {
+        }, 500); // Reducido el tiempo para que sea más inmediato
+    } else if (method === 'tarjeta') {
+        setTimeout(() => {
             showCardConfirmation();
-        }
-    }, 800);
+        }, 800);
+    }
 }
 
 function showPaymentStatus(method) {
@@ -758,24 +760,7 @@ function goBackToPaymentMethod() {
     document.getElementById('confirmPaymentBtn').disabled = true;
 }
 
-function selectPaymentMethod(method) {
-    selectedPaymentMethod = method;
-    
-    // Actualizar botones
-    document.querySelectorAll('.payment-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    document.getElementById(method + '-btn').classList.add('selected');
-    
-    // Si es tarjeta, poner automáticamente el monto exacto
-    if (method === 'tarjeta') {
-        document.getElementById('moneyReceived').value = currentOrderTotal.toFixed(2);
-        calculateChange();
-    }
-    
-    validatePayment();
-}
+
 
 function validatePayment() {
     const received = parseFloat(document.getElementById('moneyReceived').value) || 0;
