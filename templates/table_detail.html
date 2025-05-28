@@ -2,6 +2,54 @@
 
 {% block title %}Mesa {{ mesa.zona }} {{ mesa.numero }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .terraza-badge {
+        background: #ff9800;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    
+    .precio-base {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    
+    .precio-terraza {
+        color: #ff9800;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .terraza-info {
+        background: #fff3e0;
+        border: 2px solid #ff9800;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        text-align: center;
+    }
+    
+    .terraza-info h3 {
+        color: #ff9800;
+        margin: 0 0 10px 0;
+        font-size: 18px;
+    }
+    
+    .terraza-info p {
+        color: #e65100;
+        margin: 0;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="content-header">
     <h1 class="page-title">
@@ -19,6 +67,13 @@
         </a>
     </div>
 </div>
+
+{% if mesa.zona.lower() == 'terraza' %}
+<div class="terraza-info">
+    <h3>🏡 Mesa de Terraza</h3>
+    <p>Suplemento de €0.20 por unidad aplicado automáticamente</p>
+</div>
+{% endif %}
 
 <div class="table-detail-layout">
     <!-- Panel de productos (izquierda) -->
@@ -139,15 +194,28 @@
                         {% set producto = productos_dict[producto_id|int] %}
                         <div class="order-item">
                             <div class="item-details">
-                                <div class="item-name">{{ producto.nombre }}</div>
-                                <div class="item-price">€{{ "%.2f"|format(producto.precio) }}</div>
+                                <div class="item-name">
+                                    {{ producto.nombre }}
+                                    {% if mesa.zona.lower() == 'terraza' %}
+                                        <span class="terraza-badge">🏡 Terraza</span>
+                                    {% endif %}
+                                </div>
+                                <div class="item-price">
+                                    {% set precio_final = producto.precio + 0.20 if mesa.zona.lower() == 'terraza' else producto.precio %}
+                                    {% if mesa.zona.lower() == 'terraza' %}
+                                        <span class="precio-base">€{{ "%.2f"|format(producto.precio) }}</span>
+                                        <span class="precio-terraza">€{{ "%.2f"|format(precio_final) }}</span>
+                                    {% else %}
+                                        €{{ "%.2f"|format(precio_final) }}
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="item-quantity">
                                 <button class="btn-quantity" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, {{ cantidad - 1 }})">-</button>
                                 <span class="quantity">{{ cantidad }}</span>
                                 <button class="btn-quantity" onclick="updateQuantity({{ mesa.id }}, {{ producto.id }}, {{ cantidad + 1 }})">+</button>
                             </div>
-                            <div class="item-subtotal">€{{ "%.2f"|format(producto.precio * cantidad) }}</div>
+                            <div class="item-subtotal">€{{ "%.2f"|format(precio_final * cantidad) }}</div>
                             <button class="btn-remove" onclick="removeFromOrder({{ mesa.id }}, {{ producto.id }})" title="Eliminar">
                                 <i class="fas fa-trash"></i>
                             </button>
