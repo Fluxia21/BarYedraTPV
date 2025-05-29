@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" fill="#f8f9fa" rx="4"/>
+  <!-- Barril -->
+  <ellipse cx="16" cy="20" rx="10" ry="6" fill="#8b4513"/>
+  <!-- Anillos del barril -->
+  <ellipse cx="16" cy="18" rx="10" ry="1" fill="#654321"/>
+  <ellipse cx="16" cy="22" rx="10" ry="1" fill="#654321"/>
+  <!-- Grifo -->
+  <rect x="24" y="19" width="4" height="2" rx="1" fill="#c0c0c0"/>
+  <circle cx="26" cy="20" r="0.5" fill="#8b4513"/>
+  <!-- Copa -->
+  <path d="M8 22 L12 22 L11.5 26 L8.5 26 Z" fill="#ffffff" stroke="#e9ecef" stroke-width="0.5"/>
+  <!-- Líquido vermut -->
+  <path d="M8.2 23 L11.8 23 L11.3 25.5 L8.7 25.5 Z" fill="#b8860b"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" fill="#f8f9fa" rx="4"/>
+  <!-- Vaso -->
+  <path d="M10 8 L22 8 L21 24 L11 24 Z" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  <!-- Líquido tinto -->
+  <path d="M11 10 L21 10 L20.5 22 L11.5 22 Z" fill="#8b1538"/>
+  <!-- Hielo -->
+  <rect x="13" y="12" width="2" height="2" rx="0.5" fill="#ffffff" opacity="0.8"/>
+  <rect x="17" y="14" width="2" height="2" rx="0.5" fill="#ffffff" opacity="0.8"/>
+  <!-- Pajita -->
+  <rect x="18" y="6" width="1" height="8" fill="#ff6b6b"/>
+  <!-- Rodaja de limón -->
+  <circle cx="19" cy="9" r="2" fill="#f8e71c" opacity="0.9"/>
+  <circle cx="19" cy="9" r="1.5" fill="none" stroke="#ffa726" stroke-width="0.5"/>
+</svg>
