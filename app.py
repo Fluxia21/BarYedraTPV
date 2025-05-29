@@ -481,6 +481,10 @@ def update_product(producto_id):
         flash('El nombre del producto es obligatorio', 'error')
         return redirect(url_for('edit_product', producto_id=producto_id))
     
+    precio_str = request.form.get('precio', '').strip().lower()
+    if precio_str in ['nan', 'infinity', '-infinity', 'inf', '-inf']:
+        flash('Precio no válido', 'error')
+        return redirect(url_for('edit_product', producto_id=producto_id))
     try:
         precio = float(request.form.get('precio'))
         if precio < 0:
