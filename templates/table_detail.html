@@ -726,19 +726,30 @@ const productosData = {
 };
 
 function openCategoryModal(categoria) {
-    try {
-        const modal = document.getElementById('categoryModal');
-        const modalTitle = document.getElementById('modalCategoryTitle');
-        const productosGrid = document.getElementById('modalProductsGrid');
-        
-        if (!modal || !modalTitle || !productosGrid) {
-            console.error('Modal elements not found:', {
-                modal: !!modal,
-                modalTitle: !!modalTitle, 
-                productosGrid: !!productosGrid
-            });
-            return;
-        }
+    console.log('openCategoryModal called with:', categoria);
+    
+    const modal = document.getElementById('categoryModal');
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    console.log('Modal elements:', {
+        modal: modal,
+        modalTitle: modalTitle,
+        productosGrid: productosGrid
+    });
+    
+    if (!modal) {
+        console.error('categoryModal not found');
+        return;
+    }
+    if (!modalTitle) {
+        console.error('modalCategoryTitle not found');
+        return;
+    }
+    if (!productosGrid) {
+        console.error('modalProductsGrid not found');
+        return;
+    }
         
         // Si es cervezas, mostrar subcategorías primero
         if (categoria === 'Cervezas') {
