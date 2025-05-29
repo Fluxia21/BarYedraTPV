@@ -717,7 +717,8 @@ const productosData = {
         {
             id: {{ producto.id }},
             nombre: "{{ producto.nombre|e }}",
-            precio: {{ producto.precio|float }}{% if es_terraza %},
+            precio: {{ producto.precio|float }},
+            descripcion: "{{ producto.descripcion|e|default('') }}"{% if es_terraza %},
             precio_con_suplemento: {{ (producto.precio|float + suplemento_terraza|float)|round(2) }}{% endif %}
         }{% if not loop.last %},{% endif %}
         {% endfor %}
@@ -750,7 +751,8 @@ function openCategoryModal(categoria) {
         console.error('modalProductsGrid not found');
         return;
     }
-        
+    
+    try {
         // Si es cervezas, mostrar subcategorías primero
         if (categoria === 'Cervezas') {
             showBeerSubcategories();
