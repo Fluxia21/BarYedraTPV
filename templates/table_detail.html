@@ -47,6 +47,48 @@
         margin: 0;
         font-weight: bold;
     }
+    
+    .subcategory-button {
+        background: #f8f9fa;
+        border: 2px solid #007bff;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 10px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 120px;
+    }
+    
+    .subcategory-button:hover {
+        background: #007bff;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+    }
+    
+    .subcategory-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+    
+    .subcategory-name {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .subcategory-count {
+        background: #28a745;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 
@@ -694,6 +736,12 @@ function openCategoryModal(categoria) {
             return;
         }
         
+        // Si es cervezas, mostrar subcategorías primero
+        if (categoria === 'Cervezas') {
+            showBeerSubcategories();
+            return;
+        }
+        
         modalTitle.textContent = categoria;
         productosGrid.innerHTML = '';
         
@@ -738,6 +786,92 @@ function openCategoryModal(categoria) {
 function closeCategoryModal() {
     const modal = document.getElementById('categoryModal');
     modal.style.display = 'none';
+}
+
+function showBeerSubcategories() {
+    const modal = document.getElementById('categoryModal');
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    modalTitle.textContent = 'Cervezas - Seleccionar Tipo';
+    productosGrid.innerHTML = '';
+    
+    // Crear botones para subcategorías
+    const nacionalesBtn = document.createElement('div');
+    nacionalesBtn.className = 'subcategory-button';
+    nacionalesBtn.innerHTML = `
+        <div class="subcategory-icon">🍺</div>
+        <div class="subcategory-name">Cervezas Nacionales</div>
+        <div class="subcategory-count">${countBeersByType('nacionales')}</div>
+    `;
+    nacionalesBtn.onclick = () => showBeerProducts('nacionales');
+    
+    const importacionBtn = document.createElement('div');
+    importacionBtn.className = 'subcategory-button';
+    importacionBtn.innerHTML = `
+        <div class="subcategory-icon">🍻</div>
+        <div class="subcategory-name">Cervezas de Importación</div>
+        <div class="subcategory-count">${countBeersByType('importación')}</div>
+    `;
+    importacionBtn.onclick = () => showBeerProducts('importación');
+    
+    productosGrid.appendChild(nacionalesBtn);
+    productosGrid.appendChild(importacionBtn);
+    
+    modal.style.display = 'block';
+}
+
+function countBeersByType(tipo) {
+    const cervezas = productosData['Cervezas'] || [];
+    return cervezas.filter(cerveza => {
+        return tipo === 'nacionales' ? 
+            cerveza.descripcion.toLowerCase().includes('nacionales') :
+            cerveza.descripcion.toLowerCase().includes('importación');
+    }).length;
+}
+
+function showBeerProducts(tipo) {
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    modalTitle.textContent = tipo === 'nacionales' ? 'Cervezas Nacionales' : 'Cervezas de Importación';
+    productosGrid.innerHTML = '';
+    
+    const cervezas = productosData['Cervezas'] || [];
+    const cervezasFiltradas = cervezas.filter(cerveza => {
+        return tipo === 'nacionales' ? 
+            cerveza.descripcion.toLowerCase().includes('nacionales') :
+            cerveza.descripcion.toLowerCase().includes('importación');
+    });
+    
+    cervezasFiltradas.forEach(producto => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card-modal';
+        productCard.addEventListener('click', function() {
+            addToOrder({{ mesa.id }}, producto.id);
+            closeCategoryModal();
+        });
+        
+        let precioHTML = '';
+        {% if es_terraza %}
+        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+            precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
+                       '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
+        } else {
+            precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+        }
+        {% else %}
+        precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+        {% endif %}
+        
+        productCard.innerHTML = `
+            <div class="product-name">${producto.nombre}</div>
+            ${precioHTML}
+            ${producto.descripcion ? '<div class="product-description">' + producto.descripcion + '</div>' : ''}
+        `;
+        
+        productosGrid.appendChild(productCard);
+    });
 }
 
 // Calculadora de cambio - versión final funcional

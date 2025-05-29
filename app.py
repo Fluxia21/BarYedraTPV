@@ -148,24 +148,15 @@ def table_detail(mesa_id):
     es_terraza = mesa.zona.lower() == 'terraza'
     suplemento_terraza = Decimal('0.20') if es_terraza else Decimal('0.00')
     
-    # Agrupar productos por categoría y subcategoría para cervezas
+    # Agrupar productos por categoría y preparar precios con suplemento
     productos_por_categoria = {}
     productos_dict = {}
     productos_dict_con_precios = {}
     
     for producto in productos:
-        categoria_key = producto.categoria
-        
-        # Para cervezas, crear subcategorías basadas en la descripción
-        if producto.categoria == 'Cervezas':
-            if 'importación' in producto.descripcion.lower():
-                categoria_key = 'Cervezas - Importación'
-            else:
-                categoria_key = 'Cervezas - Nacionales'
-        
-        if categoria_key not in productos_por_categoria:
-            productos_por_categoria[categoria_key] = []
-        productos_por_categoria[categoria_key].append(producto)
+        if producto.categoria not in productos_por_categoria:
+            productos_por_categoria[producto.categoria] = []
+        productos_por_categoria[producto.categoria].append(producto)
         productos_dict[producto.id] = producto
         
         # Crear una versión del producto con precios calculados para terraza
