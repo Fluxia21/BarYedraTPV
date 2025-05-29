@@ -732,7 +732,11 @@ function openCategoryModal(categoria) {
         const productosGrid = document.getElementById('modalProductsGrid');
         
         if (!modal || !modalTitle || !productosGrid) {
-            console.error('Modal elements not found');
+            console.error('Modal elements not found:', {
+                modal: !!modal,
+                modalTitle: !!modalTitle, 
+                productosGrid: !!productosGrid
+            });
             return;
         }
         
