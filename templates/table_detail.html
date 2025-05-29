@@ -893,8 +893,13 @@ function showBeerProducts(tipo) {
         precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
         {% endif %}
         
+        let imagenHTML = '<div class="product-image-space">🍺</div>';
+        if (producto.foto_url) {
+            imagenHTML = `<img src="${producto.foto_url}" alt="${producto.nombre}" style="width: 32px; height: 32px; margin: 0 auto 4px auto; border-radius: 4px;">`;
+        }
+        
         productCard.innerHTML = `
-            <div class="product-image-space">🍺</div>
+            ${imagenHTML}
             <div class="product-name-modal">${producto.nombre}</div>
             ${precioHTML}
         `;
@@ -1026,8 +1031,13 @@ function showBocadillosProducts(tipo) {
         precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
         {% endif %}
         
+        let imagenHTML = '<div class="product-image-space">🥪</div>';
+        if (producto.foto_url) {
+            imagenHTML = `<img src="${producto.foto_url}" alt="${producto.nombre}" style="width: 32px; height: 32px; margin: 0 auto 4px auto; border-radius: 4px;">`;
+        }
+        
         productCard.innerHTML = `
-            <div class="product-image-space">🥪</div>
+            ${imagenHTML}
             <div class="product-name-modal">${producto.nombre}</div>
             ${precioHTML}
         `;
