@@ -759,6 +759,18 @@ function openCategoryModal(categoria) {
             return;
         }
         
+        // Si es bocadillos, mostrar subcategorías
+        if (categoria === 'Bocadillos') {
+            showBocadillosSubcategories();
+            return;
+        }
+        
+        // Si es raciones, mostrar subcategorías
+        if (categoria === 'Raciones') {
+            showRacionesSubcategories();
+            return;
+        }
+        
         modalTitle.textContent = categoria;
         productosGrid.innerHTML = '';
         
@@ -883,6 +895,182 @@ function showBeerProducts(tipo) {
         
         productCard.innerHTML = `
             <div class="product-image-space">🍺</div>
+            <div class="product-name-modal">${producto.nombre}</div>
+            ${precioHTML}
+        `;
+        
+        productosGrid.appendChild(productCard);
+    });
+}
+
+function showBocadillosSubcategories() {
+    const modal = document.getElementById('categoryModal');
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    modalTitle.textContent = 'Bocadillos - Seleccionar Tipo';
+    productosGrid.innerHTML = '';
+    
+    // Crear botones para subcategorías
+    const pinchosMontadosBtn = document.createElement('div');
+    pinchosMontadosBtn.className = 'subcategory-button';
+    pinchosMontadosBtn.innerHTML = `
+        <div class="subcategory-icon">🥪</div>
+        <div class="subcategory-name">Pinchos y Montados</div>
+        <div class="subcategory-count">${countBocadillosByType('pinchos y montados')}</div>
+    `;
+    pinchosMontadosBtn.onclick = () => showBocadillosProducts('pinchos y montados');
+    
+    const bocadillosFriosBtn = document.createElement('div');
+    bocadillosFriosBtn.className = 'subcategory-button';
+    bocadillosFriosBtn.innerHTML = `
+        <div class="subcategory-icon">🥖</div>
+        <div class="subcategory-name">Bocadillos Fríos</div>
+        <div class="subcategory-count">${countBocadillosByType('bocadillos fríos')}</div>
+    `;
+    bocadillosFriosBtn.onclick = () => showBocadillosProducts('bocadillos fríos');
+    
+    const bocadillosCalientesBtn = document.createElement('div');
+    bocadillosCalientesBtn.className = 'subcategory-button';
+    bocadillosCalientesBtn.innerHTML = `
+        <div class="subcategory-icon">🌭</div>
+        <div class="subcategory-name">Bocadillos Calientes</div>
+        <div class="subcategory-count">${countBocadillosByType('bocadillos calientes')}</div>
+    `;
+    bocadillosCalientesBtn.onclick = () => showBocadillosProducts('bocadillos calientes');
+    
+    productosGrid.appendChild(pinchosMontadosBtn);
+    productosGrid.appendChild(bocadillosFriosBtn);
+    productosGrid.appendChild(bocadillosCalientesBtn);
+    
+    modal.style.display = 'block';
+}
+
+function showRacionesSubcategories() {
+    const modal = document.getElementById('categoryModal');
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    modalTitle.textContent = 'Raciones - Seleccionar Tipo';
+    productosGrid.innerHTML = '';
+    
+    // Crear botones para subcategorías
+    const racionesCalientesBtn = document.createElement('div');
+    racionesCalientesBtn.className = 'subcategory-button';
+    racionesCalientesBtn.innerHTML = `
+        <div class="subcategory-icon">🍳</div>
+        <div class="subcategory-name">Raciones Calientes</div>
+        <div class="subcategory-count">${countRacionesByType('raciones calientes')}</div>
+    `;
+    racionesCalientesBtn.onclick = () => showRacionesProducts('raciones calientes');
+    
+    const racionesFriasBtn = document.createElement('div');
+    racionesFriasBtn.className = 'subcategory-button';
+    racionesFriasBtn.innerHTML = `
+        <div class="subcategory-icon">🥗</div>
+        <div class="subcategory-name">Raciones Frías</div>
+        <div class="subcategory-count">${countRacionesByType('raciones frías')}</div>
+    `;
+    racionesFriasBtn.onclick = () => showRacionesProducts('raciones frías');
+    
+    productosGrid.appendChild(racionesCalientesBtn);
+    productosGrid.appendChild(racionesFriasBtn);
+    
+    modal.style.display = 'block';
+}
+
+function countBocadillosByType(tipo) {
+    const bocadillos = productosData['Bocadillos'] || [];
+    return bocadillos.filter(bocadillo => {
+        return bocadillo.descripcion.toLowerCase().includes(tipo.toLowerCase());
+    }).length;
+}
+
+function countRacionesByType(tipo) {
+    const raciones = productosData['Raciones'] || [];
+    return raciones.filter(racion => {
+        return racion.descripcion.toLowerCase().includes(tipo.toLowerCase());
+    }).length;
+}
+
+function showBocadillosProducts(tipo) {
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    let tituloCapitalizado = tipo.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    modalTitle.textContent = tituloCapitalizado;
+    productosGrid.innerHTML = '';
+    
+    const bocadillos = productosData['Bocadillos'] || [];
+    const bocadillosFiltrados = bocadillos.filter(bocadillo => {
+        return bocadillo.descripcion.toLowerCase().includes(tipo.toLowerCase());
+    });
+    
+    bocadillosFiltrados.forEach(producto => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card-modal';
+        productCard.addEventListener('click', function() {
+            addToOrder({{ mesa.id }}, producto.id);
+            closeCategoryModal();
+        });
+        
+        let precioHTML = '';
+        {% if es_terraza %}
+        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+            precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
+                       '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
+        } else {
+            precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+        }
+        {% else %}
+        precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+        {% endif %}
+        
+        productCard.innerHTML = `
+            <div class="product-image-space">🥪</div>
+            <div class="product-name-modal">${producto.nombre}</div>
+            ${precioHTML}
+        `;
+        
+        productosGrid.appendChild(productCard);
+    });
+}
+
+function showRacionesProducts(tipo) {
+    const modalTitle = document.getElementById('modalCategoryTitle');
+    const productosGrid = document.getElementById('modalProductsGrid');
+    
+    let tituloCapitalizado = tipo.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    modalTitle.textContent = tituloCapitalizado;
+    productosGrid.innerHTML = '';
+    
+    const raciones = productosData['Raciones'] || [];
+    const racionesFiltradas = raciones.filter(racion => {
+        return racion.descripcion.toLowerCase().includes(tipo.toLowerCase());
+    });
+    
+    racionesFiltradas.forEach(producto => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card-modal';
+        productCard.addEventListener('click', function() {
+            addToOrder({{ mesa.id }}, producto.id);
+            closeCategoryModal();
+        });
+        
+        let precioHTML = '';
+        {% if es_terraza %}
+        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+            precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
+                       '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
+        } else {
+            precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+        }
+        {% else %}
+        precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
+        {% endif %}
+        
+        productCard.innerHTML = `
+            <div class="product-image-space">🍽️</div>
             <div class="product-name-modal">${producto.nombre}</div>
             ${precioHTML}
         `;
