@@ -788,7 +788,7 @@ function openCategoryModal(categoria) {
             precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
             {% endif %}
             
-            productCard.innerHTML = '<div class="product-name-modal">' + producto.nombre + '</div>' + precioHTML;
+            productCard.innerHTML = '<div class="product-image-space">📦</div><div class="product-name-modal">' + producto.nombre + '</div>' + precioHTML;
             
             productosGrid.appendChild(productCard);
         });
@@ -882,9 +882,9 @@ function showBeerProducts(tipo) {
         {% endif %}
         
         productCard.innerHTML = `
-            <div class="product-name">${producto.nombre}</div>
+            <div class="product-image-space">🍺</div>
+            <div class="product-name-modal">${producto.nombre}</div>
             ${precioHTML}
-            ${producto.descripcion ? '<div class="product-description">' + producto.descripcion + '</div>' : ''}
         `;
         
         productosGrid.appendChild(productCard);

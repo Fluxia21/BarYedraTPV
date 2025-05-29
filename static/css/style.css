@@ -2586,3 +2586,147 @@ select.form-input.touch-friendly {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Modal de categorías de productos - Diseño limpio */
+.category-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    max-height: calc(90vh - 140px);
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.product-card-modal {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-card-modal:hover {
+    transform: translateY(-4px);
+    border-color: #81c784;
+    box-shadow: 0 6px 20px rgba(45, 90, 75, 0.15);
+}
+
+/* Espacio reservado para imagen del producto */
+.product-image-space {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    margin: 0 auto 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 24px;
+    border: 2px dashed #dee2e6;
+}
+
+.product-name-modal {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d5a4b;
+    margin-bottom: 12px;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #81c784;
+    margin-top: auto;
+}
+
+.price-base {
+    font-size: 14px;
+    color: #6c757d;
+    text-decoration: line-through;
+    margin-bottom: 4px;
+}
+
+.price-terraza {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e57373;
+}
+
+/* Subcategorías de cerveza */
+.subcategory-button {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.subcategory-button:hover {
+    transform: translateY(-4px);
+    border-color: #81c784;
+    box-shadow: 0 6px 20px rgba(45, 90, 75, 0.15);
+}
+
+.subcategory-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.subcategory-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2d5a4b;
+    margin-bottom: 6px;
+}
+
+.subcategory-count {
+    font-size: 14px;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 3px 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* Responsive para modales */
+@media (max-width: 768px) {
+    .category-products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .product-card-modal {
+        padding: 16px;
+        min-height: 160px;
+    }
+    
+    .product-image-space {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .subcategory-button {
+        padding: 20px 16px;
+    }
+    
+    .subcategory-name {
+        font-size: 18px;
+    }
+}
