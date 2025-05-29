@@ -718,7 +718,8 @@ const productosData = {
             id: {{ producto.id }},
             nombre: "{{ producto.nombre|e }}",
             precio: {{ producto.precio|float }},
-            descripcion: "{{ producto.descripcion|e|default('') }}"{% if es_terraza %},
+            descripcion: "{{ producto.descripcion|e|default('') }}",
+            foto_url: "{{ producto.foto_url|default('') }}"{% if es_terraza %},
             precio_con_suplemento: {{ (producto.precio|float + suplemento_terraza|float)|round(2) }}{% endif %}
         }{% if not loop.last %},{% endif %}
         {% endfor %}
