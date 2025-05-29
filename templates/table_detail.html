@@ -803,7 +803,7 @@ function openCategoryModal(categoria) {
             
             let imagenHTML = '<div class="product-image-space">📦</div>';
             if (producto.foto_url && producto.foto_url !== '') {
-                imagenHTML = '<img src="' + producto.foto_url + '" alt="' + producto.nombre + '" class="product-image">';
+                imagenHTML = '<img src="' + producto.foto_url + '" alt="' + producto.nombre + '" style="width: 48px; height: 48px; margin: 0 auto 12px auto; border-radius: 8px; object-fit: contain; background: #f8f9fa; padding: 4px; border: 1px solid #e9ecef; display: block;">';
             }
             
             productCard.innerHTML = imagenHTML + '<div class="product-name-modal">' + producto.nombre + '</div>' + precioHTML;
@@ -901,7 +901,7 @@ function showBeerProducts(tipo) {
         
         let imagenHTML = '<div class="product-image-space">🍺</div>';
         if (producto.foto_url) {
-            imagenHTML = `<img src="${producto.foto_url}" alt="${producto.nombre}" class="product-image">`;
+            imagenHTML = `<img src="${producto.foto_url}" alt="${producto.nombre}" style="width: 48px; height: 48px; margin: 0 auto 12px auto; border-radius: 8px; object-fit: contain; background: #f8f9fa; padding: 4px; border: 1px solid #e9ecef; display: block;">`;
         }
         
         productCard.innerHTML = `
@@ -1039,7 +1039,7 @@ function showBocadillosProducts(tipo) {
         
         let imagenHTML = '<div class="product-image-space">🥪</div>';
         if (producto.foto_url) {
-            imagenHTML = `<img src="${producto.foto_url}" alt="${producto.nombre}" class="product-image">`;
+            imagenHTML = `<img src="${producto.foto_url}" alt="${producto.nombre}" style="width: 48px; height: 48px; margin: 0 auto 12px auto; border-radius: 8px; object-fit: contain; background: #f8f9fa; padding: 4px; border: 1px solid #e9ecef; display: block;">`;
         }
         
         productCard.innerHTML = `
