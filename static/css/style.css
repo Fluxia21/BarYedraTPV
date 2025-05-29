@@ -2636,14 +2636,15 @@ select.form-input.touch-friendly {
 }
 
 .product-image {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 12px auto;
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 auto 12px auto !important;
     border-radius: 8px;
     object-fit: contain;
     background: #f8f9fa;
     padding: 4px;
     border: 1px solid #e9ecef;
+    display: block !important;
 }
 
 .product-name-modal {
