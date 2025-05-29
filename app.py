@@ -161,7 +161,9 @@ def table_detail(mesa_id):
         
         # Crear una versión del producto con precios calculados para terraza
         precio_base = float(producto.precio)
-        precio_final = precio_base + 0.20 if es_terraza else precio_base
+        # No aplicar suplemento si el producto tiene sin_suplemento_terraza = True
+        aplicar_suplemento = es_terraza and not getattr(producto, 'sin_suplemento_terraza', False)
+        precio_final = precio_base + 0.20 if aplicar_suplemento else precio_base
         
         productos_dict_con_precios[producto.id] = {
             'id': producto.id,
