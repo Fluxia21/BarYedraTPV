@@ -203,7 +203,7 @@ def add_to_order():
     
     # Aplicar suplemento de terraza si corresponde
     precio_producto = float(producto.precio)
-    if mesa.zona.lower() == 'terraza':
+    if mesa.zona.lower() == 'terraza' and not getattr(producto, 'sin_suplemento_terraza', False):
         precio_producto += 0.20
     
     # Get or create current order
