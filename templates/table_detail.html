@@ -452,7 +452,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="item-price">
-                                    {% if mesa.zona.lower() == 'terraza' %}
+                                    {% if mesa.zona.lower() == 'terraza' and not producto.sin_suplemento_terraza %}
                                         <span class="precio-base">€{{ "%.2f"|format(producto_con_precio.precio_base) }}</span>
                                         <span class="precio-terraza">€{{ "%.2f"|format(producto_con_precio.precio_final) }}</span>
                                     {% else %}
