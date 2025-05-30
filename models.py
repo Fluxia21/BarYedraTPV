@@ -33,6 +33,9 @@ class Producto(db.Model):
     unidad_medida = db.Column(db.String(20), default='unidad')  # unidad, litro, kg, etc.
     fecha_actualizacion = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # Terraza supplement exemption
+    sin_suplemento_terraza = db.Column(db.Boolean, default=False)
+    
     def __repr__(self):
         return f'<Producto {self.nombre} - Stock: {self.stock_actual}>'
     
