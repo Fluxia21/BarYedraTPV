@@ -203,7 +203,7 @@ def add_to_order():
     
     # Aplicar suplemento de terraza si corresponde
     precio_producto = float(producto.precio)
-    if mesa.zona.lower() == 'terraza' and not getattr(producto, 'sin_suplemento_terraza', False):
+    if mesa.zona.lower() == 'terraza':
         precio_producto += 0.20
     
     # Get or create current order
@@ -242,7 +242,7 @@ def add_to_order():
         prod = Producto.query.get(int(pid))
         if prod:
             precio_unitario = float(prod.precio)
-            if mesa.zona.lower() == 'terraza' and not getattr(prod, 'sin_suplemento_terraza', False):
+            if mesa.zona.lower() == 'terraza':
                 precio_unitario += 0.20
             total += precio_unitario * qty
     
@@ -281,7 +281,7 @@ def update_quantity():
         prod = Producto.query.get(int(pid))
         if prod:
             precio_unitario = float(prod.precio)
-            if mesa.zona.lower() == 'terraza' and not getattr(prod, 'sin_suplemento_terraza', False):
+            if mesa.zona.lower() == 'terraza':
                 precio_unitario += 0.20
             total += precio_unitario * qty
     
@@ -1001,7 +1001,7 @@ def remove_from_order():
             prod = Producto.query.get(int(pid))
             if prod:
                 precio_unitario = float(prod.precio)
-                if mesa.zona.lower() == 'terraza' and not getattr(prod, 'sin_suplemento_terraza', False):
+                if mesa.zona.lower() == 'terraza':
                     precio_unitario += 0.20
                 total += precio_unitario * qty
         
