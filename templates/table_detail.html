@@ -791,7 +791,6 @@ function openCategoryModal(categoria) {
             
             let precioHTML = '';
             {% if es_terraza %}
-            console.log('Producto:', producto.nombre, 'Sin suplemento:', producto.sin_suplemento_terraza, 'Precio base:', producto.precio, 'Precio con suplemento:', producto.precio_con_suplemento);
             if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio && !producto.sin_suplemento_terraza) {
                 precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
                            '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
