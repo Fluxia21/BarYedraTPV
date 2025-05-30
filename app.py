@@ -165,9 +165,7 @@ def table_detail(mesa_id):
         aplicar_suplemento = es_terraza and not getattr(producto, 'sin_suplemento_terraza', False)
         precio_final = precio_base + 0.20 if aplicar_suplemento else precio_base
         
-        # Debug para productos de desayunos
-        if producto.categoria == 'Desayunos':
-            print(f"DEBUG - Producto: {producto.nombre}, Es terraza: {es_terraza}, Sin suplemento: {getattr(producto, 'sin_suplemento_terraza', False)}, Aplicar suplemento: {aplicar_suplemento}, Precio base: {precio_base}, Precio final: {precio_final}")
+
         
         productos_dict_con_precios[producto.id] = {
             'id': producto.id,
