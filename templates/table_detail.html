@@ -728,13 +728,7 @@ const productosData = {
     {% endfor %}
 };
 
-console.log('Debug - Es terraza:', {{ 'true' if es_terraza else 'false' }});
-console.log('Debug - Suplemento terraza:', {{ suplemento_terraza|float }});
-console.log('Debug - Productos data:', productosData);
-
 function openCategoryModal(categoria) {
-    console.log('openCategoryModal called with:', categoria);
-    console.log('Products data for category:', productosData[categoria]);
     
     const modal = document.getElementById('categoryModal');
     const modalTitle = document.getElementById('modalCategoryTitle');
