@@ -791,7 +791,7 @@ function openCategoryModal(categoria) {
             
             let precioHTML = '';
             {% if es_terraza %}
-            if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+            if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio && !producto.sin_suplemento_terraza) {
                 precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
                            '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
             } else {
@@ -889,7 +889,7 @@ function showBeerProducts(tipo) {
         
         let precioHTML = '';
         {% if es_terraza %}
-        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio && !producto.sin_suplemento_terraza) {
             precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
                        '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
         } else {
@@ -1027,7 +1027,7 @@ function showBocadillosProducts(tipo) {
         
         let precioHTML = '';
         {% if es_terraza %}
-        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio) {
+        if (producto.precio_con_suplemento && producto.precio_con_suplemento !== producto.precio && !producto.sin_suplemento_terraza) {
             precioHTML = '<div class="price-base">€' + producto.precio.toFixed(2) + '</div>' +
                        '<div class="product-price price-terraza">€' + producto.precio_con_suplemento.toFixed(2) + '</div>';
         } else {
