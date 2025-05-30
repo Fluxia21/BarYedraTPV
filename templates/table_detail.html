@@ -452,7 +452,10 @@
                                     {% endif %}
                                 </div>
                                 <div class="item-price">
-                                    {% if mesa.zona.lower() == 'terraza' and producto_con_precio.precio_base != producto_con_precio.precio_final %}
+                                    <!-- Mostrar precio simple para productos de DESAYUNOS o cuando no hay suplemento -->
+                                    {% if producto.categoria == 'Desayunos' %}
+                                        €{{ "%.2f"|format(producto_con_precio.precio_final) }}
+                                    {% elif mesa.zona.lower() == 'terraza' and producto_con_precio.precio_base != producto_con_precio.precio_final %}
                                         <span class="precio-base">€{{ "%.2f"|format(producto_con_precio.precio_base) }}</span>
                                         <span class="precio-terraza">€{{ "%.2f"|format(producto_con_precio.precio_final) }}</span>
                                     {% else %}
