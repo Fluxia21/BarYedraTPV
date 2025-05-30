@@ -242,7 +242,7 @@ def add_to_order():
         prod = Producto.query.get(int(pid))
         if prod:
             precio_unitario = float(prod.precio)
-            if mesa.zona.lower() == 'terraza':
+            if mesa.zona.lower() == 'terraza' and not getattr(prod, 'sin_suplemento_terraza', False):
                 precio_unitario += 0.20
             total += precio_unitario * qty
     
@@ -274,12 +274,16 @@ def update_quantity():
         else:
             productos_dict[producto_id_str] = nueva_cantidad
     
-    # Recalculate total
+    # Recalculate total with terraza supplement if applicable
+    mesa = Mesa.query.get(mesa_id)
     total = 0
     for pid, qty in productos_dict.items():
         prod = Producto.query.get(int(pid))
         if prod:
-            total += float(prod.precio) * qty
+            precio_unitario = float(prod.precio)
+            if mesa.zona.lower() == 'terraza' and not getattr(prod, 'sin_suplemento_terraza', False):
+                precio_unitario += 0.20
+            total += precio_unitario * qty
     
     pedido.productos = json.dumps(productos_dict)
     pedido.total = total
