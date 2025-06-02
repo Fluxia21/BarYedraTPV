@@ -185,7 +185,7 @@
             </button>
         </div>
         
-        <form method="POST" action="{{ url_for('add_product') }}" class="product-form">
+        <form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data" class="product-form">
             <div class="form-grid">
                 <div class="form-group">
                     <label for="nombre" class="form-label">Nombre del Producto</label>
@@ -214,9 +214,18 @@
                 </div>
                 
                 <div class="form-group full-width">
-                    <label for="foto_url" class="form-label">URL de la Foto (opcional)</label>
-                    <input type="url" class="form-input touch-friendly" id="foto_url" name="foto_url" 
-                           placeholder="https://ejemplo.com/imagen.jpg">
+                    <label for="imagen_producto" class="form-label">Imagen del Producto (opcional)</label>
+                    <input type="file" class="form-input touch-friendly" id="imagen_producto" name="imagen_producto" 
+                           accept="image/*" onchange="previewImageAñadir(this)">
+                    <div class="form-text">Selecciona una imagen desde tu fototeca (JPG, PNG, GIF)</div>
+                    
+                    <!-- Vista previa de la imagen seleccionada -->
+                    <div id="image-preview-container" style="margin-top: 15px; display: none;">
+                        <label class="form-label" style="font-size: 14px; color: #666;">Vista Previa:</label>
+                        <div id="image-preview" style="text-align: center; margin-top: 10px;">
+                            <!-- La imagen aparecerá aquí -->
+                        </div>
+                    </div>
                     
                     <!-- Galería de imágenes de un clic para añadir -->
                     <div style="margin-top: 15px;">
@@ -480,4 +489,35 @@ function abrirModalEdicion(id, nombre, precio, categoria, foto, descripcion) {
     }
 }
 </style>
+
+<script>
+// Vista previa de imagen para formulario de agregar productos
+function previewImageAñadir(input) {
+    const file = input.files[0];
+    let previewContainer = document.getElementById('image-preview-container');
+    let previewDiv = document.getElementById('image-preview');
+    
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Vista previa';
+            img.style.cssText = 'max-height: 150px; max-width: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
+            
+            // Mostrar el contenedor de vista previa
+            if (previewContainer) {
+                previewContainer.style.display = 'block';
+                previewDiv.innerHTML = '';
+                previewDiv.appendChild(img);
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    } else if (previewContainer) {
+        previewContainer.style.display = 'none';
+    }
+}
+</script>
 {% endblock %}
