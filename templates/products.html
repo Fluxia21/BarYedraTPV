@@ -331,8 +331,17 @@ function abrirModalEdicion(id, nombre, precio, categoria, foto, descripcion) {
     document.getElementById('edit_nombre').value = nombre;
     document.getElementById('edit_precio').value = precio;
     document.getElementById('edit_categoria').value = categoria;
-    document.getElementById('edit_foto_url').value = foto;
     document.getElementById('edit_descripcion').value = descripcion;
+    
+    // Limpiar la vista previa de imagen y el campo de archivo
+    const imagePreview = document.getElementById('edit-image-preview-container');
+    if (imagePreview) {
+        imagePreview.style.display = 'none';
+    }
+    const fileInput = document.getElementById('edit_imagen_producto');
+    if (fileInput) {
+        fileInput.value = '';
+    }
     
     // Configurar la acción del formulario para conectar a la base de datos
     document.getElementById('editProductForm').action = '/update_product/' + id;
