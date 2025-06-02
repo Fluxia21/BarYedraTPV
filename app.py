@@ -244,7 +244,7 @@ def add_to_order():
         prod = Producto.query.get(int(pid))
         if prod:
             precio_unitario = float(prod.precio)
-            if mesa.zona.lower() == 'terraza':
+            if mesa.zona.lower() == 'terraza' and not getattr(prod, 'sin_suplemento_terraza', False):
                 precio_unitario += 0.20
             total += precio_unitario * qty
     
