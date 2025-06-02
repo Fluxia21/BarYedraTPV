@@ -233,13 +233,22 @@ function mostrarModalEditar(id, nombre, precio, categoria, foto, descripcion) {
     document.getElementById('edit_nombre').value = nombre;
     document.getElementById('edit_precio').value = precio;
     document.getElementById('edit_categoria').value = categoria;
-    document.getElementById('edit_foto_url').value = foto;
     document.getElementById('edit_descripcion').value = descripcion;
+    
+    // Limpiar la vista previa de imagen y el campo de archivo
+    const imagePreview = document.getElementById('edit-image-preview-container');
+    if (imagePreview) {
+        imagePreview.style.display = 'none';
+    }
+    const fileInput = document.getElementById('edit_imagen_producto');
+    if (fileInput) {
+        fileInput.value = '';
+    }
     
     // Configurar la acción del formulario para enviar a la URL correcta
     document.getElementById('editProductForm').action = `/update_product/${id}`;
     
-    // Mostrar el modal de edición (igual que el de añadir)
+    // Mostrar el modal de edición
     document.getElementById('editProductModal').style.display = 'flex';
 }
 
@@ -250,8 +259,17 @@ function openEditModal(id, nombre, precio, categoria, foto_url, descripcion) {
     document.getElementById('edit_nombre').value = nombre || '';
     document.getElementById('edit_precio').value = precio || '';
     document.getElementById('edit_categoria').value = categoria || '';
-    document.getElementById('edit_foto_url').value = foto_url || '';
     document.getElementById('edit_descripcion').value = descripcion || '';
+    
+    // Limpiar la vista previa de imagen y el campo de archivo
+    const imagePreview = document.getElementById('edit-image-preview-container');
+    if (imagePreview) {
+        imagePreview.style.display = 'none';
+    }
+    const fileInput = document.getElementById('edit_imagen_producto');
+    if (fileInput) {
+        fileInput.value = '';
+    }
     
     // Configurar la acción del formulario
     document.getElementById('editProductForm').action = `/update_product/${id}`;
