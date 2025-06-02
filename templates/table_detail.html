@@ -581,6 +581,47 @@ function toggleCategory(categoria) {
     }
 }
 
+function addToOrderWithAnimation(productCard, mesaId, productoId) {
+    // Add selection animation
+    productCard.classList.add('selected');
+    
+    // Create floating feedback bubble
+    const feedback = document.createElement('div');
+    feedback.className = 'feedback-bubble';
+    feedback.textContent = '✓ Added!';
+    
+    // Ensure product card has relative positioning
+    productCard.style.position = 'relative';
+    productCard.appendChild(feedback);
+    
+    // Create ripple effect
+    const ripple = document.createElement('div');
+    ripple.style.cssText = `
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(76, 175, 80, 0.3);
+        width: 30px;
+        height: 30px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+        z-index: 999;
+    `;
+    productCard.appendChild(ripple);
+    
+    // Cleanup animations
+    setTimeout(() => {
+        if (feedback.parentNode) feedback.parentNode.removeChild(feedback);
+        if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+        productCard.classList.remove('selected');
+    }, 1200);
+    
+    // Call original function
+    addToOrder(mesaId, productoId);
+}
+
 function addToOrder(mesaId, productoId) {
     const form = document.createElement('form');
     form.method = 'POST';
@@ -2000,19 +2041,97 @@ function ocultarCalculadora() {
 }
 
 .product-card-modal:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    background: #fafafa;
-    border-color: #bdbdbd;
+    transform: translateY(-5px) rotate(1deg);
+    box-shadow: 0 15px 35px rgba(76, 175, 80, 0.25);
+    background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+    border-color: #4CAF50;
+    border-width: 2px;
 }
 
 .product-card-modal:hover img {
-    transform: scale(1.03);
+    transform: scale(1.1) rotate(-1deg);
+    box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
+    border-color: #2e7d32;
+    animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1.02) rotate(-1deg); }
+    50% { transform: scale(1.15) rotate(-1deg); }
+    100% { transform: scale(1.1) rotate(-1deg); }
 }
 
 .product-card-modal:active {
-    transform: translateY(-1px) scale(0.98);
-    background: #d4edda;
+    transform: translateY(0px) scale(0.95) rotate(-2deg);
+    background: #c8e6c9;
+    animation: bounce 0.4s ease-out;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0px) scale(0.95) rotate(-2deg); }
+    50% { transform: translateY(-10px) scale(1.05) rotate(2deg); }
+    100% { transform: translateY(0px) scale(0.95) rotate(-2deg); }
+}
+
+.product-card-modal.selected {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    border-color: #2e7d32;
+    border-width: 3px;
+    animation: wiggle 0.5s ease-in-out;
+}
+
+.product-card-modal.selected img {
+    border-color: #ffffff;
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    75% { transform: rotate(-3deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes floatUp {
+    0% { 
+        opacity: 1; 
+        transform: translateY(0px) scale(1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: translateY(-20px) scale(1.2);
+    }
+    100% { 
+        opacity: 0; 
+        transform: translateY(-40px) scale(0.8);
+    }
+}
+
+.feedback-bubble {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    animation: floatUp 1.2s ease-out forwards;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(4);
+        opacity: 0;
+    }
 }
 
 .product-name-modal {
