@@ -804,9 +804,9 @@ function openCategoryModal(categoria) {
             precioHTML = '<div class="product-price">€' + producto.precio.toFixed(2) + '</div>';
             {% endif %}
             
-            let imagenHTML = '<div class="product-image-space" style="width: 120px; height: 120px; margin: 0 auto 8px auto; border-radius: 12px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 2px solid #e9ecef;">📦</div>';
+            let imagenHTML = '<div class="product-image-space" style="width: 80px; height: 80px; margin: 0 auto 6px auto; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 28px; border: 2px solid #e9ecef;">📦</div>';
             if (producto.foto_url && producto.foto_url !== '') {
-                imagenHTML = '<img src="' + producto.foto_url + '" alt="' + producto.nombre + '" style="width: 120px; height: 120px; margin: 0 auto 8px auto; border-radius: 12px; object-fit: cover; background: #f8f9fa; padding: 4px; border: 2px solid #e9ecef; display: block; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">';
+                imagenHTML = '<img src="' + producto.foto_url + '" alt="' + producto.nombre + '" style="width: 80px; height: 80px; margin: 0 auto 6px auto; border-radius: 8px; object-fit: cover; background: #f8f9fa; padding: 3px; border: 2px solid #e9ecef; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
             }
             
             productCard.innerHTML = imagenHTML + '<div class="product-name-modal">' + producto.nombre + '</div>' + precioHTML;
@@ -1977,27 +1977,25 @@ function ocultarCalculadora() {
 
 .products-grid-modal {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
     padding: 10px 0;
-    max-height: 75vh;
-    overflow-y: auto;
 }
 
 .product-card-modal {
     background: #f8f9fa;
     border: 2px solid #dee2e6;
-    border-radius: 12px;
-    padding: 15px;
+    border-radius: 8px;
+    padding: 12px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    height: 200px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .product-card-modal:hover {
@@ -2013,13 +2011,13 @@ function ocultarCalculadora() {
 }
 
 .product-name-modal {
-    font-size: 15px;
+    font-size: 12px;
     font-weight: bold;
     color: #2e7d32;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     margin-top: 0px;
-    line-height: 1.2;
-    height: 30px;
+    line-height: 1.1;
+    height: 25px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
