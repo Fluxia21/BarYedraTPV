@@ -18,7 +18,7 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('update_product', producto_id=producto.id) }}" onsubmit="return validateForm(this)">
+                    <form method="POST" action="{{ url_for('update_product', producto_id=producto.id) }}" enctype="multipart/form-data" onsubmit="return validateForm(this)">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
