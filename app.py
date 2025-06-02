@@ -527,14 +527,43 @@ def delete_product(producto_id):
 @app.route('/inventory')
 def inventory():
     """Inventory management view"""
-    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
+    # Orden inteligente de categorías para el flujo de trabajo del bar
+    orden_categorias = {
+        'Desayunos': 1,     # Primeros del día
+        'Bocadillos': 2,    # Comida principal
+        'Raciones': 3,      # Platos compartidos
+        'Cervezas': 4,      # Bebidas principales
+        'Vinos': 5,         # Bebidas con comida
+        'Refrescos': 6,     # Bebidas sin alcohol
+        'Combinados': 7,    # Cocktails y mezclas
+        'Licores': 8,       # Bebidas destiladas
+        'Helados': 9        # Postres
+    }
+    
+    # Obtener todos los productos activos
+    productos_db = Producto.query.filter_by(activo=True).all()
+    
+    # Ordenar por categoría inteligente y luego por nombre
+    productos = sorted(productos_db, key=lambda p: (
+        orden_categorias.get(p.categoria, 999),  # 999 para categorías no definidas
+        p.nombre
+    ))
     
     # Estadísticas de stock
     productos_agotados = [p for p in productos if p.stock_agotado]
     productos_bajo_stock = [p for p in productos if p.stock_bajo and not p.stock_agotado]
     
+    # Agrupar productos por categoría para mejor visualización
+    productos_por_categoria = {}
+    for producto in productos:
+        categoria = producto.categoria
+        if categoria not in productos_por_categoria:
+            productos_por_categoria[categoria] = []
+        productos_por_categoria[categoria].append(producto)
+    
     return render_template('inventory.html', 
                          productos=productos,
+                         productos_por_categoria=productos_por_categoria,
                          productos_agotados=productos_agotados,
                          productos_bajo_stock=productos_bajo_stock)
 

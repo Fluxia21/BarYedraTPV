@@ -65,47 +65,80 @@
         </div>
     </div>
 
-    <!-- Lista de productos con stock -->
-    <div class="inventory-grid">
-        {% for producto in productos %}
-        <div class="inventory-item touch-friendly {% if producto.stock_agotado %}stock-agotado{% elif producto.stock_bajo %}stock-bajo{% else %}stock-ok{% endif %}">
-            <div class="inventory-header">
-                <div class="product-info">
-                    <h3 class="product-name">{{ producto.nombre }}</h3>
-                    <p class="product-category">{{ producto.categoria }}</p>
-                </div>
-                <div class="stock-status">
-                    {% if producto.stock_agotado %}
-                        <span class="status-badge agotado">AGOTADO</span>
-                    {% elif producto.stock_bajo %}
-                        <span class="status-badge bajo">STOCK BAJO</span>
+    <!-- Lista de productos por categorías -->
+    <div class="inventory-categories">
+        {% for categoria, productos_categoria in productos_por_categoria.items() %}
+        <div class="category-section">
+            <div class="category-header">
+                <h2 class="category-title">
+                    {% if categoria == 'Desayunos' %}
+                        <i class="fas fa-coffee"></i> {{ categoria }}
+                    {% elif categoria == 'Bocadillos' %}
+                        <i class="fas fa-hamburger"></i> {{ categoria }}
+                    {% elif categoria == 'Raciones' %}
+                        <i class="fas fa-utensils"></i> {{ categoria }}
+                    {% elif categoria == 'Cervezas' %}
+                        <i class="fas fa-beer"></i> {{ categoria }}
+                    {% elif categoria == 'Vinos' %}
+                        <i class="fas fa-wine-glass"></i> {{ categoria }}
+                    {% elif categoria == 'Refrescos' %}
+                        <i class="fas fa-glass-whiskey"></i> {{ categoria }}
+                    {% elif categoria == 'Combinados' %}
+                        <i class="fas fa-cocktail"></i> {{ categoria }}
+                    {% elif categoria == 'Licores' %}
+                        <i class="fas fa-wine-bottle"></i> {{ categoria }}
+                    {% elif categoria == 'Helados' %}
+                        <i class="fas fa-ice-cream"></i> {{ categoria }}
                     {% else %}
-                        <span class="status-badge ok">OK</span>
+                        <i class="fas fa-box"></i> {{ categoria }}
                     {% endif %}
-                </div>
+                </h2>
+                <span class="category-count">{{ productos_categoria|length }} productos</span>
             </div>
             
-            <div class="stock-display">
-                <div class="current-stock">
-                    <span class="stock-number">{{ producto.stock_actual }}</span>
-                    <span class="stock-unit">{{ producto.unidad_medida }}</span>
+            <div class="inventory-grid">
+                {% for producto in productos_categoria %}
+                <div class="inventory-item touch-friendly {% if producto.stock_agotado %}stock-agotado{% elif producto.stock_bajo %}stock-bajo{% else %}stock-ok{% endif %}">
+                    <div class="inventory-header">
+                        <div class="product-info">
+                            <h3 class="product-name">{{ producto.nombre }}</h3>
+                            <p class="product-price">{{ "%.2f"|format(producto.precio) }}€</p>
+                        </div>
+                        <div class="stock-status">
+                            {% if producto.stock_agotado %}
+                                <span class="status-badge agotado">AGOTADO</span>
+                            {% elif producto.stock_bajo %}
+                                <span class="status-badge bajo">STOCK BAJO</span>
+                            {% else %}
+                                <span class="status-badge ok">OK</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="stock-display">
+                        <div class="current-stock">
+                            <span class="stock-number">{{ producto.stock_actual }}</span>
+                            <span class="stock-unit">{{ producto.unidad_medida }}</span>
+                        </div>
+                        <div class="min-stock">
+                            Mínimo: {{ producto.stock_minimo }}
+                        </div>
+                    </div>
+                    
+                    <div class="inventory-actions">
+                        <button class="btn btn-primary btn-sm touch-friendly" onclick="showAddStockModal({{ producto.id }}, '{{ producto.nombre }}')">
+                            <i class="fas fa-plus"></i> Añadir
+                        </button>
+                        <button class="btn btn-secondary btn-sm touch-friendly" onclick="showUpdateStockModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.stock_actual }})">
+                            <i class="fas fa-edit"></i> Ajustar
+                        </button>
+                    </div>
+                    
+                    <div class="last-update">
+                        Actualizado: {{ producto.fecha_actualizacion.strftime('%d/%m %H:%M') if producto.fecha_actualizacion else 'Nunca' }}
+                    </div>
                 </div>
-                <div class="min-stock">
-                    Mínimo: {{ producto.stock_minimo }}
-                </div>
-            </div>
-            
-            <div class="inventory-actions">
-                <button class="btn btn-primary btn-sm touch-friendly" onclick="showAddStockModal({{ producto.id }}, '{{ producto.nombre }}')">
-                    <i class="fas fa-plus"></i> Añadir
-                </button>
-                <button class="btn btn-secondary btn-sm touch-friendly" onclick="showUpdateStockModal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.stock_actual }})">
-                    <i class="fas fa-edit"></i> Ajustar
-                </button>
-            </div>
-            
-            <div class="last-update">
-                Actualizado: {{ producto.fecha_actualizacion.strftime('%d/%m %H:%M') if producto.fecha_actualizacion else 'Nunca' }}
+                {% endfor %}
             </div>
         </div>
         {% endfor %}

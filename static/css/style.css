@@ -1491,6 +1491,60 @@ select.form-input.touch-friendly {
     font-weight: 600;
 }
 
+/* Organización por categorías */
+.inventory-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.category-section {
+    background: white;
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-xl);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 2px solid var(--color-gray-medium);
+    transition: all 0.3s ease;
+}
+
+.category-section:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 3px solid var(--color-sidebar);
+}
+
+.category-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin: 0;
+}
+
+.category-title i {
+    color: var(--color-sidebar);
+    font-size: 1.5rem;
+}
+
+.category-count {
+    background: linear-gradient(135deg, var(--color-sidebar) 0%, #1976d2 100%);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+}
+
 /* Grid de inventario */
 .inventory-grid {
     display: grid;
@@ -1553,6 +1607,14 @@ select.form-input.touch-friendly {
     font-size: 14px;
     color: var(--color-text-light);
     margin: 0;
+}
+
+.product-price {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-sidebar);
+    margin: 4px 0 0 0;
+}
     font-weight: 600;
 }
 
