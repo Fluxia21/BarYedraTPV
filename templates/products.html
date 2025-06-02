@@ -290,36 +290,15 @@ function deleteProduct(id, nombre) {
     }
 }
 
+// Esta función ya no es necesaria ya que eliminamos la galería de selección rápida
 function cambiarImagen(button, urlImagen) {
-    // Cambiar el valor del campo de URL de imagen
-    document.getElementById('edit_foto_url').value = urlImagen;
-    
-    // Resaltar el botón seleccionado
-    const todosBotones = document.querySelectorAll('button[onclick*="cambiarImagen"]');
-    todosBotones.forEach(btn => {
-        btn.style.border = '2px solid #ddd';
-        btn.style.transform = 'scale(1)';
-    });
-    
-    // Destacar el botón seleccionado
-    button.style.border = '3px solid #28a745';
-    button.style.transform = 'scale(1.05)';
-    
-    // Mostrar confirmación visual
-    const mensaje = document.createElement('div');
-    mensaje.innerHTML = '✅ Imagen seleccionada';
-    mensaje.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 10px 20px; border-radius: 5px; z-index: 9999; font-weight: bold;';
-    document.body.appendChild(mensaje);
-    
-    // Remover el mensaje después de 2 segundos
-    setTimeout(() => {
-        document.body.removeChild(mensaje);
-    }, 2000);
+    // Función deshabilitada - ahora usamos carga de archivos local
+    console.log('Función cambiarImagen deshabilitada - usar carga de archivos local');
 }
 
 function cambiarImagenAñadir(urlImagen) {
-    // Cambiar el valor del campo de URL de imagen para añadir
-    document.getElementById('foto_url').value = urlImagen;
+    // Función deshabilitada - ahora usamos carga de archivos local
+    console.log('Función cambiarImagenAñadir deshabilitada - usar carga de archivos local');
     
     // Resaltar el botón seleccionado
     const todosBotones = document.querySelectorAll('button[onclick*="cambiarImagenAñadir"]');
