@@ -829,8 +829,10 @@ function openCategoryModal(categoria) {
             const productCard = document.createElement('div');
             productCard.className = 'product-card-modal';
             productCard.addEventListener('click', function() {
-                addToOrder({{ mesa.id }}, producto.id);
-                closeCategoryModal();
+                addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
+                setTimeout(() => {
+                    closeCategoryModal();
+                }, 600);
             });
             
             let precioHTML = '';
@@ -927,8 +929,10 @@ function showBeerProducts(tipo) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card-modal';
         productCard.addEventListener('click', function() {
-            addToOrder({{ mesa.id }}, producto.id);
-            closeCategoryModal();
+            addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
+            setTimeout(() => {
+                closeCategoryModal();
+            }, 600);
         });
         
         let precioHTML = '';
@@ -1065,8 +1069,10 @@ function showBocadillosProducts(tipo) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card-modal';
         productCard.addEventListener('click', function() {
-            addToOrder({{ mesa.id }}, producto.id);
-            closeCategoryModal();
+            addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
+            setTimeout(() => {
+                closeCategoryModal();
+            }, 600);
         });
         
         let precioHTML = '';
@@ -1113,8 +1119,10 @@ function showRacionesProducts(tipo) {
         const productCard = document.createElement('div');
         productCard.className = 'product-card-modal';
         productCard.addEventListener('click', function() {
-            addToOrder({{ mesa.id }}, producto.id);
-            closeCategoryModal();
+            addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
+            setTimeout(() => {
+                closeCategoryModal();
+            }, 600);
         });
         
         let precioHTML = '';
