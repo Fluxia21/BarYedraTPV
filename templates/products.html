@@ -79,96 +79,67 @@
 
 <!-- Modal para editar producto -->
 <div id="editProductModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
-    <div class="modal-content touch-optimized" style="background: white; border-radius: 10px; padding: 30px; max-width: 600px; width: 90%; max-height: 80%; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-        <div class="modal-header">
-            <h2><i class="fas fa-edit"></i> Editar Producto</h2>
-            <button class="modal-close touch-friendly" onclick="hideEditProductModal()">
-                <i class="icon-x"></i>
+    <div class="modal-content touch-optimized" style="background: white; border-radius: 12px; padding: 25px; max-width: 550px; width: 90%; height: auto; max-height: 90vh; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+        <div class="modal-header" style="margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;">
+            <h2 style="margin: 0; color: #333; font-size: 22px;"><i class="fas fa-edit"></i> Editar Producto</h2>
+            <button class="modal-close touch-friendly" onclick="hideEditProductModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">
+                ✕
             </button>
         </div>
         
-        <form id="editProductForm" method="POST" action="" class="product-form">
-            <div class="form-grid">
+        <form id="editProductForm" method="POST" action="" enctype="multipart/form-data" class="product-form" style="flex: 1; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                 <div class="form-group">
-                    <label for="edit_nombre" class="form-label">Nombre del Producto</label>
-                    <input type="text" id="edit_nombre" name="nombre" required class="form-input touch-friendly">
+                    <label for="edit_nombre" class="form-label" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Nombre</label>
+                    <input type="text" id="edit_nombre" name="nombre" required class="form-input touch-friendly" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
                 </div>
                 
                 <div class="form-group">
-                    <label for="edit_precio" class="form-label">Precio (€)</label>
-                    <input type="number" id="edit_precio" name="precio" step="0.01" min="0" required class="form-input touch-friendly">
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit_categoria" class="form-label">Categoría</label>
-                    <select id="edit_categoria" name="categoria" required class="form-input touch-friendly">
-                        <option value="Bocadillos">🥪 Bocadillos</option>
-                        <option value="Cervezas">🍺 Cervezas</option>
-                        <option value="Combinados">🍹 Combinados</option>
-                        <option value="Licores">🥃 Licores</option>
-                        <option value="Desayunos">☕ Desayunos</option>
-                        <option value="Raciones">🍽️ Raciones</option>
-                        <option value="Helados">🍦 Helados</option>
-                        <option value="Refrescos">🥤 Refrescos</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="edit_foto_url" class="form-label">URL de la Imagen</label>
-                    <input type="url" id="edit_foto_url" name="foto_url" class="form-input touch-friendly" placeholder="https://ejemplo.com/imagen.jpg">
-                    
-                    <!-- Galería de imágenes de un clic -->
-                    <div style="margin-top: 15px;">
-                        <label class="form-label" style="font-size: 14px; color: #666;">📸 Selección Rápida de Imágenes:</label>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">☕ Café</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🍞 Pan</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🍽️ Comida</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🥤 Bebida</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🍺 Cerveza</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🍰 Postre</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🍤 Tapas</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagen(this, 'https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200')" style="padding: 8px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200" style="width: 100%; height: 60px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 12px; margin-top: 4px;">🍷 Vino</div>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group form-group-full">
-                    <label for="edit_descripcion" class="form-label">Descripción</label>
-                    <textarea id="edit_descripcion" name="descripcion" rows="3" class="form-input touch-friendly" placeholder="Descripción opcional del producto"></textarea>
+                    <label for="edit_precio" class="form-label" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Precio (€)</label>
+                    <input type="number" id="edit_precio" name="precio" step="0.01" min="0" required class="form-input touch-friendly" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
                 </div>
             </div>
             
-            <div class="modal-actions">
-                <button type="submit" class="btn btn-primary btn-lg touch-friendly">
-                    <i class="icon-save"></i> Guardar Cambios
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="edit_categoria" class="form-label" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Categoría</label>
+                <select id="edit_categoria" name="categoria" required class="form-input touch-friendly" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    <option value="Bocadillos">🥪 Bocadillos</option>
+                    <option value="Cervezas">🍺 Cervezas</option>
+                    <option value="Combinados">🍹 Combinados</option>
+                    <option value="Licores">🥃 Licores</option>
+                    <option value="Desayunos">☕ Desayunos</option>
+                    <option value="Raciones">🍽️ Raciones</option>
+                    <option value="Helados">🍦 Helados</option>
+                    <option value="Refrescos">🥤 Refrescos</option>
+                </select>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="edit_imagen_producto" class="form-label" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Imagen del Producto</label>
+                <input type="file" class="form-input touch-friendly" id="edit_imagen_producto" name="imagen_producto" 
+                       accept="image/*" onchange="previewImageEditar(this)" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                <div style="font-size: 13px; color: #666; margin-top: 5px;">Selecciona una imagen desde tu fototeca (JPG, PNG, GIF)</div>
+                
+                <!-- Vista previa de la imagen seleccionada -->
+                <div id="edit-image-preview-container" style="margin-top: 10px; display: none;">
+                    <div style="font-size: 13px; color: #666;">Vista Previa:</div>
+                    <div id="edit-image-preview" style="text-align: center; margin-top: 8px;">
+                        <!-- La imagen aparecerá aquí -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="edit_descripcion" class="form-label" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Descripción</label>
+                <textarea id="edit_descripcion" name="descripcion" rows="2" class="form-input touch-friendly" placeholder="Descripción opcional del producto" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; resize: vertical; min-height: 60px;"></textarea>
+            </div>
+            
+            <div class="modal-actions" style="display: flex; gap: 15px; margin-top: 20px; border-top: 2px solid #f0f0f0; padding-top: 20px;">
+                <button type="submit" class="btn btn-primary btn-lg touch-friendly" style="flex: 1; padding: 15px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                    💾 Guardar Cambios
                 </button>
-                <button type="button" class="btn btn-secondary btn-lg touch-friendly" onclick="hideEditProductModal()">
-                    <i class="icon-x"></i> Cancelar
+                <button type="button" class="btn btn-secondary btn-lg touch-friendly" onclick="hideEditProductModal()" style="flex: 1; padding: 15px; background: #6c757d; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                    ✕ Cancelar
                 </button>
             </div>
         </form>
@@ -226,45 +197,7 @@
                             <!-- La imagen aparecerá aquí -->
                         </div>
                     </div>
-                    
-                    <!-- Galería de imágenes de un clic para añadir -->
-                    <div style="margin-top: 15px;">
-                        <label class="form-label" style="font-size: 14px; color: #666;">📸 Selección Rápida de Imágenes:</label>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px;">
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">☕ Café</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🍞 Pan</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🍽️ Comida</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🥤 Bebida</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🍺 Cerveza</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🍰 Postre</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🍤 Tapas</div>
-                            </button>
-                            <button type="button" onclick="cambiarImagenAñadir('https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200')" style="padding: 6px; border: 2px solid #ddd; border-radius: 6px; background: white; cursor: pointer;">
-                                <img src="https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=200" style="width: 100%; height: 50px; object-fit: cover; border-radius: 4px;">
-                                <div style="font-size: 11px; margin-top: 2px;">🍷 Vino</div>
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
                 
                 <div class="form-group full-width">
@@ -505,6 +438,35 @@ function previewImageAñadir(input) {
             img.src = e.target.result;
             img.alt = 'Vista previa';
             img.style.cssText = 'max-height: 150px; max-width: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
+            
+            // Mostrar el contenedor de vista previa
+            if (previewContainer) {
+                previewContainer.style.display = 'block';
+                previewDiv.innerHTML = '';
+                previewDiv.appendChild(img);
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    } else if (previewContainer) {
+        previewContainer.style.display = 'none';
+    }
+}
+
+// Vista previa de imagen para formulario de editar productos
+function previewImageEditar(input) {
+    const file = input.files[0];
+    let previewContainer = document.getElementById('edit-image-preview-container');
+    let previewDiv = document.getElementById('edit-image-preview');
+    
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Vista previa';
+            img.style.cssText = 'max-height: 120px; max-width: 160px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
             
             // Mostrar el contenedor de vista previa
             if (previewContainer) {
