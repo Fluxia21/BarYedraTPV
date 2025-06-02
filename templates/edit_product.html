@@ -81,16 +81,21 @@
                             
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="foto_url" class="form-label">
-                                        <i class="fas fa-image me-2"></i>URL de la Imagen
+                                    <label for="imagen_producto" class="form-label">
+                                        <i class="fas fa-image me-2"></i>Imagen del Producto
                                     </label>
-                                    <input type="url" 
+                                    <input type="file" 
                                            class="form-control" 
-                                           id="foto_url" 
-                                           name="foto_url" 
-                                           value="{{ producto.foto_url or '' }}"
-                                           placeholder="https://ejemplo.com/imagen.jpg">
-                                    <div class="form-text">URL completa de la imagen del producto (opcional)</div>
+                                           id="imagen_producto" 
+                                           name="imagen_producto" 
+                                           accept="image/*"
+                                           onchange="previewImage(this)">
+                                    <div class="form-text">Selecciona una imagen desde tu fototeca (JPG, PNG, GIF)</div>
+                                    {% if producto.foto_url %}
+                                    <div class="mt-2">
+                                        <small class="text-muted">Imagen actual: {{ producto.foto_url.split('/')[-1] if '/' in producto.foto_url else producto.foto_url }}</small>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -195,20 +200,21 @@
 </style>
 
 <script>
-// Vista previa de imagen en tiempo real
-document.getElementById('foto_url').addEventListener('input', function() {
-    const url = this.value;
-    const preview = document.querySelector('.product-preview');
+// Vista previa de imagen desde archivo local
+function previewImage(input) {
+    const file = input.files[0];
+    let preview = document.querySelector('.product-preview');
     
-    if (url) {
-        // Crear nueva imagen para vista previa
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Vista previa';
-        img.className = 'img-thumbnail';
-        img.style.cssText = 'max-height: 150px; max-width: 200px;';
+    if (file) {
+        const reader = new FileReader();
         
-        img.onload = function() {
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Vista previa';
+            img.className = 'img-thumbnail';
+            img.style.cssText = 'max-height: 150px; max-width: 200px;';
+            
             if (preview) {
                 preview.innerHTML = '';
                 preview.appendChild(img);
@@ -227,15 +233,11 @@ document.getElementById('foto_url').addEventListener('input', function() {
             }
         };
         
-        img.onerror = function() {
-            if (preview) {
-                preview.innerHTML = '<small class="text-muted">URL de imagen no válida</small>';
-            }
-        };
+        reader.readAsDataURL(file);
     } else if (preview) {
         preview.remove();
     }
-});
+}
 
 function validateForm(form) {
     const nombre = form.nombre.value.trim();
@@ -249,6 +251,22 @@ function validateForm(form) {
     if (isNaN(precio) || precio < 0) {
         alert('El precio debe ser un número positivo');
         return false;
+    }
+    
+    // Validar archivo de imagen si se seleccionó
+    const imageFile = form.imagen_producto.files[0];
+    if (imageFile) {
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(imageFile.type)) {
+            alert('Solo se permiten archivos de imagen (JPG, PNG, GIF)');
+            return false;
+        }
+        
+        // Verificar tamaño del archivo (máximo 5MB)
+        if (imageFile.size > 5 * 1024 * 1024) {
+            alert('El archivo de imagen no puede ser mayor a 5MB');
+            return false;
+        }
     }
     
     return true;

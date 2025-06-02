@@ -502,11 +502,35 @@ def update_product(producto_id):
         flash('Precio no válido', 'error')
         return redirect(url_for('edit_product', producto_id=producto_id))
     
+    # Manejar carga de imagen si se proporcionó
+    foto_url = producto.foto_url  # Mantener la imagen existente por defecto
+    if 'imagen_producto' in request.files:
+        file = request.files['imagen_producto']
+        if file and file.filename != '':
+            # Validar tipo de archivo
+            allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+            if '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in allowed_extensions:
+                # Generar nombre único para el archivo
+                import uuid
+                import os
+                filename = str(uuid.uuid4()) + '.' + file.filename.rsplit('.', 1)[1].lower()
+                filepath = os.path.join('static', 'uploads', 'products', filename)
+                
+                # Crear directorio si no existe
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                
+                # Guardar archivo
+                file.save(filepath)
+                foto_url = f'/static/uploads/products/{filename}'
+            else:
+                flash('Tipo de archivo no válido. Solo se permiten PNG, JPG, JPEG, GIF', 'error')
+                return redirect(url_for('edit_product', producto_id=producto_id))
+    
     # Actualizar los campos del producto
     producto.nombre = nombre
     producto.precio = precio
     producto.categoria = request.form.get('categoria', 'General')
-    producto.foto_url = request.form.get('foto_url', '')
+    producto.foto_url = foto_url
     producto.descripcion = request.form.get('descripcion', '')
     
     db.session.commit()
