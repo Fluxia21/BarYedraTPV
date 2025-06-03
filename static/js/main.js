@@ -140,11 +140,8 @@ function setupNumberInputs() {
         incrementBtn.innerHTML = '<i class="fas fa-plus"></i>';
         incrementBtn.onclick = () => {
             const value = parseInt(input.value) || 0;
-            const max = parseInt(input.max) || 999;
-            if (value < max) {
-                input.value = value + 1;
-                input.dispatchEvent(new Event('change'));
-            }
+            input.value = value + 1;
+            input.dispatchEvent(new Event('change'));
         };
         
         // Only add if not already wrapped
