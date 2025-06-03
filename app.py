@@ -1147,7 +1147,7 @@ def nuevo_empleado():
                 telefono=request.form.get('telefono', ''),
                 email=request.form.get('email', ''),
                 puesto=request.form['puesto'],
-                salario_hora=float(request.form.get('salario_hora', 0)) if request.form.get('salario_hora') else None,
+                horas_contrato_semanal=int(request.form.get('horas_contrato_semanal', 30)),
                 pin_fichaje=request.form['pin_fichaje']
             )
             

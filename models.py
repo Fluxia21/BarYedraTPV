@@ -106,7 +106,7 @@ class Empleado(db.Model):
     telefono = db.Column(db.String(20), nullable=True)
     email = db.Column(db.String(120), nullable=True)
     puesto = db.Column(db.String(50), nullable=False)  # 'camarero', 'cocinero', 'gerente', etc.
-    salario_hora = db.Column(db.Numeric(10, 2), nullable=True)
+    horas_contrato_semanal = db.Column(db.Integer, default=30)  # Horas semanales del contrato
     fecha_alta = db.Column(db.DateTime, default=datetime.utcnow)
     activo = db.Column(db.Boolean, default=True)
     pin_fichaje = db.Column(db.String(6), nullable=False)  # PIN de 4-6 dígitos para fichar
