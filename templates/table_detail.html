@@ -647,31 +647,22 @@ function addToOrder(mesaId, productoId) {
 }
 
 function updateOrderPanel(mesaId) {
-    // Actualizar dinámicamente el panel de pedido actual
+    // Actualizar usando AJAX más simple
     fetch(`/table/${mesaId}`)
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.text();
+    })
     .then(html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        
-        // Actualizar solo la sección del pedido actual
-        const newOrderSection = doc.querySelector('.current-order');
-        const currentOrderSection = document.querySelector('.current-order');
-        
-        if (newOrderSection && currentOrderSection) {
-            currentOrderSection.innerHTML = newOrderSection.innerHTML;
-        }
-        
-        // Actualizar el total
-        const newTotal = doc.querySelector('.order-total');
-        const currentTotal = document.querySelector('.order-total');
-        
-        if (newTotal && currentTotal) {
-            currentTotal.innerHTML = newTotal.innerHTML;
-        }
+        // Actualizar página completa después de un pequeño delay
+        setTimeout(() => {
+            location.reload();
+        }, 500);
     })
     .catch(error => {
-        console.error('Error updating order panel:', error);
+        console.error('Error:', error);
+        // Si falla, recargar página
+        location.reload();
     });
 }
 
@@ -798,57 +789,29 @@ const productosData = {
 };
 
 function openCategoryModal(categoria) {
-    
     const modal = document.getElementById('categoryModal');
     const modalTitle = document.getElementById('modalCategoryTitle');
     const productosGrid = document.getElementById('modalProductsGrid');
     
-    console.log('Modal elements:', {
-        modal: modal,
-        modalTitle: modalTitle,
-        productosGrid: productosGrid
-    });
+    if (!modal || !modalTitle || !productosGrid) {
+        console.error('Modal elements not found');
+        return;
+    }
     
-    if (!modal) {
-        console.error('categoryModal not found');
-        return;
-    }
-    if (!modalTitle) {
-        console.error('modalCategoryTitle not found');
-        return;
-    }
-    if (!productosGrid) {
-        console.error('modalProductsGrid not found');
-        return;
-    }
+    // Mostrar modal inmediatamente
+    modal.style.display = 'block';
+    modalTitle.textContent = categoria;
+    productosGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Cargando productos...</div>';
     
     try {
-        // Si es cervezas, mostrar subcategorías primero
-        if (categoria === 'Cervezas') {
-            showBeerSubcategories();
-            return;
-        }
-        
-        // Si es bocadillos, mostrar subcategorías
-        if (categoria === 'Bocadillos') {
-            showBocadillosSubcategories();
-            return;
-        }
-        
-        // Si es raciones, mostrar subcategorías
-        if (categoria === 'Raciones') {
-            showRacionesSubcategories();
-            return;
-        }
-        
-        modalTitle.textContent = categoria;
-        productosGrid.innerHTML = '';
-        
         const productos = productosData[categoria];
-        if (!productos) {
-            console.error('No products found for category:', categoria);
+        if (!productos || productos.length === 0) {
+            productosGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No hay productos en esta categoría</div>';
             return;
         }
+        
+        // Limpiar y cargar productos
+        productosGrid.innerHTML = '';
         
         productos.forEach(producto => {
             const productCard = document.createElement('div');
