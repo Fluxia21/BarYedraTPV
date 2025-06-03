@@ -13,7 +13,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file
 from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -1341,6 +1341,206 @@ def informe_fichajes():
                          fichajes=fichajes,
                          fecha_inicio=fecha_inicio,
                          fecha_fin=fecha_fin)
+
+@app.route('/fichajes/export/excel')
+@login_required
+def export_fichajes_excel():
+    """Export employee time tracking report to Excel"""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from io import BytesIO
+    
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+    
+    # Procesar fechas
+    if not fecha_inicio:
+        fecha_inicio = datetime.utcnow().date() - timedelta(days=30)
+    else:
+        fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+    
+    if not fecha_fin:
+        fecha_fin = datetime.utcnow().date()
+    else:
+        fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+    
+    # Obtener fichajes
+    fichajes = Fichaje.query.filter(
+        Fichaje.fecha >= fecha_inicio,
+        Fichaje.fecha <= fecha_fin
+    ).order_by(Fichaje.fecha.desc(), Fichaje.hora_entrada).all()
+    
+    # Crear workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Fichajes de Empleados"
+    
+    # Encabezados
+    headers = ['Empleado', 'Fecha', 'Hora Entrada', 'Hora Salida', 'Horas Trabajadas', 'Tipo Jornada', 'Estado', 'Observaciones']
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col, value=header)
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(start_color='E3F2FD', end_color='E3F2FD', fill_type='solid')
+        cell.alignment = Alignment(horizontal='center')
+    
+    # Datos
+    for row, fichaje in enumerate(fichajes, 2):
+        ws.cell(row=row, column=1, value=fichaje.empleado.nombre_completo)
+        ws.cell(row=row, column=2, value=fichaje.fecha.strftime('%d/%m/%Y'))
+        ws.cell(row=row, column=3, value=fichaje.hora_entrada.strftime('%H:%M') if fichaje.hora_entrada else '')
+        ws.cell(row=row, column=4, value=fichaje.hora_salida.strftime('%H:%M') if fichaje.hora_salida else '')
+        ws.cell(row=row, column=5, value=float(fichaje.horas_trabajadas) if fichaje.horas_trabajadas else 0)
+        ws.cell(row=row, column=6, value=fichaje.tipo_jornada.title())
+        
+        # Estado
+        if not fichaje.hora_entrada:
+            estado = 'Sin fichar'
+        elif not fichaje.hora_salida:
+            estado = 'En trabajo'
+        else:
+            estado = 'Completado'
+        ws.cell(row=row, column=7, value=estado)
+        ws.cell(row=row, column=8, value=fichaje.observaciones or '')
+    
+    # Ajustar ancho de columnas
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 30)
+        ws.column_dimensions[column_letter].width = adjusted_width
+    
+    # Guardar en memoria
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    filename = f"fichajes_{fecha_inicio.strftime('%Y%m%d')}_{fecha_fin.strftime('%Y%m%d')}.xlsx"
+    
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name=filename
+    )
+
+@app.route('/fichajes/export/pdf')
+@login_required
+def export_fichajes_pdf():
+    """Export employee time tracking report to PDF"""
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.units import inch
+    from io import BytesIO
+    
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+    
+    # Procesar fechas
+    if not fecha_inicio:
+        fecha_inicio = datetime.utcnow().date() - timedelta(days=30)
+    else:
+        fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+    
+    if not fecha_fin:
+        fecha_fin = datetime.utcnow().date()
+    else:
+        fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+    
+    # Obtener fichajes
+    fichajes = Fichaje.query.filter(
+        Fichaje.fecha >= fecha_inicio,
+        Fichaje.fecha <= fecha_fin
+    ).order_by(Fichaje.fecha.desc(), Fichaje.hora_entrada).all()
+    
+    # Crear PDF en memoria
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), topMargin=0.5*inch)
+    
+    # Estilos
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        alignment=1,  # Center
+        spaceAfter=30
+    )
+    
+    # Contenido
+    story = []
+    
+    # Título
+    title = Paragraph(f"<b>BAR YEDRA - INFORME DE FICHAJES</b><br/>Del {fecha_inicio.strftime('%d/%m/%Y')} al {fecha_fin.strftime('%d/%m/%Y')}", title_style)
+    story.append(title)
+    story.append(Spacer(1, 20))
+    
+    # Tabla de datos
+    data = [['Empleado', 'Fecha', 'Entrada', 'Salida', 'Horas', 'Tipo', 'Estado']]
+    
+    for fichaje in fichajes:
+        # Estado
+        if not fichaje.hora_entrada:
+            estado = 'Sin fichar'
+        elif not fichaje.hora_salida:
+            estado = 'En trabajo'
+        else:
+            estado = 'Completado'
+        
+        data.append([
+            fichaje.empleado.nombre_completo,
+            fichaje.fecha.strftime('%d/%m/%Y'),
+            fichaje.hora_entrada.strftime('%H:%M') if fichaje.hora_entrada else '',
+            fichaje.hora_salida.strftime('%H:%M') if fichaje.hora_salida else '',
+            f"{float(fichaje.horas_trabajadas):.2f}h" if fichaje.horas_trabajadas else '0.00h',
+            fichaje.tipo_jornada.title(),
+            estado
+        ])
+    
+    # Crear tabla
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    
+    story.append(table)
+    
+    # Resumen
+    if fichajes:
+        total_horas = sum(float(f.horas_trabajadas) if f.horas_trabajadas else 0 for f in fichajes)
+        story.append(Spacer(1, 20))
+        summary = Paragraph(f"<b>Total de horas registradas: {total_horas:.2f} horas</b>", styles['Normal'])
+        story.append(summary)
+    
+    # Generar PDF
+    doc.build(story)
+    buffer.seek(0)
+    
+    filename = f"fichajes_{fecha_inicio.strftime('%Y%m%d')}_{fecha_fin.strftime('%Y%m%d')}.pdf"
+    
+    return send_file(
+        buffer,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=filename
+    )
 
 # Create database tables
 with app.app_context():
