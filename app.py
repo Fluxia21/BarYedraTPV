@@ -43,7 +43,7 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 db.init_app(app)
 
 # Import models after db initialization
-from models import Mesa, Producto, Pedido, Ticket, MovimientoStock
+from models import Mesa, Producto, Pedido, Ticket, MovimientoStock, Empleado, Fichaje
 
 # Add custom Jinja2 filter for JSON parsing
 @app.template_filter('from_json')
@@ -1126,6 +1126,151 @@ def carta():
         productos_por_categoria[producto.categoria].append(producto)
     
     return render_template('carta.html', productos_por_categoria=productos_por_categoria)
+
+# === SISTEMA DE FICHAJE DE EMPLEADOS ===
+
+@app.route('/empleados')
+def empleados():
+    """Lista de empleados y gestión"""
+    empleados = Empleado.query.filter_by(activo=True).order_by(Empleado.nombre).all()
+    return render_template('empleados.html', empleados=empleados)
+
+@app.route('/empleados/nuevo', methods=['GET', 'POST'])
+def nuevo_empleado():
+    """Crear nuevo empleado"""
+    if request.method == 'POST':
+        try:
+            empleado = Empleado(
+                nombre=request.form['nombre'],
+                apellidos=request.form['apellidos'],
+                dni=request.form['dni'],
+                telefono=request.form.get('telefono', ''),
+                email=request.form.get('email', ''),
+                puesto=request.form['puesto'],
+                salario_hora=float(request.form.get('salario_hora', 0)) if request.form.get('salario_hora') else None,
+                pin_fichaje=request.form['pin_fichaje']
+            )
+            
+            db.session.add(empleado)
+            db.session.commit()
+            flash('Empleado creado exitosamente', 'success')
+            return redirect(url_for('empleados'))
+            
+        except Exception as e:
+            flash(f'Error al crear empleado: {str(e)}', 'error')
+            db.session.rollback()
+    
+    return render_template('nuevo_empleado.html')
+
+@app.route('/fichaje')
+def fichaje():
+    """Pantalla principal de fichaje para empleados"""
+    return render_template('fichaje.html')
+
+@app.route('/fichaje/entrada', methods=['POST'])
+def fichaje_entrada():
+    """Registrar entrada de empleado"""
+    pin = request.form.get('pin')
+    
+    if not pin:
+        return jsonify({'success': False, 'error': 'PIN requerido'})
+    
+    empleado = Empleado.query.filter_by(pin_fichaje=pin, activo=True).first()
+    if not empleado:
+        return jsonify({'success': False, 'error': 'PIN incorrecto'})
+    
+    # Verificar si ya tiene fichaje de entrada hoy
+    hoy = datetime.utcnow().date()
+    fichaje_existente = Fichaje.query.filter_by(
+        empleado_id=empleado.id,
+        fecha=hoy
+    ).first()
+    
+    if fichaje_existente and fichaje_existente.hora_entrada:
+        return jsonify({'success': False, 'error': 'Ya has fichado entrada hoy'})
+    
+    # Crear o actualizar fichaje
+    if not fichaje_existente:
+        fichaje = Fichaje(
+            empleado_id=empleado.id,
+            fecha=hoy,
+            hora_entrada=datetime.utcnow()
+        )
+        db.session.add(fichaje)
+    else:
+        fichaje_existente.hora_entrada = datetime.utcnow()
+    
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'mensaje': f'Entrada registrada para {empleado.nombre_completo}',
+        'hora': datetime.utcnow().strftime('%H:%M')
+    })
+
+@app.route('/fichaje/salida', methods=['POST'])
+def fichaje_salida():
+    """Registrar salida de empleado"""
+    pin = request.form.get('pin')
+    
+    if not pin:
+        return jsonify({'success': False, 'error': 'PIN requerido'})
+    
+    empleado = Empleado.query.filter_by(pin_fichaje=pin, activo=True).first()
+    if not empleado:
+        return jsonify({'success': False, 'error': 'PIN incorrecto'})
+    
+    # Buscar fichaje de hoy
+    hoy = datetime.utcnow().date()
+    fichaje = Fichaje.query.filter_by(
+        empleado_id=empleado.id,
+        fecha=hoy
+    ).first()
+    
+    if not fichaje or not fichaje.hora_entrada:
+        return jsonify({'success': False, 'error': 'No hay entrada registrada hoy'})
+    
+    if fichaje.hora_salida:
+        return jsonify({'success': False, 'error': 'Ya has fichado salida hoy'})
+    
+    # Registrar salida y calcular horas
+    fichaje.hora_salida = datetime.utcnow()
+    fichaje.calcular_horas()
+    
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'mensaje': f'Salida registrada para {empleado.nombre_completo}',
+        'hora': datetime.utcnow().strftime('%H:%M'),
+        'horas_trabajadas': float(fichaje.horas_trabajadas) if fichaje.horas_trabajadas else 0
+    })
+
+@app.route('/fichajes/informe')
+def informe_fichajes():
+    """Informe de fichajes por fechas"""
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+    
+    if not fecha_inicio:
+        fecha_inicio = datetime.utcnow().date() - timedelta(days=7)
+    else:
+        fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
+        
+    if not fecha_fin:
+        fecha_fin = datetime.utcnow().date()
+    else:
+        fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d').date()
+    
+    fichajes = Fichaje.query.filter(
+        Fichaje.fecha >= fecha_inicio,
+        Fichaje.fecha <= fecha_fin
+    ).order_by(Fichaje.fecha.desc(), Fichaje.hora_entrada).all()
+    
+    return render_template('informe_fichajes.html', 
+                         fichajes=fichajes,
+                         fecha_inicio=fecha_inicio,
+                         fecha_fin=fecha_fin)
 
 # Create database tables
 with app.app_context():

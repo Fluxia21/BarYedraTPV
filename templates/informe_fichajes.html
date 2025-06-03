@@ -1,0 +1,463 @@
+{% extends "base.html" %}
+
+{% block title %}Informe de Fichajes - Bar Yedra{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="header-section">
+        <h1>
+            <i class="fas fa-chart-line"></i>
+            Informe de Fichajes
+        </h1>
+        <div class="header-actions">
+            <a href="{{ url_for('empleados') }}" class="btn btn-outline-primary">
+                <i class="fas fa-users"></i>
+                Empleados
+            </a>
+            <a href="{{ url_for('fichaje') }}" class="btn btn-success">
+                <i class="fas fa-clock"></i>
+                Fichaje
+            </a>
+        </div>
+    </div>
+
+    <div class="filters-section">
+        <form method="GET" class="date-filter-form">
+            <div class="filter-group">
+                <label for="fecha_inicio">Desde:</label>
+                <input type="date" 
+                       id="fecha_inicio" 
+                       name="fecha_inicio" 
+                       class="form-control"
+                       value="{{ fecha_inicio }}">
+            </div>
+            <div class="filter-group">
+                <label for="fecha_fin">Hasta:</label>
+                <input type="date" 
+                       id="fecha_fin" 
+                       name="fecha_fin" 
+                       class="form-control"
+                       value="{{ fecha_fin }}">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+                Filtrar
+            </button>
+        </form>
+    </div>
+
+    {% if fichajes %}
+    <div class="fichajes-table-container">
+        <table class="fichajes-table">
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Fecha</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Horas</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fichaje in fichajes %}
+                <tr class="fichaje-row {{ 'incomplete' if not fichaje.hora_salida else '' }}">
+                    <td class="empleado-cell">
+                        <div class="empleado-info">
+                            <div class="empleado-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <div class="empleado-name">{{ fichaje.empleado.nombre_completo }}</div>
+                                <div class="empleado-puesto">{{ fichaje.empleado.puesto.title() }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="fecha-cell">
+                        {{ fichaje.fecha.strftime('%d/%m/%Y') }}
+                        <div class="fecha-weekday">{{ fichaje.fecha.strftime('%A') }}</div>
+                    </td>
+                    <td class="hora-cell">
+                        {% if fichaje.hora_entrada %}
+                            <span class="hora-badge entrada">
+                                {{ fichaje.hora_entrada.strftime('%H:%M') }}
+                            </span>
+                        {% else %}
+                            <span class="hora-badge pending">Sin entrada</span>
+                        {% endif %}
+                    </td>
+                    <td class="hora-cell">
+                        {% if fichaje.hora_salida %}
+                            <span class="hora-badge salida">
+                                {{ fichaje.hora_salida.strftime('%H:%M') }}
+                            </span>
+                        {% else %}
+                            <span class="hora-badge pending">Trabajando</span>
+                        {% endif %}
+                    </td>
+                    <td class="horas-cell">
+                        {% if fichaje.horas_trabajadas %}
+                            <span class="horas-badge">
+                                {{ "%.2f"|format(fichaje.horas_trabajadas) }}h
+                            </span>
+                        {% else %}
+                            <span class="horas-badge incomplete">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="tipo-cell">
+                        <span class="tipo-badge {{ fichaje.tipo_jornada }}">
+                            {{ fichaje.tipo_jornada.title() }}
+                        </span>
+                    </td>
+                    <td class="estado-cell">
+                        {% if fichaje.hora_entrada and fichaje.hora_salida %}
+                            <span class="estado-badge completado">
+                                <i class="fas fa-check-circle"></i>
+                                Completado
+                            </span>
+                        {% elif fichaje.hora_entrada %}
+                            <span class="estado-badge activo">
+                                <i class="fas fa-clock"></i>
+                                En curso
+                            </span>
+                        {% else %}
+                            <span class="estado-badge pendiente">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Pendiente
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary-section">
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <div class="card-number">{{ fichajes|length }}</div>
+                    <div class="card-label">Total Registros</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="card-content">
+                    <div class="card-number">
+                        {{ "%.1f"|format(fichajes|selectattr('horas_trabajadas')|map(attribute='horas_trabajadas')|sum) }}h
+                    </div>
+                    <div class="card-label">Horas Totales</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="card-content">
+                    <div class="card-number">
+                        {{ fichajes|selectattr('hora_salida')|list|length }}
+                    </div>
+                    <div class="card-label">Jornadas Completas</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="card-content">
+                    <div class="card-number">
+                        {{ fichajes|rejectattr('hora_salida')|list|length }}
+                    </div>
+                    <div class="card-label">En Curso</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <h3>No hay fichajes en el período seleccionado</h3>
+        <p>Ajusta las fechas del filtro o verifica que hay empleados fichando</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.header-section h1 {
+    color: #2e7d32;
+    font-size: 28px;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.filters-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.date-filter-form {
+    display: flex;
+    align-items: end;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.fichajes-table-container {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.fichajes-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fichajes-table th {
+    background: #2e7d32;
+    color: white;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.fichajes-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.fichaje-row:hover {
+    background: #f8f9fa;
+}
+
+.fichaje-row.incomplete {
+    background: #fff3cd;
+}
+
+.empleado-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.empleado-avatar {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.empleado-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.empleado-puesto {
+    font-size: 12px;
+    color: #666;
+}
+
+.fecha-weekday {
+    font-size: 11px;
+    color: #666;
+    text-transform: capitalize;
+}
+
+.hora-badge, .horas-badge, .tipo-badge, .estado-badge {
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.hora-badge.entrada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.hora-badge.salida {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.hora-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.horas-badge {
+    background: #e7f3ff;
+    color: #0056b3;
+}
+
+.horas-badge.incomplete {
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+.tipo-badge.completa {
+    background: #d4edda;
+    color: #155724;
+}
+
+.tipo-badge.parcial {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.estado-badge.completado {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado-badge.activo {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.estado-badge.pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.summary-section {
+    margin-top: 30px;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.card-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.card-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #666;
+}
+
+.empty-icon {
+    font-size: 80px;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .fichajes-table-container {
+        overflow-x: auto;
+    }
+    
+    .fichajes-table {
+        min-width: 800px;
+    }
+    
+    .date-filter-form {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+// Set default dates if not provided
+window.addEventListener('DOMContentLoaded', function() {
+    const fechaInicioInput = document.getElementById('fecha_inicio');
+    const fechaFinInput = document.getElementById('fecha_fin');
+    
+    if (!fechaInicioInput.value) {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        fechaInicioInput.value = oneWeekAgo.toISOString().split('T')[0];
+    }
+    
+    if (!fechaFinInput.value) {
+        const today = new Date();
+        fechaFinInput.value = today.toISOString().split('T')[0];
+    }
+});
+</script>
+{% endblock %}

@@ -95,3 +95,49 @@ class MovimientoStock(db.Model):
     
     def __repr__(self):
         return f'<MovimientoStock {self.tipo_movimiento} - {self.cantidad}>'
+
+class Empleado(db.Model):
+    """Employee model for time tracking"""
+    __tablename__ = 'empleado'
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    apellidos = db.Column(db.String(100), nullable=False)
+    dni = db.Column(db.String(20), unique=True, nullable=False)
+    telefono = db.Column(db.String(20), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    puesto = db.Column(db.String(50), nullable=False)  # 'camarero', 'cocinero', 'gerente', etc.
+    salario_hora = db.Column(db.Numeric(10, 2), nullable=True)
+    fecha_alta = db.Column(db.DateTime, default=datetime.utcnow)
+    activo = db.Column(db.Boolean, default=True)
+    pin_fichaje = db.Column(db.String(6), nullable=False)  # PIN de 4-6 dígitos para fichar
+
+    fichajes = db.relationship('Fichaje', backref='empleado', lazy=True)
+
+    def __repr__(self):
+        return f'<Empleado {self.nombre} {self.apellidos}>'
+
+    @property
+    def nombre_completo(self):
+        return f'{self.nombre} {self.apellidos}'
+
+class Fichaje(db.Model):
+    """Employee time tracking model"""
+    __tablename__ = 'fichaje'
+    id = db.Column(db.Integer, primary_key=True)
+    empleado_id = db.Column(db.Integer, db.ForeignKey('empleado.id'), nullable=False)
+    fecha = db.Column(db.Date, nullable=False, default=datetime.utcnow().date)
+    hora_entrada = db.Column(db.DateTime, nullable=True)
+    hora_salida = db.Column(db.DateTime, nullable=True)
+    horas_trabajadas = db.Column(db.Numeric(5, 2), nullable=True)  # Calculado automáticamente
+    observaciones = db.Column(db.Text, nullable=True)
+    tipo_jornada = db.Column(db.String(20), default='completa')  # 'completa', 'parcial', 'extra'
+
+    def __repr__(self):
+        return f'<Fichaje {self.empleado.nombre_completo} - {self.fecha}>'
+
+    def calcular_horas(self):
+        """Calculate worked hours when both entry and exit times are recorded"""
+        if self.hora_entrada and self.hora_salida:
+            delta = self.hora_salida - self.hora_entrada
+            self.horas_trabajadas = round(delta.total_seconds() / 3600, 2)
+        return self.horas_trabajadas
