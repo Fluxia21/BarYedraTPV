@@ -77,12 +77,17 @@ def login():
         username = request.form.get('username', '').strip()
         pin = request.form.get('pin', '').strip()
         
+        app.logger.info(f"Login attempt - Username: {username}, PIN: {pin}")
+        app.logger.info(f"Expected - Username: {LOGIN_USERNAME}, PIN: {LOGIN_PIN}")
+        
         if username == LOGIN_USERNAME and pin == LOGIN_PIN:
             session['logged_in'] = True
             session['username'] = username
+            app.logger.info("Login successful, redirecting to terraza")
             flash('Acceso autorizado', 'success')
             return redirect(url_for('terraza'))
         else:
+            app.logger.info("Login failed - incorrect credentials")
             flash('Usuario o PIN incorrecto', 'error')
             return render_template('login.html', error=True)
     
