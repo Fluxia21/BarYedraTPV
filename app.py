@@ -423,9 +423,9 @@ def close_cash_register():
 @app.route('/products')
 def products():
     """Product management view"""
-    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.orden, Producto.nombre).all()
+    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
     
-    # Agrupar productos por categoría
+    # Agrupar productos por categoría (ya ordenados alfabéticamente)
     productos_por_categoria = {}
     for producto in productos:
         if producto.categoria not in productos_por_categoria:
