@@ -81,7 +81,7 @@ def login():
             session['logged_in'] = True
             session['username'] = username
             flash('Acceso autorizado', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('terraza'))
         else:
             flash('Usuario o PIN incorrecto', 'error')
             return render_template('login.html', error=True)

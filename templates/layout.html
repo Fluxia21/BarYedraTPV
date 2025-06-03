@@ -135,6 +135,20 @@
                         </a>
                     </li>
                 </ul>
+                
+                <!-- User info and logout -->
+                <div class="sidebar-footer">
+                    {% if session.logged_in %}
+                    <div class="user-info">
+                        <i class="fas fa-user"></i>
+                        {{ session.username }}
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="logout-link" aria-label="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </a>
+                    {% endif %}
+                </div>
             </nav>
         </aside>
 
