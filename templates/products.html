@@ -14,12 +14,13 @@
     <!-- Productos organizados por categoría -->
     {% for categoria, productos in productos_por_categoria.items() %}
     <div class="category-section">
-        <h2 class="category-title">
+        <h2 class="category-title collapsible-header" onclick="toggleCategory('{{ categoria }}')">
+            <span class="toggle-icon" id="toggle-{{ categoria }}">▼</span>
             <i class="icon-tag"></i> {{ categoria }}
             <span class="category-count">({{ productos|length }})</span>
         </h2>
         
-        <div class="products-grid">
+        <div class="products-grid category-content" id="content-{{ categoria }}" style="display: block;">
             {% for producto in productos %}
             <div class="product-card touch-friendly">
                 <div class="product-image">
@@ -220,7 +221,81 @@
     </div>
 </div>
 
+<style>
+.collapsible-header {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.collapsible-header:hover {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.toggle-icon {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.toggle-icon.collapsed {
+    transform: rotate(-90deg);
+}
+
+.category-content {
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.category-content.hidden {
+    display: none !important;
+}
+
+.category-title {
+    margin: 0;
+}
+
+.category-count {
+    background: #4caf50;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: auto;
+}
+</style>
+
 <script>
+function toggleCategory(categoria) {
+    const content = document.getElementById('content-' + categoria);
+    const icon = document.getElementById('toggle-' + categoria);
+    
+    if (content.style.display === 'none' || content.classList.contains('hidden')) {
+        content.style.display = 'block';
+        content.classList.remove('hidden');
+        icon.textContent = '▼';
+        icon.classList.remove('collapsed');
+    } else {
+        content.style.display = 'none';
+        content.classList.add('hidden');
+        icon.textContent = '▶';
+        icon.classList.add('collapsed');
+    }
+}
+
 function showAddProductModal() {
     document.getElementById('addProductModal').style.display = 'flex';
 }
