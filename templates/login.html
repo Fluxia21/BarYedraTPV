@@ -276,14 +276,58 @@
         
         // Manejar envío del formulario
         document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevenir envío normal
+            
             const username = document.getElementById('username').value;
             const pin = document.getElementById('pin').value;
             
             if (!username || pin.length !== 4) {
-                e.preventDefault();
                 showError();
+                return;
             }
+            
+            // Deshabilitar botón durante el envío
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            
+            // Enviar datos via fetch
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `username=${encodeURIComponent(username)}&pin=${encodeURIComponent(pin)}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+            })
+            .then(data => {
+                if (data.success) {
+                    // Login exitoso, redirigir
+                    window.location.href = data.redirect || '/terraza';
+                } else {
+                    // Error en login
+                    showError();
+                    resetLoginButton();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError();
+                resetLoginButton();
+            });
         });
+        
+        function resetLoginButton() {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Ingresar al Sistema';
+        }
         
         function showError() {
             document.getElementById('errorMessage').style.display = 'block';
