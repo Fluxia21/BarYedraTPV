@@ -189,8 +189,8 @@
                        id="username" 
                        name="username" 
                        class="form-control" 
-                       placeholder="Ingrese su usuario"
-                       required 
+                       value="JAVI"
+                       readonly
                        autocomplete="off">
             </div>
             
@@ -281,7 +281,7 @@
             const username = document.getElementById('username').value;
             const pin = document.getElementById('pin').value;
             
-            if (!username || pin.length !== 4) {
+            if (pin.length !== 4) {
                 showError();
                 return;
             }
