@@ -935,9 +935,7 @@ function showBeerProducts(tipo) {
         productCard.className = 'product-card-modal';
         productCard.addEventListener('click', function() {
             addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
-            setTimeout(() => {
-                closeCategoryModal();
-            }, 600);
+            // El modal permanece abierto para seguir agregando productos
         });
         
         let precioHTML = '';
@@ -1075,9 +1073,7 @@ function showBocadillosProducts(tipo) {
         productCard.className = 'product-card-modal';
         productCard.addEventListener('click', function() {
             addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
-            setTimeout(() => {
-                closeCategoryModal();
-            }, 600);
+            // El modal permanece abierto para seguir agregando productos
         });
         
         let precioHTML = '';
@@ -1125,9 +1121,7 @@ function showRacionesProducts(tipo) {
         productCard.className = 'product-card-modal';
         productCard.addEventListener('click', function() {
             addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
-            setTimeout(() => {
-                closeCategoryModal();
-            }, 600);
+            // El modal permanece abierto para seguir agregando productos
         });
         
         let precioHTML = '';
