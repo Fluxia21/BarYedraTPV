@@ -275,6 +275,7 @@
         document.getElementById('loginBtn').disabled = true;
         
         // Manejar envío del formulario
+        let formSubmitted = false;
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const pin = document.getElementById('pin').value;
             
@@ -284,13 +285,19 @@
                 return;
             }
             
+            if (formSubmitted) {
+                e.preventDefault();
+                return;
+            }
+            
+            formSubmitted = true;
+            
             // Deshabilitar botón durante el envío
             const loginBtn = document.getElementById('loginBtn');
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             
-            // Permitir envío normal del formulario
-            // El servidor manejará la redirección automáticamente
+            // Permitir envío normal del formulario una sola vez
         });
         
         function resetLoginButton() {
