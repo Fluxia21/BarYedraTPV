@@ -1,0 +1,365 @@
+{% extends "layout.html" %}
+
+{% block title %}Código QR - Carta Digital{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1 class="page-title">
+        <i class="fas fa-qrcode"></i> Código QR - Carta Digital
+    </h1>
+    <div class="table-actions">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg touch-friendly">
+            <i class="fas fa-arrow-left"></i> Volver al TPV
+        </a>
+    </div>
+</div>
+
+<div class="qr-container">
+    <div class="qr-card">
+        <div class="qr-header">
+            <h2><i class="fas fa-mobile-alt"></i> Carta Digital para Clientes</h2>
+            <p>Los clientes pueden escanear este código QR para ver la carta desde sus móviles</p>
+        </div>
+        
+        <div class="qr-display">
+            <div class="qr-image-container">
+                <img src="data:image/png;base64,{{ qr_image }}" alt="Código QR de la Carta" class="qr-image">
+                <div class="qr-overlay">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+            </div>
+            
+            <div class="qr-info">
+                <h3>Instrucciones de uso:</h3>
+                <ol>
+                    <li><i class="fas fa-print"></i> Imprime este código QR</li>
+                    <li><i class="fas fa-table"></i> Colócalo en las mesas del bar</li>
+                    <li><i class="fas fa-mobile-alt"></i> Los clientes escanean con su móvil</li>
+                    <li><i class="fas fa-eye"></i> Ven la carta actualizada automáticamente</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="qr-details">
+            <div class="url-info">
+                <h4>URL de acceso directo:</h4>
+                <div class="url-display">
+                    <input type="text" value="{{ menu_url }}" readonly class="url-input">
+                    <button onclick="copyUrl()" class="btn btn-primary btn-copy">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="features-list">
+                <h4>Características:</h4>
+                <ul>
+                    <li><i class="fas fa-check text-success"></i> Acceso sin contraseña</li>
+                    <li><i class="fas fa-check text-success"></i> Compatible con móviles</li>
+                    <li><i class="fas fa-check text-success"></i> Se actualiza automáticamente</li>
+                    <li><i class="fas fa-check text-success"></i> Muestra precios de terraza</li>
+                    <li><i class="fas fa-check text-success"></i> Diseño atractivo</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="qr-actions">
+            <button onclick="printQR()" class="btn btn-success btn-lg">
+                <i class="fas fa-print"></i> Imprimir Código QR
+            </button>
+            <a href="{{ menu_url }}" target="_blank" class="btn btn-info btn-lg">
+                <i class="fas fa-external-link-alt"></i> Ver Carta Pública
+            </a>
+            <button onclick="downloadQR()" class="btn btn-warning btn-lg">
+                <i class="fas fa-download"></i> Descargar Imagen
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.qr-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.qr-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.qr-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.qr-header h2 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.qr-header p {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+}
+
+.qr-display {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+    align-items: center;
+}
+
+.qr-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.qr-image {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    border: 8px solid #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.qr-overlay {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+}
+
+.qr-info h3 {
+    color: #2c3e50;
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.qr-info ol {
+    list-style: none;
+    padding: 0;
+}
+
+.qr-info li {
+    padding: 12px 0;
+    font-size: 16px;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.qr-info li i {
+    color: #ff6b35;
+    width: 20px;
+}
+
+.qr-details {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.url-info {
+    margin-bottom: 30px;
+}
+
+.url-info h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.url-display {
+    display: flex;
+    gap: 10px;
+}
+
+.url-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    color: #495057;
+}
+
+.btn-copy {
+    padding: 12px 20px;
+    white-space: nowrap;
+}
+
+.features-list h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.features-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.features-list li {
+    padding: 8px 0;
+    font-size: 16px;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.qr-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.qr-actions .btn {
+    padding: 15px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.qr-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .qr-container {
+        padding: 10px;
+    }
+    
+    .qr-card {
+        padding: 25px;
+    }
+    
+    .qr-display {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .qr-actions {
+        flex-direction: column;
+    }
+    
+    .qr-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .url-display {
+        flex-direction: column;
+    }
+}
+
+/* Print styles */
+@media print {
+    .content-header,
+    .qr-actions,
+    .qr-details {
+        display: none !important;
+    }
+    
+    .qr-card {
+        box-shadow: none;
+        border: 2px solid #000;
+        page-break-inside: avoid;
+    }
+    
+    .qr-display {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .qr-image {
+        max-width: 250px;
+        border: 4px solid #000;
+    }
+    
+    .qr-header h2 {
+        color: #000 !important;
+    }
+}
+</style>
+
+<script>
+function copyUrl() {
+    const urlInput = document.querySelector('.url-input');
+    urlInput.select();
+    urlInput.setSelectionRange(0, 99999);
+    
+    try {
+        document.execCommand('copy');
+        
+        const btn = document.querySelector('.btn-copy');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+        btn.style.background = '#28a745';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+        }, 2000);
+        
+    } catch (err) {
+        alert('Error al copiar la URL');
+    }
+}
+
+function printQR() {
+    window.print();
+}
+
+function downloadQR() {
+    const img = document.querySelector('.qr-image');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    
+    ctx.drawImage(img, 0, 0);
+    
+    const link = document.createElement('a');
+    link.download = 'qr-carta-bar-yedra.png';
+    link.href = canvas.toDataURL();
+    link.click();
+}
+</script>
+
+{% endblock %}

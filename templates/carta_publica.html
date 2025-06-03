@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta - Bar Yedra</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="carta-container">
+    <div class="carta-header">
+        <div class="bar-info">
+            <h2>Bar Yedra</h2>
+            <p>Tradición y calidad desde hace más de 30 años</p>
+        </div>
+        <div class="carta-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ productos_por_categoria|length }}</span>
+                <span class="stat-label">Categorías</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">
+                    {% set total_productos = 0 %}
+                    {% for categoria, productos in productos_por_categoria.items() %}
+                        {% set total_productos = total_productos + productos|length %}
+                    {% endfor %}
+                    {{ total_productos }}
+                </span>
+                <span class="stat-label">Productos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="carta-menu">
+        {% for categoria, productos in productos_por_categoria.items() %}
+        <div class="categoria-section">
+            <div class="categoria-header">
+                <h3 class="categoria-title">
+                    {% if categoria.lower() == 'bebidas' %}
+                        <i class="fas fa-glass-cheers"></i>
+                    {% elif categoria.lower() == 'comidas' %}
+                        <i class="fas fa-utensils"></i>
+                    {% elif categoria.lower() == 'desayunos' %}
+                        <i class="fas fa-coffee"></i>
+                    {% elif categoria.lower() == 'tapas' %}
+                        <i class="fas fa-cookie-bite"></i>
+                    {% elif categoria.lower() == 'postres' %}
+                        <i class="fas fa-ice-cream"></i>
+                    {% else %}
+                        <i class="fas fa-star"></i>
+                    {% endif %}
+                    {{ categoria }}
+                </h3>
+                <div class="categoria-count">{{ productos|length }} productos</div>
+            </div>
+            
+            <div class="productos-grid-carta">
+                {% for producto in productos %}
+                <div class="producto-carta-item">
+                    <div class="producto-info">
+                        <h4 class="producto-nombre">{{ producto.nombre }}</h4>
+                        {% if producto.descripcion %}
+                        <p class="producto-descripcion">{{ producto.descripcion }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="producto-precio">
+                        <span class="precio-valor">€{{ "%.2f"|format(producto.precio) }}</span>
+                        {% if producto.categoria.lower() != 'desayunos' and not producto.sin_suplemento_terraza %}
+                        <div class="precio-terraza-info">
+                            <small><i class="fas fa-umbrella-beach"></i> Terraza: +€0.20</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="carta-footer">
+        <div class="footer-info">
+            <p><strong>Bar Yedra</strong> - Todos los precios incluyen IVA</p>
+            <p>Solicite nuestra carta de vinos y cervezas especiales</p>
+            <p class="footer-note">Para realizar su pedido, diríjase a nuestro personal</p>
+        </div>
+    </div>
+</div>
+
+<style>
+body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.carta-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.carta-header {
+    background: linear-gradient(135deg, #d4691a 0%, #ff8c42 50%, #ffa726 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.carta-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(10deg); }
+}
+
+.bar-info {
+    text-align: center;
+    z-index: 2;
+    position: relative;
+}
+
+.bar-info h2 {
+    font-size: 42px;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+}
+
+.bar-info p {
+    font-size: 18px;
+    margin: 0;
+    opacity: 0.95;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.carta-stats {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    min-width: 100px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    font-weight: 600;
+}
+
+.carta-menu {
+    padding: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(248,249,250,0.8));
+}
+
+.categoria-section {
+    margin-bottom: 50px;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.8);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.categoria-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b35, #f7931e, #ffd23f);
+}
+
+.categoria-section:last-child {
+    margin-bottom: 0;
+}
+
+.categoria-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.categoria-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.categoria-title i {
+    color: #ff6b35;
+    font-size: 24px;
+}
+
+.categoria-count {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(255,107,53,0.3);
+}
+
+.productos-grid-carta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.producto-carta-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
+    border: 1px solid #e8f4f8;
+    border-radius: 15px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.producto-carta-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.producto-carta-item:hover::before {
+    transform: scaleY(1);
+}
+
+.producto-carta-item:hover {
+    border-color: #ff6b35;
+    box-shadow: 0 8px 25px rgba(255,107,53,0.15);
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #ffffff 0%, #fff8f6 100%);
+}
+
+.producto-info {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.producto-nombre {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+    text-transform: capitalize;
+}
+
+.producto-descripcion {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.producto-precio {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.precio-valor {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    padding: 12px 18px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.precio-terraza-info {
+    font-size: 11px;
+    color: #17a2b8;
+    text-align: center;
+    font-weight: 600;
+}
+
+.precio-terraza-info i {
+    margin-right: 3px;
+}
+
+.carta-footer {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    padding: 30px 40px;
+    color: white;
+    text-align: center;
+}
+
+.footer-info {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-info p {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.footer-info p:first-child {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.footer-note {
+    font-size: 14px;
+    font-style: italic;
+    opacity: 0.8;
+    margin-top: 15px;
+    color: #bdc3c7;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .carta-container {
+        margin: 10px;
+        border-radius: 15px;
+    }
+    
+    .carta-header {
+        padding: 25px;
+    }
+    
+    .bar-info h2 {
+        font-size: 32px;
+    }
+    
+    .carta-stats {
+        gap: 15px;
+    }
+    
+    .carta-menu {
+        padding: 25px;
+    }
+    
+    .categoria-section {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .categoria-title {
+        font-size: 24px;
+    }
+    
+    .productos-grid-carta {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .producto-carta-item {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .producto-info {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .precio-valor {
+        font-size: 18px;
+        padding: 10px 15px;
+    }
+}
+
+/* Modo impresión */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .carta-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .carta-header {
+        background: #333 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+    
+    .categoria-section::before {
+        background: #ff6b35 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+    
+    .precio-valor {
+        background: #ff6b35 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+}
+</style>
+
+</body>
+</html>

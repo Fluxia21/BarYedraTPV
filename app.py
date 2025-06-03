@@ -1184,8 +1184,9 @@ def split_bill():
     })
 
 @app.route('/carta')
+@login_required
 def carta():
-    """Display the complete menu with all products by category"""
+    """Display the complete menu with all products by category (TPV access)"""
     productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
     
     # Organizar productos por categoría
@@ -1196,6 +1197,54 @@ def carta():
         productos_por_categoria[producto.categoria].append(producto)
     
     return render_template('carta.html', productos_por_categoria=productos_por_categoria)
+
+@app.route('/menu')
+def menu_publico():
+    """Public menu access for customers via QR code - no authentication required"""
+    productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
+    
+    # Organizar productos por categoría
+    productos_por_categoria = {}
+    for producto in productos:
+        if producto.categoria not in productos_por_categoria:
+            productos_por_categoria[producto.categoria] = []
+        productos_por_categoria[producto.categoria].append(producto)
+    
+    return render_template('carta_publica.html', productos_por_categoria=productos_por_categoria)
+
+@app.route('/qr-menu')
+@login_required
+def generar_qr_menu():
+    """Generate QR code for public menu access"""
+    import qrcode
+    from io import BytesIO
+    import base64
+    
+    # URL del menú público
+    menu_url = request.url_root + 'menu'
+    
+    # Crear código QR
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(menu_url)
+    qr.make(fit=True)
+    
+    # Crear imagen QR
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Convertir a base64 para mostrar en HTML
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    img_base64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    return render_template('qr_menu.html', 
+                         qr_image=img_base64, 
+                         menu_url=menu_url)
 
 # === SISTEMA DE FICHAJE DE EMPLEADOS ===
 
