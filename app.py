@@ -13,7 +13,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -46,6 +47,19 @@ db.init_app(app)
 from models import Mesa, Producto, Pedido, Ticket, MovimientoStock, Empleado, Fichaje
 
 # Add custom Jinja2 filter for JSON parsing
+# Login configuration
+LOGIN_USERNAME = "JAVI"
+LOGIN_PIN = "5555"
+
+# Login required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.template_filter('from_json')
 def from_json_filter(value):
     """Convert JSON string to Python object"""
@@ -56,24 +70,53 @@ def from_json_filter(value):
             return []
     return []
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login page with username and PIN authentication"""
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        pin = request.form.get('pin', '').strip()
+        
+        if username == LOGIN_USERNAME and pin == LOGIN_PIN:
+            session['logged_in'] = True
+            session['username'] = username
+            flash('Acceso autorizado', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Usuario o PIN incorrecto', 'error')
+            return render_template('login.html', error=True)
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Logout and clear session"""
+    session.clear()
+    flash('Sesión cerrada', 'info')
+    return redirect(url_for('login'))
+
 @app.route('/')
+@login_required
 def index():
     """Página principal - redirigir a terraza"""
     return redirect(url_for('terraza'))
 
 @app.route('/terraza')
+@login_required
 def terraza():
     """Página de mesas de terraza"""
     mesas = Mesa.query.filter_by(zona='Terraza').order_by(Mesa.numero).all()
     return render_template('terraza.html', mesas=mesas)
 
 @app.route('/sala')
+@login_required
 def sala():
     """Página de mesas de sala"""
     mesas = Mesa.query.filter_by(zona='Sala').order_by(Mesa.numero).all()
     return render_template('sala.html', mesas=mesas)
 
 @app.route('/barra')
+@login_required
 def barra():
     """Página de mesas de barra"""
     mesas = Mesa.query.filter_by(zona='Barra').order_by(Mesa.numero).all()
@@ -139,6 +182,7 @@ def get_menu_recommendations(mesa_id, limit=5):
     return productos_recomendados
 
 @app.route('/mesa/<int:mesa_id>')
+@login_required
 def table_detail(mesa_id):
     """Table detail view for managing orders"""
     mesa = Mesa.query.get_or_404(mesa_id)

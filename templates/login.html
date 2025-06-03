@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Bar Yedra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .login-header {
+            margin-bottom: 2rem;
+        }
+        
+        .login-header h1 {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: #666;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        }
+        
+        .pin-display {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: 1.5rem;
+            letter-spacing: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .numeric-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .keypad-btn {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 60px;
+        }
+        
+        .keypad-btn:hover {
+            background: #e9ecef;
+            border-color: #ced4da;
+        }
+        
+        .keypad-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .keypad-btn.zero {
+            grid-column: span 2;
+        }
+        
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        .clear-btn:hover {
+            background: #c82333;
+            border-color: #c82333;
+        }
+        
+        .login-btn {
+            background: #2e7d32;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .login-btn:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+        
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            color: #2e7d32;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-beer"></i>
+            </div>
+            <h1>BAR YEDRA</h1>
+            <p>Sistema TPV - Acceso al Sistema</p>
+        </div>
+        
+        <form id="loginForm" action="{{ url_for('login') }}" method="POST">
+            <div class="error-message" id="errorMessage">
+                Usuario o PIN incorrecto
+            </div>
+            
+            <div class="form-group">
+                <label for="username" class="form-label">
+                    <i class="fas fa-user"></i>
+                    Usuario
+                </label>
+                <input type="text" 
+                       id="username" 
+                       name="username" 
+                       class="form-control" 
+                       placeholder="Ingrese su usuario"
+                       required 
+                       autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-key"></i>
+                    PIN de Acceso
+                </label>
+                <div class="pin-display" id="pinDisplay">
+                    ****
+                </div>
+                <input type="hidden" id="pin" name="pin" value="">
+            </div>
+            
+            <div class="numeric-keypad">
+                <button type="button" class="keypad-btn" onclick="addDigit('1')">1</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('2')">2</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('3')">3</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('4')">4</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('5')">5</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('6')">6</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('7')">7</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('8')">8</button>
+                <button type="button" class="keypad-btn" onclick="addDigit('9')">9</button>
+                <button type="button" class="keypad-btn clear-btn" onclick="clearPin()">
+                    <i class="fas fa-backspace"></i>
+                </button>
+                <button type="button" class="keypad-btn zero" onclick="addDigit('0')">0</button>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i>
+                Ingresar al Sistema
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        let currentPin = '';
+        
+        function addDigit(digit) {
+            if (currentPin.length < 4) {
+                currentPin += digit;
+                updatePinDisplay();
+                
+                if (currentPin.length === 4) {
+                    document.getElementById('pin').value = currentPin;
+                    document.getElementById('loginBtn').disabled = false;
+                }
+            }
+        }
+        
+        function clearPin() {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updatePinDisplay();
+                document.getElementById('pin').value = currentPin;
+                
+                if (currentPin.length < 4) {
+                    document.getElementById('loginBtn').disabled = true;
+                }
+            }
+        }
+        
+        function updatePinDisplay() {
+            const display = document.getElementById('pinDisplay');
+            let displayText = '';
+            
+            for (let i = 0; i < 4; i++) {
+                if (i < currentPin.length) {
+                    displayText += '●';
+                } else {
+                    displayText += '○';
+                }
+                if (i < 3) displayText += ' ';
+            }
+            
+            display.textContent = displayText;
+        }
+        
+        // Inicializar
+        document.getElementById('loginBtn').disabled = true;
+        
+        // Manejar envío del formulario
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value;
+            const pin = document.getElementById('pin').value;
+            
+            if (!username || pin.length !== 4) {
+                e.preventDefault();
+                showError();
+            }
+        });
+        
+        function showError() {
+            document.getElementById('errorMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('errorMessage').style.display = 'none';
+            }, 3000);
+        }
+        
+        // Mostrar error si viene de parámetro
+        {% if error %}
+        showError();
+        {% endif %}
+        
+        // Enfocar campo de usuario al cargar
+        document.getElementById('username').focus();
+    </script>
+</body>
+</html>
