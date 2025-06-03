@@ -623,31 +623,56 @@ function addToOrderWithAnimation(productCard, mesaId, productoId) {
 }
 
 function addToOrder(mesaId, productoId) {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/add_to_order';
+    // Usar AJAX para añadir producto sin recargar la página
+    const formData = new FormData();
+    formData.append('mesa_id', mesaId);
+    formData.append('producto_id', productoId);
+    formData.append('cantidad', 1);
     
-    const mesaInput = document.createElement('input');
-    mesaInput.type = 'hidden';
-    mesaInput.name = 'mesa_id';
-    mesaInput.value = mesaId;
-    
-    const productoInput = document.createElement('input');
-    productoInput.type = 'hidden';
-    productoInput.name = 'producto_id';
-    productoInput.value = productoId;
-    
-    const cantidadInput = document.createElement('input');
-    cantidadInput.type = 'hidden';
-    cantidadInput.name = 'cantidad';
-    cantidadInput.value = 1;
-    
-    form.appendChild(mesaInput);
-    form.appendChild(productoInput);
-    form.appendChild(cantidadInput);
-    
-    document.body.appendChild(form);
-    form.submit();
+    fetch('/add_to_order', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            // Actualizar el panel de pedido sin cerrar el modal
+            updateOrderPanel(mesaId);
+        } else {
+            console.error('Error al añadir producto');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function updateOrderPanel(mesaId) {
+    // Actualizar dinámicamente el panel de pedido actual
+    fetch(`/table/${mesaId}`)
+    .then(response => response.text())
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Actualizar solo la sección del pedido actual
+        const newOrderSection = doc.querySelector('.current-order');
+        const currentOrderSection = document.querySelector('.current-order');
+        
+        if (newOrderSection && currentOrderSection) {
+            currentOrderSection.innerHTML = newOrderSection.innerHTML;
+        }
+        
+        // Actualizar el total
+        const newTotal = doc.querySelector('.order-total');
+        const currentTotal = document.querySelector('.order-total');
+        
+        if (newTotal && currentTotal) {
+            currentTotal.innerHTML = newTotal.innerHTML;
+        }
+    })
+    .catch(error => {
+        console.error('Error updating order panel:', error);
+    });
 }
 
 function closeOrder(mesaId) {
@@ -830,9 +855,7 @@ function openCategoryModal(categoria) {
             productCard.className = 'product-card-modal';
             productCard.addEventListener('click', function() {
                 addToOrderWithAnimation(productCard, {{ mesa.id }}, producto.id);
-                setTimeout(() => {
-                    closeCategoryModal();
-                }, 600);
+                // El modal permanece abierto para seguir agregando productos
             });
             
             let precioHTML = '';
