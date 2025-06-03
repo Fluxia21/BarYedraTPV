@@ -2726,23 +2726,29 @@ select.form-input.touch-friendly {
 }
 
 .product-price {
-    font-size: 14px;
-    font-weight: 700;
-    color: #81c784;
+    font-size: 16px;
+    font-weight: 800;
+    color: #2e7d32;
     margin-top: auto;
+    padding: 4px 0;
+    border-radius: 4px;
+    text-align: center;
 }
 
 .price-base {
-    font-size: 14px;
+    font-size: 12px;
     color: #6c757d;
     text-decoration: line-through;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    text-align: center;
 }
 
 .price-terraza {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 800;
     color: #e57373;
+    text-align: center;
+    padding: 4px 0;
 }
 
 /* Subcategorías de cerveza */
