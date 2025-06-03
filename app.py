@@ -238,6 +238,7 @@ def table_detail(mesa_id):
                          recomendaciones=recomendaciones)
 
 @app.route('/add_to_order', methods=['POST'])
+@login_required
 def add_to_order():
     """Add product to table order - accumulates by rounds"""
     mesa_id = int(request.form.get('mesa_id'))
@@ -465,6 +466,7 @@ def close_cash_register():
     return redirect(url_for('cash_register'))
 
 @app.route('/products')
+@login_required
 def products():
     """Product management view"""
     productos = Producto.query.filter_by(activo=True).order_by(Producto.categoria, Producto.nombre).all()
