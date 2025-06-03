@@ -29,7 +29,17 @@ db = SQLAlchemy(model_class=Base)
 
 # Create the app
 app = Flask(__name__)
-app.secret_key = "yedra-bar-secret-key-2024"
+app.secret_key = os.environ.get("SESSION_SECRET", "yedra-bar-secret-key-2024")
+
+# Session configuration
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_KEY_PREFIX'] = 'yedra:'
+app.config['SESSION_COOKIE_SECURE'] = False  # Para desarrollo local
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # ProxyFix no necesario para uso local
 # app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
@@ -83,11 +93,15 @@ def login():
         if username == LOGIN_USERNAME and pin == LOGIN_PIN:
             session['logged_in'] = True
             session['username'] = username
-            app.logger.info("Login successful, redirecting to terraza")
+            session.permanent = True
+            app.logger.info(f"Login successful, session set: {session}")
+            app.logger.info(f"Generating redirect URL: {url_for('terraza')}")
             flash('Acceso autorizado', 'success')
             
             # Redirección directa del servidor
-            return redirect(url_for('terraza'))
+            redirect_url = url_for('terraza')
+            app.logger.info(f"About to redirect to: {redirect_url}")
+            return redirect(redirect_url)
         else:
             app.logger.info("Login failed - incorrect credentials")
             flash('Usuario o PIN incorrecto', 'error')
