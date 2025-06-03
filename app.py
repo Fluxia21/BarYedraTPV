@@ -86,14 +86,12 @@ def login():
             app.logger.info("Login successful, redirecting to terraza")
             flash('Acceso autorizado', 'success')
             
-            # Siempre devolver JSON para peticiones AJAX
-            return jsonify({'success': True, 'redirect': url_for('terraza')})
+            # Redirección directa del servidor
+            return redirect(url_for('terraza'))
         else:
             app.logger.info("Login failed - incorrect credentials")
             flash('Usuario o PIN incorrecto', 'error')
-            
-            # Devolver JSON para error
-            return jsonify({'success': False, 'error': 'Usuario o PIN incorrecto'})
+            return render_template('login.html', error=True)
     
     return render_template('login.html')
 

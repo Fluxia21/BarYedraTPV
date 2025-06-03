@@ -276,12 +276,10 @@
         
         // Manejar envío del formulario
         document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevenir envío normal
-            
-            const username = document.getElementById('username').value;
             const pin = document.getElementById('pin').value;
             
             if (pin.length !== 4) {
+                e.preventDefault();
                 showError();
                 return;
             }
@@ -291,41 +289,8 @@
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             
-            // Enviar datos via fetch
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `username=${encodeURIComponent(username)}&pin=${encodeURIComponent(pin)}`
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Error en la respuesta del servidor');
-                }
-            })
-            .then(data => {
-                console.log('Response data:', data);
-                if (data.success) {
-                    // Login exitoso, redirigir
-                    console.log('Redirecting to:', data.redirect || '/terraza');
-                    window.location.href = data.redirect || '/terraza';
-                } else {
-                    // Error en login
-                    console.log('Login failed:', data.error);
-                    showError();
-                    resetLoginButton();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showError();
-                resetLoginButton();
-            });
+            // Permitir envío normal del formulario
+            // El servidor manejará la redirección automáticamente
         });
         
         function resetLoginButton() {
