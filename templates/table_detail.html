@@ -801,9 +801,28 @@ function openCategoryModal(categoria) {
     // Mostrar modal inmediatamente
     modal.style.display = 'block';
     modalTitle.textContent = categoria;
-    productosGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Cargando productos...</div>';
     
     try {
+        // Si es cervezas, mostrar subcategorías primero
+        if (categoria === 'Cervezas') {
+            showBeerSubcategories();
+            return;
+        }
+        
+        // Si es bocadillos, mostrar subcategorías
+        if (categoria === 'Bocadillos') {
+            showBocadillosSubcategories();
+            return;
+        }
+        
+        // Si es raciones, mostrar subcategorías
+        if (categoria === 'Raciones') {
+            showRacionesSubcategories();
+            return;
+        }
+        
+        productosGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Cargando productos...</div>';
+        
         const productos = productosData[categoria];
         if (!productos || productos.length === 0) {
             productosGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No hay productos en esta categoría</div>';
