@@ -178,11 +178,12 @@
                         <option value="Bocadillos">🥪 Bocadillos</option>
                         <option value="Cervezas">🍺 Cervezas</option>
                         <option value="Combinados">🍹 Combinados</option>
-                        <option value="Licores">🥃 Licores</option>
                         <option value="Desayunos">☕ Desayunos</option>
-                        <option value="Raciones">🍽️ Raciones</option>
                         <option value="Helados">🍦 Helados</option>
+                        <option value="Licores">🥃 Licores</option>
+                        <option value="Raciones">🍽️ Raciones</option>
                         <option value="Refrescos">🥤 Refrescos</option>
+                        <option value="Vinos">🍷 Vinos</option>
                     </select>
                 </div>
                 
@@ -298,6 +299,32 @@ function toggleCategory(categoria) {
 
 function showAddProductModal() {
     document.getElementById('addProductModal').style.display = 'flex';
+}
+
+function abrirModalEdicion(id, nombre, precio, categoria, foto_url, descripcion) {
+    console.log('Abriendo modal de edición para:', {id, nombre, precio, categoria, foto_url, descripcion});
+    
+    // Llenar el formulario con los datos del producto
+    document.getElementById('edit_nombre').value = nombre || '';
+    document.getElementById('edit_precio').value = precio || '';
+    document.getElementById('edit_categoria').value = categoria || '';
+    document.getElementById('edit_descripcion').value = descripcion || '';
+    
+    // Limpiar la vista previa de imagen y el campo de archivo
+    const imagePreview = document.getElementById('edit-image-preview-container');
+    if (imagePreview) {
+        imagePreview.style.display = 'none';
+    }
+    const fileInput = document.getElementById('edit_imagen_producto');
+    if (fileInput) {
+        fileInput.value = '';
+    }
+    
+    // Configurar la acción del formulario para enviar a la URL correcta
+    document.getElementById('editProductForm').action = `/update_product/${id}`;
+    
+    // Mostrar el modal de edición
+    document.getElementById('editProductModal').style.display = 'flex';
 }
 
 function hideAddProductModal() {

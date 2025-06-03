@@ -60,21 +60,15 @@
                                         <i class="fas fa-folder me-2"></i>Categoría
                                     </label>
                                     <select class="form-select" id="categoria" name="categoria" required>
-                                        {% for cat in categorias %}
-                                        <option value="{{ cat }}" {% if cat == producto.categoria %}selected{% endif %}>
-                                            {{ cat }}
-                                        </option>
-                                        {% endfor %}
-                                        <option value="Cafés" {% if producto.categoria == 'Cafés' %}selected{% endif %}>Cafés</option>
-                                        <option value="Desayunos" {% if producto.categoria == 'Desayunos' %}selected{% endif %}>Desayunos</option>
-                                        <option value="Bocadillos Fríos" {% if producto.categoria == 'Bocadillos Fríos' %}selected{% endif %}>Bocadillos Fríos</option>
-                                        <option value="Montados Calientes" {% if producto.categoria == 'Montados Calientes' %}selected{% endif %}>Montados Calientes</option>
-                                        <option value="Tostadas" {% if producto.categoria == 'Tostadas' %}selected{% endif %}>Tostadas</option>
-                                        <option value="Bebidas Frías" {% if producto.categoria == 'Bebidas Frías' %}selected{% endif %}>Bebidas Frías</option>
-                                        <option value="Cervezas" {% if producto.categoria == 'Cervezas' %}selected{% endif %}>Cervezas</option>
-                                        <option value="Infusiones" {% if producto.categoria == 'Infusiones' %}selected{% endif %}>Infusiones</option>
-                                        <option value="Tapas" {% if producto.categoria == 'Tapas' %}selected{% endif %}>Tapas</option>
-                                        <option value="Suplementos" {% if producto.categoria == 'Suplementos' %}selected{% endif %}>Suplementos</option>
+                                        <option value="Bocadillos" {% if producto.categoria == 'Bocadillos' %}selected{% endif %}>🥪 Bocadillos</option>
+                                        <option value="Cervezas" {% if producto.categoria == 'Cervezas' %}selected{% endif %}>🍺 Cervezas</option>
+                                        <option value="Combinados" {% if producto.categoria == 'Combinados' %}selected{% endif %}>🍹 Combinados</option>
+                                        <option value="Desayunos" {% if producto.categoria == 'Desayunos' %}selected{% endif %}>☕ Desayunos</option>
+                                        <option value="Helados" {% if producto.categoria == 'Helados' %}selected{% endif %}>🍦 Helados</option>
+                                        <option value="Licores" {% if producto.categoria == 'Licores' %}selected{% endif %}>🥃 Licores</option>
+                                        <option value="Raciones" {% if producto.categoria == 'Raciones' %}selected{% endif %}>🍽️ Raciones</option>
+                                        <option value="Refrescos" {% if producto.categoria == 'Refrescos' %}selected{% endif %}>🥤 Refrescos</option>
+                                        <option value="Vinos" {% if producto.categoria == 'Vinos' %}selected{% endif %}>🍷 Vinos</option>
                                     </select>
                                 </div>
                             </div>
