@@ -25,7 +25,36 @@
                                class="form-control pin-input" 
                                maxlength="6" 
                                placeholder="****"
+                               readonly
                                autocomplete="off">
+                    </div>
+                    
+                    <!-- Teclado numérico -->
+                    <div class="numeric-keypad">
+                        <div class="keypad-row">
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('1')">1</button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('2')">2</button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('3')">3</button>
+                        </div>
+                        <div class="keypad-row">
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('4')">4</button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('5')">5</button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('6')">6</button>
+                        </div>
+                        <div class="keypad-row">
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('7')">7</button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('8')">8</button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('9')">9</button>
+                        </div>
+                        <div class="keypad-row">
+                            <button type="button" class="keypad-btn clear-btn" onclick="clearFichaje()">
+                                <i class="fas fa-backspace"></i>
+                            </button>
+                            <button type="button" class="keypad-btn" onclick="addDigitFichaje('0')">0</button>
+                            <button type="button" class="keypad-btn clear-btn" onclick="deleteFichaje()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="action-buttons">
@@ -164,6 +193,61 @@
 .admin-links .btn {
     margin: 0 10px;
 }
+
+/* Estilos para el teclado numérico */
+.numeric-keypad {
+    display: grid;
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px solid #e9ecef;
+}
+
+.keypad-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+.keypad-btn {
+    height: 60px;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.keypad-btn:hover {
+    background: #e9ecef;
+    border-color: #6c757d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.keypad-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.keypad-btn.clear-btn {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.keypad-btn.clear-btn:hover {
+    background: #c82333;
+    border-color: #bd2130;
+}
 </style>
 
 <script>
@@ -198,6 +282,23 @@ function showMessage(message, type) {
 }
 
 function clearPin() {
+    document.getElementById('pinInput').value = '';
+}
+
+// Funciones para el teclado numérico del fichaje
+function addDigitFichaje(digit) {
+    const pinInput = document.getElementById('pinInput');
+    if (pinInput.value.length < 6) {
+        pinInput.value += digit;
+    }
+}
+
+function clearFichaje() {
+    const pinInput = document.getElementById('pinInput');
+    pinInput.value = pinInput.value.slice(0, -1);
+}
+
+function deleteFichaje() {
     document.getElementById('pinInput').value = '';
 }
 

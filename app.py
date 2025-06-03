@@ -95,10 +95,13 @@ def login():
             session['username'] = username
             session.permanent = True
             app.logger.info(f"Login successful, session set: {session}")
-            app.logger.info(f"Generating redirect URL: {url_for('terraza')}")
-            flash('Acceso autorizado', 'success')
             
-            # Redirección directa del servidor
+            # Retornar una respuesta JSON para manejar redirección en el cliente
+            if request.headers.get('Content-Type') == 'application/json' or request.is_json:
+                return jsonify({'success': True, 'redirect': url_for('terraza')})
+            
+            # Si es un formulario normal, redirigir directamente
+            flash('Acceso autorizado', 'success')
             redirect_url = url_for('terraza')
             app.logger.info(f"About to redirect to: {redirect_url}")
             return redirect(redirect_url)

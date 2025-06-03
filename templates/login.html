@@ -274,19 +274,19 @@
         // Inicializar
         document.getElementById('loginBtn').disabled = true;
         
-        // Manejar envío del formulario
+        // Manejar envío del formulario con fetch para evitar redirecciones múltiples
         let formSubmitted = false;
         document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Siempre prevenir envío normal
+            
             const pin = document.getElementById('pin').value;
             
             if (pin.length !== 4) {
-                e.preventDefault();
                 showError();
                 return;
             }
             
             if (formSubmitted) {
-                e.preventDefault();
                 return;
             }
             
@@ -297,7 +297,32 @@
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             
-            // Permitir envío normal del formulario una sola vez
+            // Enviar datos con fetch
+            const formData = new FormData();
+            formData.append('username', 'JAVI');
+            formData.append('pin', pin);
+            
+            fetch('/login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    // Si hay redirección, navegar directamente
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    // Si la respuesta es exitosa, redirigir a terraza
+                    window.location.href = '/terraza';
+                } else {
+                    // Si hay error, recargar la página para mostrar el mensaje
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // En caso de error, recargar la página
+                window.location.reload();
+            });
         });
         
         function resetLoginButton() {
